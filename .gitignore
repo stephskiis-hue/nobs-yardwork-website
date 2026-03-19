@@ -12,5 +12,10 @@ Thumbs.db
 # Claude Code project file (not part of the website)
 CLAUDE.md
 
+# WordPress sensitive files — NEVER commit these
+blog/wp-config.php
+blog/wp-content/uploads/
+blog/.htaccess
+
 # Node (if ever used)
 node_modules/
