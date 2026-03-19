@@ -1,0 +1,16 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Secrets — never commit these
+.env
+*.env
+
+# Claude Code project file (not part of the website)
+CLAUDE.md
+
+# Node (if ever used)
+node_modules/

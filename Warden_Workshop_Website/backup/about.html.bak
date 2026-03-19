@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Tony Warden | Warden's Workshop</title>
+    <meta name="description" content="Meet Tony Warden — master craftsman and founder of Warden's Workshop since 1976. Discover his story, values, and five decades of restoration expertise in Essex, ON." />
+    <meta name="keywords" content="Tony Warden, about Warden's Workshop, master craftsman Essex Ontario, restoration expert, founded 1976" />
+    <link rel="canonical" href="https://wardensworkshop.ca/about.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="About Tony Warden | Warden's Workshop" />
+    <meta property="og:description" content="Meet the master craftsman behind Warden's Workshop — five decades of precision, passion, and restoration expertise." />
+    <meta property="og:image" content="https://wardensworkshop.ca/images/about-tony.jpg" />
+    <meta property="og:url" content="https://wardensworkshop.ca/about.html" />
+    <meta property="og:site_name" content="Warden's Workshop" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="About Tony Warden | Warden's Workshop" />
+    <meta name="twitter:description" content="Meet the master craftsman behind Warden's Workshop — five decades of precision, passion, and restoration expertise." />
+    <meta name="twitter:image" content="https://wardensworkshop.ca/images/about-tony.jpg" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <ul class="nav-links nav-left">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html" class="active">About</a></li>
+        </ul>
+
+        <a href="index.html" class="nav-logo-link">
+          <img src="images/logo.png" alt="Warden's Workshop Logo" class="nav-logo" />
+        </a>
+
+        <div class="mobile-drawer">
+          <ul class="nav-links nav-left">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html" class="active">About</a></li>
+          </ul>
+          <ul class="nav-links nav-right">
+            <li><a href="service.html">Services</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li class="has-dropdown">
+              <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                Pricing <i class="fas fa-chevron-down dropdown-chevron"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="service.html#painting">Painting &amp; Exterior</a></li>
+                <li><a href="service.html#renovation">Home Renovation</a></li>
+                <li><a href="service.html#rv">RV Revitalization</a></li>
+                <li><a href="service.html#technical">Technical Services</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <ul class="nav-links nav-right">
+          <li><a href="service.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="has-dropdown">
+            <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              Pricing <i class="fas fa-chevron-down dropdown-chevron"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="service.html#painting">Painting &amp; Exterior</a></li>
+              <li><a href="service.html#renovation">Home Renovation</a></li>
+              <li><a href="service.html#rv">RV Revitalization</a></li>
+              <li><a href="service.html#technical">Technical Services</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HERO BANNER -->
+    <header class="about-hero">
+      <div class="container reveal">
+        <h1>The Man Behind the Workshop</h1>
+        <p>Five decades of craftsmanship, precision, and passion for restoration.</p>
+      </div>
+    </header>
+
+    <!-- TONY'S STORY -->
+    <section class="section container">
+      <div class="split-layout">
+        <div class="reveal">
+          <img src="images/about-tony.jpg" alt="Tony Warden — Master Craftsman" class="rounded-image shadow" />
+        </div>
+        <div class="reveal about-text">
+          <div class="section-title left-align">
+            <h2>Master Craftsmanship Since 1976</h2>
+            <div class="underline"></div>
+          </div>
+          <p>
+            Tony Warden has spent over five decades turning broken, worn, and forgotten
+            things into objects of beauty and function. What began as a childhood
+            fascination with how things work — taken apart and reassembled with careful
+            hands — grew into a lifelong vocation.
+          </p>
+          <p>
+            In 1976, Tony formalized that passion into Warden's Workshop, a name that has
+            since become synonymous with quality and dependability throughout Essex County
+            and surrounding Ontario communities.
+          </p>
+          <p>
+            Whether he is bringing a century-old sewing machine back to life,
+            weatherproofing an RV for another season on the road, or transforming a dated
+            living space into something a homeowner can be proud of, Tony approaches every
+            project with the same discipline: obsessive care and surgical precision.
+          </p>
+          <p><strong>No shortcuts. No compromises. Just craftsmanship.</strong></p>
+          <a href="contact.html" class="btn btn-primary" style="margin-top: 25px">Get a Free Estimate</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="section bg-warm">
+      <div class="container">
+        <div class="section-title text-center reveal">
+          <h2>A Legacy Built Over Decades</h2>
+          <div class="underline"></div>
+        </div>
+
+        <div class="timeline reveal">
+
+          <div class="timeline-item">
+            <div class="timeline-year">1976</div>
+            <div class="timeline-body">
+              <h3>The Workshop Begins</h3>
+              <p>Tony establishes Warden's Workshop, taking on his first restoration projects in Essex, ON — primarily vintage mechanical repairs and furniture restoration.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">1980s</div>
+            <div class="timeline-body">
+              <h3>Expanding into Home Services</h3>
+              <p>Growing demand from satisfied customers leads Tony into interior and exterior painting, as well as light home renovation work throughout Essex County.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">1990s</div>
+            <div class="timeline-body">
+              <h3>RV Revitalization Specialty</h3>
+              <p>Tony develops a reputation for comprehensive RV restoration — structural repairs, interior remodeling, and weatherproofing — becoming a trusted name in the regional RV community.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">2000s</div>
+            <div class="timeline-body">
+              <h3>Technical Mastery Recognized</h3>
+              <p>Word spreads about Tony's ability to restore vintage sewing machines and antique mechanisms that others have given up on. Clients travel from across Ontario seeking his technical expertise.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">Today</div>
+            <div class="timeline-body">
+              <h3>50 Years Strong</h3>
+              <p>Warden's Workshop continues to serve Essex and surrounding communities with the same dedication that started it all — one project at a time, done right.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- VALUES -->
+    <section class="section container">
+      <div class="section-title text-center reveal">
+        <h2>What We Stand For</h2>
+        <div class="underline"></div>
+        <p class="subtitle">The principles that guide every project Tony takes on.</p>
+      </div>
+
+      <div class="values-grid">
+
+        <div class="value-card reveal">
+          <i class="fas fa-medal"></i>
+          <h3>Uncompromising Quality</h3>
+          <p>Every project is finished to the same standard — the one Tony would apply if the work were his own home, his own heirloom.</p>
+        </div>
+
+        <div class="value-card reveal">
+          <i class="fas fa-history"></i>
+          <h3>Respect for History</h3>
+          <p>We don't just repair things. We honor the story behind them — whether that's a machine built in 1920 or a family home built in 1960.</p>
+        </div>
+
+        <div class="value-card reveal">
+          <i class="fas fa-handshake"></i>
+          <h3>Honest Dealing</h3>
+          <p>Straightforward assessments, transparent pricing, and a commitment to only taking work we are certain we can deliver on.</p>
+        </div>
+
+        <div class="value-card reveal">
+          <i class="fas fa-tools"></i>
+          <h3>Hands-On Precision</h3>
+          <p>Tony is not a manager who delegates. He is the craftsman who shows up, rolls up his sleeves, and sees the job through personally.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section bg-dark text-white text-center">
+      <div class="container reveal">
+        <h2>Ready to Start a Project?</h2>
+        <p style="opacity: 0.8; margin: 20px 0 35px; font-size: 1.1rem;">Tell Tony what you need. Every project starts with a conversation.</p>
+        <a href="contact.html" class="btn btn-primary">Get a Free Estimate</a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container footer-content">
+        <div class="footer-info">
+          <img src="images/logo.png" alt="Warden's Workshop Logo" class="footer-logo" />
+          <p>© 2026 Warden's Workshop<br />509-22 Victor Street, Essex, ON</p>
+        </div>
+        <div class="footer-contact">
+          <h4>Contact Tony</h4>
+          <p><i class="fas fa-phone"></i><a href="tel:1-888-488-0864">1-888-488-0864</a></p>
+          <p><i class="fas fa-envelope"></i><a href="mailto:apwarden1@gmail.com">apwarden1@gmail.com</a></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

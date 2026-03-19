@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="//www.no-bs-yardwork.com/blog/main-sitemap.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc>https://www.no-bs-yardwork.com/blog/post-sitemap.xml</loc>
+		<lastmod>2025-09-24T20:34:38+00:00</lastmod>
+	</sitemap>
+	<sitemap>
+		<loc>https://www.no-bs-yardwork.com/blog/page-sitemap.xml</loc>
+		<lastmod>2025-10-16T14:22:48+00:00</lastmod>
+	</sitemap>
+</sitemapindex>

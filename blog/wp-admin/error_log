@@ -1,0 +1,1 @@
+[05-Mar-2026 04:45:40 UTC] WordPress database error Can't read dir of './so2wm0yi_wp_1oeau/' (errno: 24 "Too many open files") for query SHOW TABLES LIKE '9CiYGZsZ\\_users' made by display_setup_form

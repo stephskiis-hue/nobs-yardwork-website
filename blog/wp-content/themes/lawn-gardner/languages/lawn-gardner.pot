@@ -1,0 +1,1330 @@
+# Copyright (C) 2025 revolutionwp
+# This file is distributed under the GNU General Prefer License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Lawn Gardner 1.3.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/lawn-gardner\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-09-22T07:11:20+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: lawn-gardner\n"
+
+#. Theme Name of the theme
+#: style.css
+msgid "Lawn Gardner"
+msgstr ""
+
+#. Theme URI of the theme
+#: style.css
+msgid "https://www.revolutionwp.com/products/free-gardner-wordpress-theme"
+msgstr ""
+
+#. Description of the theme
+#: style.css
+msgid "The Lawn Gardner WordPress theme is a visually appealing and feature-rich template designed specifically for businesses and professionals in the landscaping, gardening, and outdoor services industry. This theme offers a seamless blend of functionality and aesthetics, allowing users to showcase their services, portfolio, and contact information in an engaging and user-friendly manner. Ideal for landscaping companies, gardening services, and outdoor design professionals, the Lawn Gardner WordPress theme is crafted to elevate your online presence and attract potential clients. Its comprehensive design supports various features such as garden design, lawn care, tree planting, hardscaping, and irrigation systems, making it perfect for highlighting your expertise in these areas.The theme’s modern and responsive design ensures that your website looks stunning on all devices, from desktops to mobile phones. It includes customizable sections for displaying service details, project galleries, client testimonials, and contact forms. With integrated SEO tools, the Lawn Gardner theme helps improve your search engine rankings, driving more traffic to your site. Additional features include appointment scheduling, service pricing tables, and blog integration for sharing gardening tips, landscaping ideas, and plant care advice. The theme supports high-resolution images and videos, enhancing the visual appeal and engaging your audience with vivid portrayals of your work.Whether you’re promoting seasonal garden services, landscape maintenance, or custom outdoor designs, the Lawn Gardner WordPress theme provides all the tools necessary to create a professional and captivating online presence. It's perfect for businesses offering lawn maintenance, garden irrigation, tree trimming, flower bed installation, landscape design, yard clean-ups, and other outdoor services."
+msgstr ""
+
+#. Author of the theme
+#: style.css
+msgid "revolutionwp"
+msgstr ""
+
+#. Author URI of the theme
+#: style.css
+msgid "https://www.revolutionwp.com/"
+msgstr ""
+
+#: 404.php:16
+msgid "Oops! That page can&rsquo;t be found."
+msgstr ""
+
+#: 404.php:19
+msgid "It looks like nothing was found at this location. Maybe try one of the links below or a search?"
+msgstr ""
+
+#. translators: 1: title.
+#: comments.php:25
+msgid "One thought on &ldquo;%1$s&rdquo;"
+msgstr ""
+
+#. translators: 1: comment count number, 2: title.
+#: comments.php:31
+msgctxt "comments title"
+msgid "%1$s thought on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:56
+msgid "Comments are closed."
+msgstr ""
+
+#: demo-import/importer.php:139
+msgid "Customizer"
+msgstr ""
+
+#: demo-import/importer.php:143
+msgid "Import Demo"
+msgstr ""
+
+#: demo-import/importer.php:149
+#: demo-import/lawn_gardner_config_file.php:32
+msgid "All Done"
+msgstr ""
+
+#: demo-import/importer.php:181
+msgid "Thank you for choosing this Lawn Gardner Theme. Using this quick setup wizard, you will be able to configure your new website and get it running in just a few minutes. Just follow these simple steps mentioned in the wizard and get started with your website."
+msgstr ""
+
+#: demo-import/importer.php:190
+msgid "This theme allows you to import demo content and add widgets. Install them using the button below. You can also update or deactivate them using the Customizer."
+msgstr ""
+
+#: demo-import/importer.php:203
+msgid "About Lawn Gardner"
+msgstr ""
+
+#: demo-import/importer.php:204
+#: demo-import/importer.php:205
+msgid "Customize Your Demo"
+msgstr ""
+
+#: demo-import/importer.php:206
+msgid "Visit Your Site"
+msgstr ""
+
+#: demo-import/importer.php:209
+msgid "Finish"
+msgstr ""
+
+#: demo-import/importer.php:228
+#: revolution/inc/breadcrumbs.php:314
+msgid "Home"
+msgstr ""
+
+#: demo-import/importer.php:238
+msgid "About"
+msgstr ""
+
+#: demo-import/importer.php:249
+msgid "Services"
+msgstr ""
+
+#: demo-import/importer.php:260
+msgid "Blog"
+msgstr ""
+
+#: demo-import/importer.php:271
+msgid "Contact Us"
+msgstr ""
+
+#: demo-import/importer.php:298
+msgid "Facebook"
+msgstr ""
+
+#: demo-import/importer.php:304
+msgid "Pinterest"
+msgstr ""
+
+#: demo-import/importer.php:310
+msgid "Twitter"
+msgstr ""
+
+#: demo-import/importer.php:316
+msgid "Youtube"
+msgstr ""
+
+#: demo-import/importer.php:322
+msgid "Instagram"
+msgstr ""
+
+#: demo-import/importer.php:521
+msgid "Welcome to Lawn Gardner"
+msgstr ""
+
+#: demo-import/importer.php:522
+msgid "The quick setup wizard will assist you in configuring your new website. This wizard will import the demo content."
+msgstr ""
+
+#: demo-import/importer.php:525
+msgid "Go Premium Now"
+msgstr ""
+
+#: demo-import/lawn_gardner_config_file.php:24
+msgid "Demo Importer"
+msgstr ""
+
+#: demo-import/lawn_gardner_config_file.php:26
+msgid "Click On The Image To Import Customizer Demo"
+msgstr ""
+
+#: demo-import/lawn_gardner_config_file.php:27
+msgid "Click On The Image To Import Gutenberg Block Demo"
+msgstr ""
+
+#: footer.php:54
+msgid "Search"
+msgstr ""
+
+#: footer.php:58
+msgid "Tags"
+msgstr ""
+
+#: footer.php:72
+msgid "No tags available. Add some tags to display here."
+msgstr ""
+
+#: footer.php:78
+msgid "Calendar"
+msgstr ""
+
+#: footer.php:106
+msgid "Gardner WordPress Theme By Revolution WP "
+msgstr ""
+
+#: functions.php:25
+msgid "Primary"
+msgstr ""
+
+#: functions.php:26
+msgid "Social Menu"
+msgstr ""
+
+#: functions.php:96
+msgid "Sidebar"
+msgstr ""
+
+#: functions.php:98
+#: functions.php:110
+#: functions.php:122
+#: functions.php:134
+msgid "Add widgets here."
+msgstr ""
+
+#: functions.php:108
+msgid "Footer 1"
+msgstr ""
+
+#: functions.php:120
+msgid "Footer 2"
+msgstr ""
+
+#: functions.php:132
+msgid "Footer 3"
+msgstr ""
+
+#: functions.php:224
+msgid "Related Post"
+msgstr ""
+
+#: functions.php:332
+msgid "Dismiss"
+msgstr ""
+
+#. translators: %s!: Theme Name.
+#: functions.php:343
+msgid "Welcome to the free theme: %s!"
+msgstr ""
+
+#: functions.php:347
+msgid "Get started by exploring the features of your new theme. Customize your design, add your content, and create a site that fits your vision."
+msgstr ""
+
+#: functions.php:352
+msgid "Theme Screenshot"
+msgstr ""
+
+#: functions.php:356
+msgid "Quick Start: Import Demo"
+msgstr ""
+
+#: functions.php:357
+msgid "Use the Demo Importer to quickly set up your site with a pre-made layout. Get a complete site in minutes."
+msgstr ""
+
+#: functions.php:358
+msgid "Go to Demo Importer"
+msgstr ""
+
+#: functions.php:362
+msgid "Customize Your Theme"
+msgstr ""
+
+#: functions.php:363
+msgid "Want to make it truly yours? Explore the Getting Started Guide to personalize your site to suit your needs."
+msgstr ""
+
+#: functions.php:364
+msgid "View Getting Started Guide"
+msgstr ""
+
+#: functions.php:453
+msgid "https://wordpress.org/support/theme/lawn-gardner/"
+msgstr ""
+
+#: functions.php:454
+msgid "https://www.revolutionwp.com/pages/community/"
+msgstr ""
+
+#: functions.php:455
+#: functions.php:457
+msgid "https://www.revolutionwp.com/products/lawn-care-wordpress-theme"
+msgstr ""
+
+#: functions.php:456
+msgid "https://wordpress.org/support/theme/lawn-gardner/reviews/#new-post"
+msgstr ""
+
+#: functions.php:458
+msgid "https://demo.revolutionwp.com/lawn-care-pro/"
+msgstr ""
+
+#: functions.php:459
+msgid "https://demo.revolutionwp.com/wpdocs/lawn-gardner-free/"
+msgstr ""
+
+#. translators: 1: Theme Name.
+#: getstarted/lawn_gardner_about_page.php:47
+#: getstarted/lawn_gardner_about_page.php:48
+msgid "About %1$s"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:57
+msgid "Getting Started"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:58
+msgid "Free VS Pro"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:59
+msgid "Changelog"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:60
+msgid "Support"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:61
+msgid "Rate & Review"
+msgstr ""
+
+#. translators: 1: Theme Name.
+#: getstarted/lawn_gardner_about_page.php:72
+msgid "Welcome to %1$s - Version %2$s"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:79
+#: getstarted/lawn_gardner_about_page.php:401
+msgid "Buy Pro Theme"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:80
+msgid "Preview Pro Version"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:172
+msgid "Theme screenshot"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:179
+#: getstarted/lawn_gardner_about_page.php:226
+msgid "One Click Demo Import"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:180
+msgid "Easily set up your website with our One Click Demo Import feature. This functionality allows you to replicate our demo site with just a single click, ensuring you have a fully functional layout to start from. Whether you’re a beginner or an experienced developer, this tool simplifies the setup process, saving you time and effort."
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:181
+msgid "Click Here For Demo Import"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:185
+msgid "Documentation"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:186
+msgid "Need more details? Check our comprehensive documentation for step-by-step guidance on using the Lawn Gardner Theme."
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:187
+msgid "Go to Free Docs"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:191
+msgid "Preview Pro Theme"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:192
+msgid "Discover the full potential of our Pro Theme! Click the Live Demo button to experience premium features and beautiful designs."
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:193
+msgid "Live Demo"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:197
+msgid "Buy Lawn Gardner Pro"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:198
+msgid "Unlock unlimited features and enhancements by purchasing the Pro version of Lawn Gardner Theme."
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:199
+msgid "Buy Pro Version @$39"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:203
+msgid "Get the Bundle"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:204
+msgid "The WordPress Theme Bundle is a comprehensive collection of 50+ premium themes, offering everything you need to create stunning, professional websites with ease."
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:205
+msgid "Get Bundle"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:218
+msgid "Features"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:219
+msgid "Free theme"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:220
+msgid "Pro Theme"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:230
+msgid "After the activation of Lawn Gardner theme, all settings will be imported and Data Import."
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:242
+msgid "Responsive Design"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:252
+msgid "Site Logo upload"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:262
+msgid "Footer Copyright text"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:266
+msgid "Remove the copyright text from the Footer."
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:278
+msgid "Global Color"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:288
+msgid "Regular Bug Fixes"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:298
+msgid "Theme Sections"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:301
+msgid "2 Sections"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:302
+msgid "15+ Sections"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:308
+msgid "Custom colors"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:312
+msgid "Choose a color for links, buttons, icons and so on."
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:324
+msgid "Google fonts"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:328
+msgid "You can choose and use over 600 different fonts, for the logo, the menu and the titles."
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:340
+msgid "Enhanced Plugin Integration"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:350
+msgid "Fully SEO Optimized"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:360
+msgid "Premium Support"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:370
+msgid "Extensive Customization"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:380
+msgid "Custom Post Types"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:390
+msgid "High-Level Compatibility with Modern Browsers"
+msgstr ""
+
+#: getstarted/lawn_gardner_about_page.php:399
+msgid "Try Out Our Premium Version"
+msgstr ""
+
+#: getstarted/lawn_gardner_changelog.php:29
+msgid "No changelog available."
+msgstr ""
+
+#: header.php:22
+msgid "Skip to content"
+msgstr ""
+
+#: header.php:50
+msgid "Address:"
+msgstr ""
+
+#: header.php:53
+msgid "Email:"
+msgstr ""
+
+#: page.php:40
+#: page.php:121
+#: sidebar.php:20
+msgid "Search Anything"
+msgstr ""
+
+#: page.php:44
+#: page.php:125
+#: sidebar.php:24
+msgid "Latest Posts"
+msgstr ""
+
+#: page.php:55
+#: page.php:136
+#: sidebar.php:35
+msgid "Latest Comments"
+msgstr ""
+
+#: page.php:69
+#: page.php:150
+#: sidebar.php:49
+msgid "Explore Categories"
+msgstr ""
+
+#: page.php:80
+#: page.php:161
+#: sidebar.php:60
+msgid "Blog Archives"
+msgstr ""
+
+#: page.php:91
+#: page.php:172
+#: sidebar.php:72
+msgid "Explore Our Pages"
+msgstr ""
+
+#: page.php:102
+#: page.php:183
+#: sidebar.php:83
+msgid "Calender"
+msgstr ""
+
+#. Template Name of the theme
+msgid "Home Page"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:312
+msgid "Browse:"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:313
+msgctxt "breadcrumbs aria label"
+msgid "Breadcrumbs"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:315
+msgid "404 Not Found"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:316
+msgid "Archives"
+msgstr ""
+
+#. Translators: %s is the search query.
+#: revolution/inc/breadcrumbs.php:318
+msgid "Search results for: %s"
+msgstr ""
+
+#. Translators: %s is the page number.
+#: revolution/inc/breadcrumbs.php:320
+msgid "Page %s"
+msgstr ""
+
+#. Translators: %s is the page number.
+#: revolution/inc/breadcrumbs.php:322
+msgid "Comment Page %s"
+msgstr ""
+
+#. Translators: Minute archive title. %s is the minute time format.
+#: revolution/inc/breadcrumbs.php:324
+msgid "Minute %s"
+msgstr ""
+
+#. Translators: Weekly archive title. %s is the week date format.
+#: revolution/inc/breadcrumbs.php:326
+msgid "Week %s"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:786
+msgctxt "minute and hour archives time format"
+msgid "g:i a"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:803
+msgctxt "minute archives time format"
+msgid "i"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:820
+msgctxt "hour archives time format"
+msgid "g a"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:836
+#: revolution/inc/breadcrumbs.php:865
+#: revolution/inc/breadcrumbs.php:892
+#: revolution/inc/breadcrumbs.php:919
+#: revolution/inc/breadcrumbs.php:1259
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:837
+#: revolution/inc/breadcrumbs.php:893
+#: revolution/inc/breadcrumbs.php:1263
+msgctxt "monthly archives date format"
+msgid "F"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:838
+#: revolution/inc/breadcrumbs.php:1267
+msgctxt "daily archives date format"
+msgid "j"
+msgstr ""
+
+#: revolution/inc/breadcrumbs.php:866
+msgctxt "weekly archives date format"
+msgid "W"
+msgstr ""
+
+#: revolution/inc/customizer.php:39
+msgid "Lawn Gardner Theme Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:59
+msgid "Enable Title"
+msgstr ""
+
+#: revolution/inc/customizer.php:60
+msgid "Enable or Disable Title from the site"
+msgstr ""
+
+#: revolution/inc/customizer.php:79
+msgid "Enable Tagline"
+msgstr ""
+
+#: revolution/inc/customizer.php:80
+msgid "Enable or Disable Tagline from the site"
+msgstr ""
+
+#: revolution/inc/customizer.php:99
+msgid "Logo Width in PX"
+msgstr ""
+
+#: revolution/inc/customizer.php:116
+msgid "WooCommerce Custom Settings"
+msgstr ""
+
+#: revolution/inc/customizer.php:133
+msgid "Product Per Single Row"
+msgstr ""
+
+#: revolution/inc/customizer.php:157
+msgid "Product Per One Page"
+msgstr ""
+
+#: revolution/inc/customizer.php:182
+msgid "Enable Related Product"
+msgstr ""
+
+#: revolution/inc/customizer.php:183
+msgid "Checked to show Related Product"
+msgstr ""
+
+#: revolution/inc/customizer.php:202
+msgid "Related Product Count"
+msgstr ""
+
+#: revolution/inc/customizer.php:226
+msgid "Related Product Per Row"
+msgstr ""
+
+#: revolution/inc/customizer.php:244
+msgid "Archive Product Layout"
+msgstr ""
+
+#: revolution/inc/customizer.php:247
+#: revolution/inc/customizer.php:263
+#: revolution/inc/customizer.php:368
+#: revolution/inc/customizer.php:384
+#: revolution/inc/customizer.php:400
+msgid "Sidebar On Right"
+msgstr ""
+
+#: revolution/inc/customizer.php:248
+#: revolution/inc/customizer.php:264
+#: revolution/inc/customizer.php:369
+#: revolution/inc/customizer.php:385
+#: revolution/inc/customizer.php:401
+msgid "Sidebar On Left"
+msgstr ""
+
+#: revolution/inc/customizer.php:249
+#: revolution/inc/customizer.php:265
+#: revolution/inc/customizer.php:370
+#: revolution/inc/customizer.php:386
+#: revolution/inc/customizer.php:402
+msgid "Full Width Layout"
+msgstr ""
+
+#: revolution/inc/customizer.php:260
+msgid "Single Product Layout"
+msgstr ""
+
+#: revolution/inc/customizer.php:276
+msgid "Woocommerce Product Sale Positions"
+msgstr ""
+
+#: revolution/inc/customizer.php:280
+#: revolution/inc/customizer.php:505
+#: revolution/inc/customizer.php:1644
+msgid "Right"
+msgstr ""
+
+#: revolution/inc/customizer.php:281
+#: revolution/inc/customizer.php:503
+#: revolution/inc/customizer.php:1645
+msgid "Left"
+msgstr ""
+
+#: revolution/inc/customizer.php:282
+#: revolution/inc/customizer.php:504
+#: revolution/inc/customizer.php:1646
+msgid "Center"
+msgstr ""
+
+#: revolution/inc/customizer.php:291
+msgid "Additional Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:309
+msgid "Enable Sticky Header"
+msgstr ""
+
+#: revolution/inc/customizer.php:310
+msgid "Checked to enable sticky header"
+msgstr ""
+
+#: revolution/inc/customizer.php:330
+msgid "Enable Preloader"
+msgstr ""
+
+#: revolution/inc/customizer.php:331
+msgid "Checked to show preloader"
+msgstr ""
+
+#: revolution/inc/customizer.php:351
+msgid "Enable Breadcrumbs"
+msgstr ""
+
+#: revolution/inc/customizer.php:352
+msgid "Checked to show Breadcrumbs"
+msgstr ""
+
+#: revolution/inc/customizer.php:365
+msgid "Posts Layout"
+msgstr ""
+
+#: revolution/inc/customizer.php:381
+msgid "Single Post Layout"
+msgstr ""
+
+#: revolution/inc/customizer.php:397
+msgid "Single Page Layout"
+msgstr ""
+
+#: revolution/inc/customizer.php:411
+msgid "Blog Page Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:422
+msgid "Enable Blog Post Title"
+msgstr ""
+
+#: revolution/inc/customizer.php:423
+msgid "Checked To Show Blog Post Title"
+msgstr ""
+
+#: revolution/inc/customizer.php:435
+msgid "Enable Blog Post Meta"
+msgstr ""
+
+#: revolution/inc/customizer.php:436
+msgid "Checked To Show Blog Post Meta Feilds"
+msgstr ""
+
+#: revolution/inc/customizer.php:448
+msgid "Enable Blog Post Tags"
+msgstr ""
+
+#: revolution/inc/customizer.php:449
+msgid "Checked To Show Blog Post Tags"
+msgstr ""
+
+#: revolution/inc/customizer.php:461
+msgid "Enable Blog Post Image"
+msgstr ""
+
+#: revolution/inc/customizer.php:462
+msgid "Checked To Show Blog Post Image"
+msgstr ""
+
+#: revolution/inc/customizer.php:474
+msgid "Enable Blog Post Content"
+msgstr ""
+
+#: revolution/inc/customizer.php:475
+msgid "Checked To Show Blog Post Content"
+msgstr ""
+
+#: revolution/inc/customizer.php:487
+msgid "Enable Blog Post Read More Button"
+msgstr ""
+
+#: revolution/inc/customizer.php:488
+msgid "Checked To Show Blog Post Read More Button"
+msgstr ""
+
+#: revolution/inc/customizer.php:500
+msgid "Blog Post Content Layout"
+msgstr ""
+
+#: revolution/inc/customizer.php:523
+msgid "Excerpt Limit"
+msgstr ""
+
+#: revolution/inc/customizer.php:548
+#: revolution/inc/customizer.php:901
+msgid "Edit Button Text "
+msgstr ""
+
+#: revolution/inc/customizer.php:559
+msgid "Single Post Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:570
+msgid "Enable Single Post Title"
+msgstr ""
+
+#: revolution/inc/customizer.php:571
+msgid "Checked To Show Single Blog Post Title"
+msgstr ""
+
+#: revolution/inc/customizer.php:583
+msgid "Enable Single Post Meta"
+msgstr ""
+
+#: revolution/inc/customizer.php:584
+msgid "Checked To Show Single Blog Post Meta Feilds"
+msgstr ""
+
+#: revolution/inc/customizer.php:596
+msgid "Enable Single Post Tags"
+msgstr ""
+
+#: revolution/inc/customizer.php:597
+msgid "Checked To Show Single Blog Post Tags"
+msgstr ""
+
+#: revolution/inc/customizer.php:609
+msgid "Enable Single Post Image"
+msgstr ""
+
+#: revolution/inc/customizer.php:610
+msgid "Checked To Show Single Post Image"
+msgstr ""
+
+#: revolution/inc/customizer.php:622
+msgid "Enable Single Post Content"
+msgstr ""
+
+#: revolution/inc/customizer.php:623
+msgid "Checked To Show Single Blog Post Content"
+msgstr ""
+
+#: revolution/inc/customizer.php:642
+msgid "Enable Related Post"
+msgstr ""
+
+#: revolution/inc/customizer.php:643
+msgid "Checked to show Related Post"
+msgstr ""
+
+#: revolution/inc/customizer.php:663
+msgid "Edit Related Post Text "
+msgstr ""
+
+#: revolution/inc/customizer.php:683
+msgid "Related Post Count"
+msgstr ""
+
+#: revolution/inc/customizer.php:703
+msgid "Global Color Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:719
+msgid "Primary Color"
+msgstr ""
+
+#: revolution/inc/customizer.php:737
+msgid "Secondary Color"
+msgstr ""
+
+#: revolution/inc/customizer.php:746
+msgid "Typography Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:756
+msgid "Global Font Family"
+msgstr ""
+
+#: revolution/inc/customizer.php:760
+msgid "Default (Theme Font)"
+msgstr ""
+
+#: revolution/inc/customizer.php:777
+msgid "Top Header Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:795
+msgid "Enable Top Header"
+msgstr ""
+
+#: revolution/inc/customizer.php:796
+msgid "Checked to show the top header section."
+msgstr ""
+
+#: revolution/inc/customizer.php:816
+msgid "Edit Location"
+msgstr ""
+
+#: revolution/inc/customizer.php:828
+msgid "Address Icon"
+msgstr ""
+
+#: revolution/inc/customizer.php:848
+msgid "Edit Email Address"
+msgstr ""
+
+#: revolution/inc/customizer.php:860
+msgid "Email Icon"
+msgstr ""
+
+#: revolution/inc/customizer.php:880
+msgid "Enable Top Social Menu"
+msgstr ""
+
+#: revolution/inc/customizer.php:881
+msgid "Checked to show the top social menu. Go to Dashboard >> Appearance >> Menus >> Create New Menu >> Add Custom Link >> Add Social Menu >> Checked Social Menu >> Save Menu."
+msgstr ""
+
+#: revolution/inc/customizer.php:902
+msgid "Edit the header button text."
+msgstr ""
+
+#: revolution/inc/customizer.php:922
+msgid "Edit Button URL "
+msgstr ""
+
+#: revolution/inc/customizer.php:923
+msgid "Edit the header button url."
+msgstr ""
+
+#: revolution/inc/customizer.php:943
+msgid "Edit Phone Text"
+msgstr ""
+
+#: revolution/inc/customizer.php:963
+msgid "Edit Phone Number"
+msgstr ""
+
+#: revolution/inc/customizer.php:975
+msgid "Phone Icon"
+msgstr ""
+
+#: revolution/inc/customizer.php:994
+msgid "Enable Disable Search"
+msgstr ""
+
+#: revolution/inc/customizer.php:995
+msgid "Enable or Disable header Search"
+msgstr ""
+
+#: revolution/inc/customizer.php:1009
+msgid "Main Slider Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:1027
+msgid "Enable Main Slider"
+msgstr ""
+
+#: revolution/inc/customizer.php:1028
+msgid "Checked to show the main slider"
+msgstr ""
+
+#: revolution/inc/customizer.php:1046
+msgid "Number of slide to show"
+msgstr ""
+
+#: revolution/inc/customizer.php:1075
+msgid "Edit Slider Image "
+msgstr ""
+
+#: revolution/inc/customizer.php:1076
+msgid "Edit the slider image."
+msgstr ""
+
+#: revolution/inc/customizer.php:1096
+msgid "Edit Heading Text "
+msgstr ""
+
+#: revolution/inc/customizer.php:1097
+msgid "Edit the slider heading text."
+msgstr ""
+
+#: revolution/inc/customizer.php:1117
+msgid "Edit Content Text "
+msgstr ""
+
+#: revolution/inc/customizer.php:1118
+msgid "Edit the slider content text."
+msgstr ""
+
+#: revolution/inc/customizer.php:1138
+msgid "Edit Button #1 Text "
+msgstr ""
+
+#: revolution/inc/customizer.php:1139
+msgid "Edit the slider button text."
+msgstr ""
+
+#: revolution/inc/customizer.php:1159
+msgid "Edit Button #1 URL "
+msgstr ""
+
+#: revolution/inc/customizer.php:1160
+msgid "Edit the slider button url."
+msgstr ""
+
+#: revolution/inc/customizer.php:1175
+msgid "Project Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:1193
+msgid "Enable Project Section"
+msgstr ""
+
+#: revolution/inc/customizer.php:1194
+msgid "Checked to show the project"
+msgstr ""
+
+#: revolution/inc/customizer.php:1214
+msgid "Edit Main Heading "
+msgstr ""
+
+#: revolution/inc/customizer.php:1215
+msgid "Edit the main section title."
+msgstr ""
+
+#: revolution/inc/customizer.php:1235
+msgid "Edit Tab1 Text"
+msgstr ""
+
+#: revolution/inc/customizer.php:1258
+#: revolution/inc/customizer.php:1366
+#: revolution/inc/customizer.php:1474
+msgid "Edit Project Image "
+msgstr ""
+
+#: revolution/inc/customizer.php:1259
+#: revolution/inc/customizer.php:1367
+#: revolution/inc/customizer.php:1475
+msgid "Edit the project image."
+msgstr ""
+
+#: revolution/inc/customizer.php:1279
+#: revolution/inc/customizer.php:1387
+#: revolution/inc/customizer.php:1495
+msgid "Edit Project Title "
+msgstr ""
+
+#: revolution/inc/customizer.php:1280
+#: revolution/inc/customizer.php:1388
+#: revolution/inc/customizer.php:1496
+msgid "Edit the project name."
+msgstr ""
+
+#: revolution/inc/customizer.php:1300
+#: revolution/inc/customizer.php:1408
+msgid "Edit Project Text "
+msgstr ""
+
+#: revolution/inc/customizer.php:1301
+msgid "Edit the project text."
+msgstr ""
+
+#: revolution/inc/customizer.php:1321
+#: revolution/inc/customizer.php:1429
+#: revolution/inc/customizer.php:1516
+#: revolution/inc/customizer.php:1537
+msgid "Edit Project Content "
+msgstr ""
+
+#: revolution/inc/customizer.php:1322
+#: revolution/inc/customizer.php:1430
+#: revolution/inc/customizer.php:1538
+msgid "Edit the project content."
+msgstr ""
+
+#: revolution/inc/customizer.php:1343
+msgid "Edit Tab2 Text"
+msgstr ""
+
+#: revolution/inc/customizer.php:1409
+#: revolution/inc/customizer.php:1517
+msgid "Edit the project Text."
+msgstr ""
+
+#: revolution/inc/customizer.php:1451
+msgid "Edit Tab3 Text"
+msgstr ""
+
+#: revolution/inc/customizer.php:1553
+msgid "Footer Options"
+msgstr ""
+
+#: revolution/inc/customizer.php:1570
+msgid "Enable Footer"
+msgstr ""
+
+#: revolution/inc/customizer.php:1571
+msgid "Checked to show Footer"
+msgstr ""
+
+#: revolution/inc/customizer.php:1585
+msgid "Footer Background Image"
+msgstr ""
+
+#: revolution/inc/customizer.php:1605
+msgid "Enable Footer Social Menu"
+msgstr ""
+
+#: revolution/inc/customizer.php:1606
+msgid "Checked to show the footer social menu. Go to Dashboard >> Appearance >> Menus >> Create New Menu >> Add Custom Link >> Add Social Menu >> Checked Social Menu >> Save Menu."
+msgstr ""
+
+#: revolution/inc/customizer.php:1626
+msgid "Enable Go To Top"
+msgstr ""
+
+#: revolution/inc/customizer.php:1627
+msgid "Checked to enable Go To Top option."
+msgstr ""
+
+#: revolution/inc/customizer.php:1642
+msgid "Go To Top Positions"
+msgstr ""
+
+#: revolution/inc/customizer.php:1664
+msgid "Edit Copyright Text"
+msgstr ""
+
+#: revolution/inc/customizer.php:1665
+msgid "Edit the Footer Copyright Section."
+msgstr ""
+
+#: revolution/inc/customizer.php:1773
+msgid "Lawn Gardner Pro"
+msgstr ""
+
+#: revolution/inc/customizer.php:1774
+msgid "Buy Pro"
+msgstr ""
+
+#: revolution/inc/customizer.php:1781
+msgid "Lite Documentation"
+msgstr ""
+
+#: revolution/inc/customizer.php:1782
+msgid "Instruction"
+msgstr ""
+
+#: revolution/inc/customizer.php:1788
+msgid "Pro Theme Demo"
+msgstr ""
+
+#: revolution/inc/customizer.php:1789
+msgid "Live Preview"
+msgstr ""
+
+#: revolution/inc/fontawesome-change.php:24
+msgctxt "placeholder"
+msgid "Search Icon"
+msgstr ""
+
+#. translators: %s: post date.
+#: revolution/inc/template-tags.php:26
+msgid "<strong>Posted on:</strong> %s"
+msgstr ""
+
+#. translators: %s: post author.
+#: revolution/inc/template-tags.php:38
+msgctxt "post author"
+msgid "- %s"
+msgstr ""
+
+#. translators: used between list items, there is a space after the comma
+#: revolution/inc/template-tags.php:52
+msgid ", "
+msgstr ""
+
+#. translators: 1: list of categories.
+#: revolution/inc/template-tags.php:55
+msgid "Posted in %1$s"
+msgstr ""
+
+#. translators: used between list items, there is a space after the comma
+#: revolution/inc/template-tags.php:59
+msgctxt "list item separator"
+msgid ", "
+msgstr ""
+
+#. translators: 1: list of tags.
+#: revolution/inc/template-tags.php:62
+msgid "Tagged %1$s"
+msgstr ""
+
+#. translators: %s: post title
+#: revolution/inc/template-tags.php:72
+msgid "Leave a Comment<span class=\"screen-reader-text\"> on %s</span>"
+msgstr ""
+
+#. translators: %s: Name of current post. Only visible to screen readers
+#: revolution/inc/template-tags.php:89
+#: revolution/template-parts/content-page.php:38
+msgid "Edit <span class=\"screen-reader-text\">%s</span>"
+msgstr ""
+
+#: revolution/template-parts/content-audio.php:103
+#: revolution/template-parts/content-audio.php:115
+#: revolution/template-parts/content-gallery.php:87
+#: revolution/template-parts/content-gallery.php:99
+#: revolution/template-parts/content-image.php:108
+#: revolution/template-parts/content-image.php:120
+#: revolution/template-parts/content-search.php:74
+#: revolution/template-parts/content-search.php:86
+#: revolution/template-parts/content-video.php:104
+#: revolution/template-parts/content-video.php:116
+#: revolution/template-parts/content.php:74
+#: revolution/template-parts/content.php:86
+msgid "Post Tags: "
+msgstr ""
+
+#: revolution/template-parts/content-audio.php:177
+#: revolution/template-parts/content-audio.php:180
+#: revolution/template-parts/content-gallery.php:161
+#: revolution/template-parts/content-gallery.php:164
+#: revolution/template-parts/content-image.php:148
+#: revolution/template-parts/content-image.php:151
+#: revolution/template-parts/content-search.php:148
+#: revolution/template-parts/content-search.php:151
+#: revolution/template-parts/content-video.php:178
+#: revolution/template-parts/content-video.php:181
+#: revolution/template-parts/content.php:148
+#: revolution/template-parts/content.php:151
+msgid "Continue Reading...."
+msgstr ""
+
+#: revolution/template-parts/content-audio.php:189
+#: revolution/template-parts/content-gallery.php:173
+#: revolution/template-parts/content-image.php:160
+#: revolution/template-parts/content-page.php:24
+#: revolution/template-parts/content-search.php:160
+#: revolution/template-parts/content-video.php:190
+#: revolution/template-parts/content.php:160
+msgid "Pages:"
+msgstr ""
+
+#: revolution/template-parts/content-none.php:13
+msgid "Nothing Found"
+msgstr ""
+
+#. translators: 1: link to WP admin new post page.
+#: revolution/template-parts/content-none.php:23
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: revolution/template-parts/content-none.php:36
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr ""
+
+#: revolution/template-parts/content-none.php:43
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr ""
+
+#. translators: %s: search query.
+#: search.php:26
+#: search.php:63
+#: search.php:98
+msgid "Search Results for: %s"
+msgstr ""
+
+#: single.php:28
+#: single.php:66
+#: single.php:99
+msgid "Previous:"
+msgstr ""
+
+#: single.php:29
+#: single.php:67
+#: single.php:100
+msgid "Next:"
+msgstr ""

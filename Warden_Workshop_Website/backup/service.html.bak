@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our Services &amp; Pricing | Warden's Workshop</title>
+    <meta name="description" content="Explore Warden's Workshop services: painting &amp; exterior, home renovation, RV revitalization, and vintage technical restoration. Serving Essex, ON since 1976." />
+    <meta name="keywords" content="painting services Essex, home renovation Ontario, RV revitalization, sewing machine repair, service pricing, Warden's Workshop" />
+    <link rel="canonical" href="https://wardensworkshop.ca/service.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Our Services &amp; Pricing | Warden's Workshop" />
+    <meta property="og:description" content="Four specialized service areas: painting, renovation, RV revitalization, and technical restoration. Professional pricing in Essex, ON." />
+    <meta property="og:image" content="https://wardensworkshop.ca/images/gallery-2.jpg" />
+    <meta property="og:url" content="https://wardensworkshop.ca/service.html" />
+    <meta property="og:site_name" content="Warden's Workshop" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Our Services &amp; Pricing | Warden's Workshop" />
+    <meta name="twitter:description" content="Four specialized service areas: painting, renovation, RV revitalization, and technical restoration. Professional pricing in Essex, ON." />
+    <meta name="twitter:image" content="https://wardensworkshop.ca/images/gallery-2.jpg" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Warden's Workshop Services",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "Service",
+            "name": "Painting & Exterior",
+            "description": "Interior and exterior painting, deck building and staining, fence installation, and power washing services.",
+            "provider": { "@type": "LocalBusiness", "name": "Warden's Workshop" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "Service",
+            "name": "Home Renovation",
+            "description": "Drywall repair and installation, kitchen and bathroom updates, flooring installation, and custom trim and carpentry.",
+            "provider": { "@type": "LocalBusiness", "name": "Warden's Workshop" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "Service",
+            "name": "RV Revitalization",
+            "description": "Interior remodeling, leak repair and weatherproofing, system maintenance checks, and transportation services.",
+            "provider": { "@type": "LocalBusiness", "name": "Warden's Workshop" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "item": {
+            "@type": "Service",
+            "name": "Technical Services",
+            "description": "Vintage sewing machine restoration, modern machine tuning, flat-pack furniture assembly, and antique structural repair.",
+            "provider": { "@type": "LocalBusiness", "name": "Warden's Workshop" }
+          }
+        }
+      ]
+    }
+    </script>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <ul class="nav-links nav-left">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+
+        <a href="index.html" class="nav-logo-link">
+          <img src="images/logo.png" alt="Warden's Workshop Logo" class="nav-logo" />
+        </a>
+
+        <div class="mobile-drawer">
+          <ul class="nav-links nav-left">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+          <ul class="nav-links nav-right">
+            <li><a href="service.html" class="active">Services</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li class="has-dropdown">
+              <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                Pricing <i class="fas fa-chevron-down dropdown-chevron"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="service.html#painting">Painting &amp; Exterior</a></li>
+                <li><a href="service.html#renovation">Home Renovation</a></li>
+                <li><a href="service.html#rv">RV Revitalization</a></li>
+                <li><a href="service.html#technical">Technical Services</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <ul class="nav-links nav-right">
+          <li><a href="service.html" class="active">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="has-dropdown">
+            <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              Pricing <i class="fas fa-chevron-down dropdown-chevron"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="service.html#painting">Painting &amp; Exterior</a></li>
+              <li><a href="service.html#renovation">Home Renovation</a></li>
+              <li><a href="service.html#rv">RV Revitalization</a></li>
+              <li><a href="service.html#technical">Technical Services</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <header class="page-header">
+      <div class="container text-center reveal">
+        <h1>Professional Services</h1>
+        <p>Master-level execution across all disciplines.</p>
+      </div>
+    </header>
+
+    <section class="section container">
+      <div class="pricing-note reveal">
+        <i class="fas fa-info-circle"></i>
+        <p>
+          <em>Servicing Prices updated as of January 2026. Contact us for custom quotes on unique projects.</em>
+        </p>
+      </div>
+
+      <div class="service-grid">
+        <div class="service-card reveal" id="painting">
+          <img src="images/gallery-2.jpg" alt="Painting Services" />
+          <div class="service-content">
+            <h3>Painting &amp; Exterior</h3>
+            <ul class="check-list">
+              <li><i class="fas fa-check"></i> Interior &amp; Exterior Painting</li>
+              <li><i class="fas fa-check"></i> Deck building &amp; staining</li>
+              <li><i class="fas fa-check"></i> Fence installation</li>
+              <li><i class="fas fa-check"></i> Power Washing Services</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="service-card reveal" id="renovation">
+          <img src="images/renovation.jpg" alt="Renovation Services" />
+          <div class="service-content">
+            <h3>Home Renovation</h3>
+            <ul class="check-list">
+              <li><i class="fas fa-check"></i> Drywall repair &amp; install</li>
+              <li><i class="fas fa-check"></i> Kitchen &amp; bathroom touches</li>
+              <li><i class="fas fa-check"></i> Flooring installation</li>
+              <li><i class="fas fa-check"></i> Custom trim &amp; carpentry</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="service-card reveal" id="rv">
+          <img src="images/gallery-4.jpg" alt="RV Services" />
+          <div class="service-content">
+            <h3>RV Revitalization</h3>
+            <ul class="check-list">
+              <li><i class="fas fa-check"></i> Interior remodeling</li>
+              <li><i class="fas fa-check"></i> Leak repair &amp; weatherproofing</li>
+              <li><i class="fas fa-check"></i> System maintenance checks</li>
+              <li><i class="fas fa-check"></i> Transportation Services</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="service-card reveal" id="technical">
+          <img src="images/gallery-3.jpg" alt="Sewing Machine Services" />
+          <div class="service-content">
+            <h3>Technical Services</h3>
+            <ul class="check-list">
+              <li><i class="fas fa-check"></i> Vintage Sewing Restoration</li>
+              <li><i class="fas fa-check"></i> Modern Machine Tuning</li>
+              <li><i class="fas fa-check"></i> Flat-pack Furniture Assembly</li>
+              <li><i class="fas fa-check"></i> Antique structural repair</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center reveal" style="margin-top: 60px">
+        <a href="contact.html" class="btn btn-primary">Request an Estimate</a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container footer-content">
+        <div class="footer-info">
+          <img src="images/logo.png" alt="Warden's Workshop Logo" class="footer-logo" />
+          <p>© 2026 Warden's Workshop<br />509-22 Victor Street, Essex, ON</p>
+        </div>
+        <div class="footer-contact">
+          <h4>Contact Tony</h4>
+          <p><i class="fas fa-phone"></i><a href="tel:1-888-488-0864">1-888-488-0864</a></p>
+          <p><i class="fas fa-envelope"></i><a href="mailto:apwarden1@gmail.com">apwarden1@gmail.com</a></p>
+        </div>
+      </div>
+    </footer>
+    <script src="js/script.js"></script>
+  </body>
+</html>

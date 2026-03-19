@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wardensworkshop.ca/sitemap.xml
+
+Disallow: /process.php
+Disallow: /thank-you.html

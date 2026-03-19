@@ -1,0 +1,6 @@
+[04-Feb-2026 03:27:12 UTC] PHP Parse error:  syntax error, unexpected '?', expecting variable (T_VARIABLE) in /home/so2wm0yi/public_html/blog/wp-includes/compat-utf8.php on line 47
+[10-Feb-2026 15:07:45 UTC] Cron reschedule event error for hook: optml_pull_image_data, Error code: could_not_set, Error message: The cron event list could not be saved., Data: {"schedule":"hourly","args":[],"interval":3600}
+[10-Feb-2026 15:07:45 UTC] Cron unschedule event error for hook: optml_pull_image_data, Error code: could_not_set, Error message: The cron event list could not be saved., Data: {"schedule":"hourly","args":[],"interval":3600}
+[10-Mar-2026 05:18:39 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/so2wm0yi/public_html/blog/wp-content/themes/lawn-gardner/404.php on line 7
+[10-Mar-2026 05:19:25 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/so2wm0yi/public_html/blog/wp-content/themes/lawn-gardner/404.php on line 7
+[10-Mar-2026 05:19:30 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/so2wm0yi/public_html/blog/wp-content/themes/lawn-gardner/404.php on line 7

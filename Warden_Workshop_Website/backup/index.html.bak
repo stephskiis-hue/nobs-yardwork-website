@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Warden's Workshop | Master Craftsmanship Since 1976</title>
+    <meta name="description" content="Warden's Workshop in Essex, ON offers 50 years of expert painting, home renovation, RV revitalization, and vintage technical restoration by master craftsman Tony Warden." />
+    <meta name="keywords" content="painting contractor Essex ON, home renovation Essex, RV repair Ontario, vintage sewing machine restoration, Tony Warden, Warden's Workshop" />
+    <link rel="canonical" href="https://wardensworkshop.ca/index.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Warden's Workshop | Master Craftsmanship Since 1976" />
+    <meta property="og:description" content="50 years of expert painting, renovation, RV revitalization, and technical restoration in Essex, ON." />
+    <meta property="og:image" content="https://wardensworkshop.ca/images/hero-bg.jpg" />
+    <meta property="og:url" content="https://wardensworkshop.ca/index.html" />
+    <meta property="og:site_name" content="Warden's Workshop" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Warden's Workshop | Master Craftsmanship Since 1976" />
+    <meta name="twitter:description" content="50 years of expert painting, renovation, RV revitalization, and technical restoration in Essex, ON." />
+    <meta name="twitter:image" content="https://wardensworkshop.ca/images/hero-bg.jpg" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Warden's Workshop",
+      "description": "Master restoration and renovation services including painting, home renovation, RV revitalization, and vintage technical repair, serving Essex, ON since 1976.",
+      "url": "https://wardensworkshop.ca",
+      "logo": "https://wardensworkshop.ca/images/logo.png",
+      "image": "https://wardensworkshop.ca/images/hero-bg.jpg",
+      "telephone": "+18884880864",
+      "email": "apwarden1@gmail.com",
+      "foundingDate": "1976",
+      "founder": {
+        "@type": "Person",
+        "name": "Tony Warden"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "509-22 Victor Street",
+        "addressLocality": "Essex",
+        "addressRegion": "ON",
+        "addressCountry": "CA"
+      },
+      "areaServed": {
+        "@type": "State",
+        "name": "Ontario"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Workshop Services",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Painting & Exterior" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Home Renovation" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "RV Revitalization" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Technical Services" } }
+        ]
+      }
+    }
+    </script>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <ul class="nav-links nav-left">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+
+        <a href="index.html" class="nav-logo-link">
+          <img src="images/logo.png" alt="Warden's Workshop Logo" class="nav-logo" />
+        </a>
+
+        <div class="mobile-drawer">
+          <ul class="nav-links nav-left">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+          <ul class="nav-links nav-right">
+            <li><a href="service.html">Services</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li class="has-dropdown">
+              <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                Pricing <i class="fas fa-chevron-down dropdown-chevron"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="service.html#painting">Painting &amp; Exterior</a></li>
+                <li><a href="service.html#renovation">Home Renovation</a></li>
+                <li><a href="service.html#rv">RV Revitalization</a></li>
+                <li><a href="service.html#technical">Technical Services</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <ul class="nav-links nav-right">
+          <li><a href="service.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="has-dropdown">
+            <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              Pricing <i class="fas fa-chevron-down dropdown-chevron"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="service.html#painting">Painting &amp; Exterior</a></li>
+              <li><a href="service.html#renovation">Home Renovation</a></li>
+              <li><a href="service.html#rv">RV Revitalization</a></li>
+              <li><a href="service.html#technical">Technical Services</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-content reveal">
+        <h1>The Art of Restoration.</h1>
+        <p>50 Years of Technical Expertise &amp; Professional Care in Essex</p>
+        <a href="contact.html" class="btn btn-primary">Get a Free Estimate</a>
+      </div>
+    </header>
+
+    <section class="section container">
+      <div class="split-layout">
+        <div class="reveal">
+          <img src="images/about-tony.jpg" alt="Master Craftsman Working" class="rounded-image shadow" />
+        </div>
+        <div class="reveal about-text">
+          <div class="section-title left-align">
+            <h2>Master Craftsmanship Since 1976</h2>
+            <div class="underline"></div>
+          </div>
+          <p>
+            For five decades, Tony Warden has dedicated his life to the pursuit
+            of perfection. What started as a passion for vintage mechanics has
+            evolved into a premier restoration and property renovation service.
+          </p>
+          <p>
+            At Warden's Workshop, we don't just fix things—we honor their
+            history. Whether we are bringing a 100-year-old sewing machine back
+            to life or transforming your living space, every project is handled
+            with obsessive care and surgical precision.
+          </p>
+          <a href="about.html" class="btn btn-outline" style="margin-top: 20px">Meet Tony Warden</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-warm">
+      <div class="container">
+        <div class="section-title reveal">
+          <h2>Specialized Expertise</h2>
+          <div class="underline"></div>
+        </div>
+        <div class="grid">
+          <div class="card reveal text-center">
+            <i class="fas fa-paint-roller"></i>
+            <h3>Home &amp; Property</h3>
+            <p>
+              Interior and exterior painting executed with surgical precision,
+              custom trim, and premium materials.
+            </p>
+          </div>
+          <div class="card reveal text-center">
+            <i class="fas fa-caravan"></i>
+            <h3>RV Revitalization</h3>
+            <p>
+              From structural leak repair to full interior remodeling, we bring
+              your mobile home back to life.
+            </p>
+          </div>
+          <div class="card reveal text-center">
+            <i class="fas fa-tools"></i>
+            <h3>Technical Repair</h3>
+            <p>
+              Specializing in the delicate restoration of vintage sewing
+              machines and antique structural repairs.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container">
+      <div class="section-title reveal">
+        <h2>Recent Work</h2>
+        <div class="underline"></div>
+        <p class="subtitle">A glimpse into the workshop.</p>
+      </div>
+      <div class="gallery-grid reveal">
+        <img src="images/gallery-1.jpg" alt="Wood Restoration" class="gallery-img" />
+        <img src="images/gallery-2.jpg" alt="Exterior Painting" class="gallery-img" />
+        <img src="images/gallery-3.jpg" alt="Vintage Sewing Machine" class="gallery-img" />
+        <img src="images/gallery-4.jpg" alt="RV Interior" class="gallery-img" />
+      </div>
+    </section>
+
+    <section class="section bg-dark text-white text-center">
+      <div class="container reveal">
+        <i class="fas fa-quote-left quote-icon"></i>
+        <p class="testimonial-text">
+          "Tony's attention to detail is unmatched. He restored our vintage
+          sewing machine that had been in the family for three generations. It
+          runs like it's brand new."
+        </p>
+        <h4 class="testimonial-author">— Sarah J., Essex County</h4>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container footer-content">
+        <div class="footer-info">
+          <img src="images/logo.png" alt="Warden's Workshop Logo" class="footer-logo" />
+          <p>© 2026 Warden's Workshop<br />509-22 Victor Street, Essex, ON</p>
+        </div>
+        <div class="footer-contact">
+          <h4>Contact Tony</h4>
+          <p><i class="fas fa-phone"></i><a href="tel:1-888-488-0864">1-888-488-0864</a></p>
+          <p><i class="fas fa-envelope"></i><a href="mailto:apwarden1@gmail.com">apwarden1@gmail.com</a></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
