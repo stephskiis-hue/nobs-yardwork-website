@@ -359,6 +359,12 @@ body{
 .section-bg-title{
 	position: absolute;
 	top: -40px;
+	z-index: -1;
+	pointer-events: none;
+}
+
+.section-title {
+	isolation: isolate;
 }
 
 .section-bg-title span{
