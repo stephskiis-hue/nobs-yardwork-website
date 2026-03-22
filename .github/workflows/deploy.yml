@@ -1,31 +1,13 @@
-name: Deploy to FTP
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy via FTP
+- name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          protocol: ftp
+          # Change protocol to 'ftps' to handle modern server handshakes
+          protocol: ftps
+          # Add this to ignore 'invalid' SSL certificates often found on shared hosting
+          secure: false 
           local-dir: ./
           server-dir: /public_html/
-          # This prevents GitHub metadata from being uploaded to your live site
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            .gitignore
-            README.md
