@@ -1,13 +1,34 @@
-- name: Deploy via FTP
+name: Deploy to FTP
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # This is the line that adds the manual "Run" button
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          # Change protocol to 'ftps' to handle modern server handshakes
           protocol: ftps
-          # Add this to ignore 'invalid' SSL certificates often found on shared hosting
           secure: false 
           local-dir: ./
           server-dir: /public_html/
+          # This keeps your server clean by not uploading dev files
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            .gitignore
+            README.md
+            CLAUDE.md
