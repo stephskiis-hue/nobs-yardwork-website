@@ -18,5 +18,14 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
           local-dir: ./
           server-dir: /public_html/
+          # This prevents GitHub metadata from being uploaded to your live site
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            .gitignore
+            README.md
