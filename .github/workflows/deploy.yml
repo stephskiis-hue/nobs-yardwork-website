@@ -21,7 +21,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           protocol: ftps
-          secure: false 
+          security: loose
           local-dir: ./
           server-dir: /public_html/
           # This keeps your server clean by not uploading dev files
