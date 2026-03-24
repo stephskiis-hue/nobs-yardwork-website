@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # This is the line that adds the manual "Run" button
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -14,20 +14,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          protocol: ftp
-          local-dir: ./
-          server-dir: /public_html/
-          # This keeps your server clean by not uploading dev files
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            .gitignore
-            README.md
-            CLAUDE.md
+        run: |
+          sudo apt-get install -y lftp
+          lftp -c "
+            set ftp:ssl-allow false;
+            set ftp:passive-mode true;
+            open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_SERVER }};
+            mirror --reverse --delete --verbose \
+              --exclude .git/ \
+              --exclude .github/ \
+              --exclude node_modules/ \
+              --exclude .gitignore \
+              --exclude README.md \
+              --exclude CLAUDE.md \
+              ./ /public_html/;
+          "
