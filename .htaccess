@@ -51,6 +51,16 @@
 </IfModule>
 
 # ----------------------------------------------------------------------
+# JSON DATA FILES (posts.json etc.)
+# ----------------------------------------------------------------------
+AddType application/json .json
+<FilesMatch "\.json$">
+  Require all granted
+  Header set Cache-Control "public, max-age=300"
+  Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
+
+# ----------------------------------------------------------------------
 # GZIP COMPRESSION
 # ----------------------------------------------------------------------
 <IfModule mod_deflate.c>
@@ -63,8 +73,6 @@
 # ----------------------------------------------------------------------
 RewriteEngine On
 
-
-
 # ----------------------------------------------------------------------
 # 2. REMOVE .HTML FROM URL IF EXPLICITLY TYPED
 # ----------------------------------------------------------------------
@@ -72,9 +80,30 @@ RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.html\ HTTP/
 RewriteRule ^(.*)\.html$ /$1 [R=301,L]
 
 # ----------------------------------------------------------------------
-# 3. CLEAN URL INTERNAL MAPPING (ignore /blog/ folder)
+# 301 REDIRECTS
 # ----------------------------------------------------------------------
-RewriteCond %{REQUEST_URI} !^/blog/ [NC]
+Redirect 301 /lawn-mowing-winnipeg.html https://www.no-bs-yardwork.com/grass-cutting-winnipeg.html
+
+# WordPress post redirects (WP /blog/ folder removed 2026-04-20)
+# Using RewriteRule for exact matching — avoids mod_alias prefix-match side effects
+RewriteRule ^blog/spring-cleanup-march-may/?$ /blog-spring-cleanup-winnipeg [R=301,L]
+RewriteRule ^blog/you-know-what-that-means-spring-is-officially-here/?$ /blog-spring-cleanup-winnipeg [R=301,L]
+RewriteRule ^blog/no-bs-yardwork-becomes-the-best-spring-clean-up-company-in-winnipeg/?$ /blog-spring-cleanup-winnipeg [R=301,L]
+RewriteRule ^blog/keeping-the-best-yard-on-your-street-is-a-mix-of-consistent-care/?$ /blog-spring-lawn-tips-winnipeg [R=301,L]
+RewriteRule ^blog/how-do-i-maintain-my-grass-to-stay-green-and-healthy/?$ /blog-lawn-aeration-winnipeg [R=301,L]
+RewriteRule ^blog/benefits-of-weed-control-on-your-yard/?$ /weed-control-winnipeg [R=301,L]
+RewriteRule ^blog/the-importance-of-proper-lawn-maintenance/?$ /lawn-care-winnipeg [R=301,L]
+RewriteRule ^blog/stone-hardscape-services/?$ /landscaping-winnipeg [R=301,L]
+RewriteRule ^blog/landscape-concrete-paving-ideas/?$ /landscaping-winnipeg [R=301,L]
+RewriteRule ^blog/how-do-i-choose-the-best-landscaping-company/?$ /landscaping-winnipeg [R=301,L]
+RewriteRule ^blog/why-living-in-winnipeg-manitoba-is-so-amazing/?$ / [R=301,L]
+RewriteRule ^blog/about-no-bs/?$ /about [R=301,L]
+# /blog and /blog/ both serve blog.html (no redirect chain)
+RewriteRule ^blog/?$ /blog.html [L]
+
+# ----------------------------------------------------------------------
+# 3. CLEAN URL INTERNAL MAPPING
+# ----------------------------------------------------------------------
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.html -f
 RewriteRule ^(.*)$ $1.html [NC,L]

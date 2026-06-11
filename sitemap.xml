@@ -3,93 +3,128 @@
 
 <url>
   <loc>https://www.no-bs-yardwork.com/</loc>
-  <lastmod>2026-03-10</lastmod>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>weekly</changefreq>
   <priority>1.00</priority>
 </url>
 
 <url>
   <loc>https://www.no-bs-yardwork.com/services.html</loc>
-  <lastmod>2026-03-10</lastmod>
-  <priority>0.90</priority>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.95</priority>
 </url>
 
 <url>
   <loc>https://www.no-bs-yardwork.com/lawn-care-winnipeg.html</loc>
-  <lastmod>2026-03-10</lastmod>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.90</priority>
 </url>
 
 <url>
   <loc>https://www.no-bs-yardwork.com/premium-lawn-care.html</loc>
-  <lastmod>2026-03-10</lastmod>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.90</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/grass-cutting-winnipeg.html</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.90</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/landscaping-winnipeg.html</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.90</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/weed-control-winnipeg.html</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.90</priority>
 </url>
 
 <url>
   <loc>https://www.no-bs-yardwork.com/fencing-winnipeg.html</loc>
-  <lastmod>2026-03-10</lastmod>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.90</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/yard-maintenance-winnipeg.html</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.90</priority>
 </url>
 
 <url>
   <loc>https://www.no-bs-yardwork.com/spring-fall-cleanups.html</loc>
-  <lastmod>2026-03-10</lastmod>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.85</priority>
 </url>
 
 <url>
   <loc>https://www.no-bs-yardwork.com/winter-packages.html</loc>
-  <lastmod>2026-03-10</lastmod>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.85</priority>
 </url>
 
 <url>
-  <loc>https://www.no-bs-yardwork.com/projects.html</loc>
-  <lastmod>2026-03-10</lastmod>
-  <priority>0.70</priority>
+  <loc>https://www.no-bs-yardwork.com/service-areas-winnipeg.html</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
 </url>
 
 <url>
-  <loc>https://www.no-bs-yardwork.com/about.html</loc>
-  <lastmod>2026-03-10</lastmod>
-  <priority>0.70</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/faqs</loc>
-  <lastmod>2026-03-10</lastmod>
-  <priority>0.60</priority>
+  <loc>https://www.no-bs-yardwork.com/faqs.html</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
 </url>
 
 <url>
   <loc>https://www.no-bs-yardwork.com/contact.html</loc>
-  <lastmod>2026-03-10</lastmod>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/about.html</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.75</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/projects.html</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.70</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>daily</changefreq>
   <priority>0.60</priority>
 </url>
 
-
 <url>
-  <loc>https://www.no-bs-yardwork.com/blog-spring-cleanup-winnipeg.html</loc>
-  <lastmod>2026-03-11</lastmod>
-  <priority>0.75</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog-lawn-care-cost-winnipeg.html</loc>
-  <lastmod>2026-03-11</lastmod>
-  <priority>0.75</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog-fencing-winnipeg.html</loc>
-  <lastmod>2026-03-11</lastmod>
-  <priority>0.75</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/service-areas-winnipeg.html</loc>
-  <lastmod>2026-03-11</lastmod>
-  <priority>0.80</priority>
+  <loc>https://www.no-bs-yardwork.com/partnership-opportunities.html</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>yearly</changefreq>
+  <priority>0.40</priority>
 </url>
 
 </urlset>

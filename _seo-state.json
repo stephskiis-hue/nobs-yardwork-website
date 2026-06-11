@@ -1,0 +1,22 @@
+{
+  "last_audit_date": null,
+  "week_of_roadmap": 0,
+  "site_score": null,
+  "site_score_delta": null,
+  "page_scores": {},
+  "target_rankings": {
+    "lawn care winnipeg":        { "position": null, "prev_position": null, "last_checked": null },
+    "grass cutting winnipeg":    { "position": null, "prev_position": null, "last_checked": null },
+    "landscaping winnipeg":      { "position": null, "prev_position": null, "last_checked": null },
+    "weed control winnipeg":     { "position": null, "prev_position": null, "last_checked": null },
+    "fencing winnipeg":          { "position": null, "prev_position": null, "last_checked": null },
+    "spring cleanup winnipeg":   { "position": null, "prev_position": null, "last_checked": null },
+    "yard maintenance winnipeg": { "position": null, "prev_position": null, "last_checked": null },
+    "snow removal winnipeg":     { "position": null, "prev_position": null, "last_checked": null }
+  },
+  "p0_open": [],
+  "p1_open": [],
+  "competitor_watch": { "bulger": [], "cutting_edge": [], "paysagiste": [] },
+  "implemented_this_month": [],
+  "notes": "Baseline placeholder — populated on first run of nobsyardwork-seo-weekly skill."
+}

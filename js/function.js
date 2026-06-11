@@ -5,7 +5,7 @@
 	var $body = $('body'); 
 
 	/* Preloader Effect */
-	$window.on('load', function(){
+	$(document).ready(function(){
 		$(".preloader").fadeOut(600);
 	});
 	
@@ -33,6 +33,7 @@
 		label : '',
 		prependTo : '.responsive-menu'
 	});
+	$('.slicknav_btn').attr('aria-label', 'Open navigation menu');
 
 	if($("a[href='#top']").length){
 		$("a[href='#top']").click(function() {
@@ -41,65 +42,68 @@
 		});
 	}
 
-	/* Hero Slider Layout JS */
-	const hero_slider_layout = new Swiper('.hero-slider-layout .swiper', {
-		slidesPerView : 1,
-		speed: 1000,
-		spaceBetween: 0,
-		loop: true,
-		autoplay: {
-			delay: 4000,
-		},
-		pagination: {
-			el: '.hero-pagination',
-			clickable: true,
-		},
-	});
-
-	/* testimonial Slider JS */
-	if ($('.testimonial-slider').length) {
-		const testimonial_slider = new Swiper('.testimonial-slider .swiper', {
-			slidesPerView : 1,
-			speed: 1000,
-			spaceBetween: 30,
-			loop: true,
-			autoplay: {
-				delay: 3000,
-			},
-			pagination: {
-				el: '.swiper-pagination',
-				clickable: true,
-			},
-			navigation: {
-				nextEl: '.testimonial-button-next',
-				prevEl: '.testimonial-button-prev',
-			},
-			breakpoints: {
-				768:{
-				  	slidesPerView: 1,
-				},
-				991:{
-				  	slidesPerView: 1,
+	/* Swiper — lazy load once, init all sliders found on page */
+	function initAllSwipers() {
+		if (document.querySelector('.hero-slider-layout .swiper')) {
+			new Swiper('.hero-slider-layout .swiper', {
+				slidesPerView: 1,
+				speed: 1000,
+				spaceBetween: 0,
+				loop: true,
+				autoplay: { delay: 4000 },
+				pagination: { el: '.hero-pagination', clickable: true },
+			});
+		}
+		if (document.querySelector('.testimonial-slider .swiper')) {
+			new Swiper('.testimonial-slider .swiper', {
+				slidesPerView: 1,
+				speed: 1000,
+				spaceBetween: 30,
+				loop: true,
+				autoplay: { delay: 3000 },
+				pagination: { el: '.swiper-pagination', clickable: true },
+				navigation: {
+					nextEl: '.testimonial-button-next',
+					prevEl: '.testimonial-button-prev'
 				}
-			}
-		});
+			});
+		}
+		if (document.querySelector('.service-single-slider .swiper')) {
+			new Swiper('.service-single-slider .swiper', {
+				slidesPerView: 1,
+				speed: 1000,
+				spaceBetween: 10,
+				loop: true,
+				autoplay: { delay: 5000 },
+				navigation: {
+					nextEl: '.service-single-button-next',
+					prevEl: '.service-single-button-prev'
+				},
+			});
+		}
 	}
 
-	/* Service Single Image Carousel JS */
-	if ($('.service-single-slider').length) {
-		const service_single_slider = new Swiper('.service-single-slider .swiper', {
-			slidesPerView : 1,
-			speed: 1000,
-			spaceBetween: 10,
-			loop: true,
-			autoplay: {
-				delay: 5000,
-			},
-			navigation: {
-				nextEl: '.service-single-button-next',
-				prevEl: '.service-single-button-prev',
-			},
-		});
+	/* Load Swiper only if a slider exists on this page */
+	var swipersOnPage = document.querySelector('.hero-slider-layout .swiper, .testimonial-slider, .service-single-slider');
+	if (swipersOnPage) {
+		if (typeof Swiper !== 'undefined') {
+			initAllSwipers();
+		} else {
+			/* Lazy load — defer until slider near viewport (or immediately for above-fold) */
+			var firstSlider = document.querySelector('.hero-slider-layout .swiper') || swipersOnPage;
+			var swiperLoaded = false;
+			var swiperObserver = new IntersectionObserver(function(entries) {
+				if (entries[0].isIntersecting && !swiperLoaded) {
+					swiperLoaded = true;
+					var s = document.createElement('script');
+					s.src = 'js/swiper-bundle.min.js';
+					s.onload = initAllSwipers;
+					document.head.appendChild(s);
+					swiperObserver.disconnect();
+				}
+			}, { rootMargin: '200px' });
+			swiperObserver.observe(firstSlider);
+		}
 	}
 
 	/* Init Counter */
@@ -136,7 +140,7 @@
     }
 
 	/* Text Effect Animation — desktop only (skipped on mobile to reduce DOM work) */
-	if (window.innerWidth > 768) {
+	if (window.innerWidth > 768 && typeof SplitText !== 'undefined') {
 		if ($('.text-anime-style-1').length) {
 			let staggerAmount 	= 0.05,
 				translateXValue = 0,
@@ -296,7 +300,7 @@
 
 	/* Our Project (filtering) Start */
 	$window.on( "load", function(){
-		if( $(".work-item-boxes").length ) {
+		if( $(".work-item-boxes").length && typeof $.fn.isotope !== 'undefined' ) {
 				
 			/* Init Isotope */
 			var $menuitem = $(".work-item-boxes").isotope({

@@ -1,84 +1,151 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-
 <url>
-  <loc>https://www.no-bs-yardwork.com/blog/you-know-what-that-means-spring-is-officially-here/</loc>
-  <lastmod>2025-06-08</lastmod>
-  <priority>0.60</priority>
-</url>
-
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog/stone-hardscape-services/</loc>
-  <lastmod>2026-02-01</lastmod>
-  <priority>0.50</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog/partnership-opportunities/</loc>
-  <lastmod>2026-01-25</lastmod>
+  <loc>https://www.no-bs-yardwork.com/blog-weekly-vs-biweekly-mowing-winnipeg</loc>
+  <lastmod>2026-05-06</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.60</priority>
 </url>
 
 <url>
-  <loc>https://www.no-bs-yardwork.com/blog/how-do-i-maintain-my-grass-to-stay-green-and-healthy/</loc>
-  <lastmod>2025-12-18</lastmod>
-  <priority>0.70</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog/landscape-concrete-paving-ideas/</loc>
-  <lastmod>2025-09-18</lastmod>
-  <priority>0.50</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog/keeping-the-best-yard-on-your-street-is-a-mix-of-consistent-care/</loc>
-  <lastmod>2025-08-15</lastmod>
-  <priority>0.50</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog/benefits-of-weed-control-on-your-yard/</loc>
-  <lastmod>2025-11-10</lastmod>
-  <priority>0.6</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog/the-importance-of-proper-lawn-maintenance/</loc>
-  <lastmod>2025-11-10</lastmod>
-  <priority>0.50</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog/why-living-in-winnipeg-manitoba-is-so-amazing/</loc>
-  <lastmod>2025-10-25</lastmod>
-  <priority>0.50</priority>
-</url>
-
-<url>
-  <loc>https://www.no-bs-yardwork.com/blog/no-bs-yardwork-becomes-the-best-spring-clean-up-company-in-winnipeg/</loc>
-  <lastmod>2025-10-24</lastmod>
+  <loc>https://www.no-bs-yardwork.com/blog-weed-prevention-tips-winnipeg</loc>
+  <lastmod>2026-05-05</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.60</priority>
 </url>
 
 <url>
-  <loc>https://www.no-bs-yardwork.com/blog/how-do-i-choose-the-best-landscaping-company/</loc>
-  <lastmod>2025-09-29</lastmod>
+  <loc>https://www.no-bs-yardwork.com/blog-watering-lawn-winnipeg</loc>
+  <lastmod>2026-04-30</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.60</priority>
 </url>
 
 <url>
-  <loc>https://www.no-bs-yardwork.com/blog/spring-cleanup-march-may/</loc>
-  <lastmod>2025-06-08</lastmod>
+  <loc>https://www.no-bs-yardwork.com/blog-best-time-install-sod-winnipeg</loc>
+  <lastmod>2026-04-29</lastmod>
+  <changefreq>monthly</changefreq>
   <priority>0.60</priority>
 </url>
+
 <url>
-  <loc>https://www.no-bs-yardwork.com/blog/about-no-bs/</loc>
-  <lastmod>2026-03-07</lastmod>
-  <priority>0.50</priority>
+  <loc>https://www.no-bs-yardwork.com/blog-lawn-fertilizer-winnipeg</loc>
+  <lastmod>2026-04-28</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
 </url>
 
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-dandelion-control-winnipeg</loc>
+  <lastmod>2026-04-27</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-weed-control-cost-winnipeg</loc>
+  <lastmod>2026-04-26</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-mulch-vs-rock-winnipeg</loc>
+  <lastmod>2026-04-25</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-first-cut-winnipeg</loc>
+  <lastmod>2026-04-25</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-overseeding-cost-winnipeg</loc>
+  <lastmod>2026-04-21</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-when-to-apply-weed-control-winnipeg</loc>
+  <lastmod>2026-04-20</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-sod-vs-seed-winnipeg</loc>
+  <lastmod>2026-04-19</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-spring-lawn-tips-winnipeg</loc>
+  <lastmod>2026-04-18</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-why-spring-aeration-winnipeg</loc>
+  <lastmod>2026-04-17</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-aeration-cost-winnipeg</loc>
+  <lastmod>2026-04-10</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-lawn-aeration-winnipeg</loc>
+  <lastmod>2026-04-10</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-power-raking-winnipeg</loc>
+  <lastmod>2026-04-10</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-fall-cleanup-winnipeg</loc>
+  <lastmod>2026-04-10</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-fencing-winnipeg</loc>
+  <lastmod>2026-03-29</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-lawn-care-cost-winnipeg</loc>
+  <lastmod>2026-03-29</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
+
+<url>
+  <loc>https://www.no-bs-yardwork.com/blog-spring-cleanup-winnipeg</loc>
+  <lastmod>2026-03-29</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.60</priority>
+</url>
 
 </urlset>
