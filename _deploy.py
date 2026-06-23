@@ -10,16 +10,19 @@ way the blog autopilot publishes posts. Use this to push edits to any page
 so they go live immediately.
 
 Why this exists:
-  GitHub does NOT auto-deploy this site. The live site at no-bs-yardwork.com
-  is updated by uploading files over FTP. Pushing to GitHub only updates the
-  Git repo, not the server. This script is the bridge that actually publishes.
+  GitHub does NOT auto-deploy this site by itself. The live site at
+  no-bs-yardwork.com is updated by uploading files over FTP. This script is the
+  bridge that actually publishes. It runs in two places:
+    1. Your local machine (reads _blog-ftp.env).
+    2. GitHub Actions (.github/workflows/deploy.yml), reading FTP_* secrets.
 
 Usage:
   python3 _deploy.py projects.html
   python3 _deploy.py index.html about.html css/custom.css
-  python3 _deploy.py images/blog-foo.webp        # subfolders are preserved
-  python3 _deploy.py --all-changed               # deploy everything git sees as modified
-  python3 _deploy.py --dry-run projects.html     # show what WOULD upload, send nothing
+  python3 _deploy.py images/blog-foo.webp          # subfolders are preserved
+  python3 _deploy.py --all-changed                 # everything git sees modified
+  python3 _deploy.py --git-range BEFORE..AFTER     # files changed in a git range (CI)
+  python3 _deploy.py --dry-run projects.html       # show what WOULD upload
 
 Credentials:
   Reads _blog-ftp.env in this directory (same file the blog robot uses):
@@ -30,15 +33,15 @@ Credentials:
       FTP_PATH=/public_html        # remote web root
       SITE_URL=https://no-bs-yardwork.com
   Falls back to OS environment variables of the same names if the file is
-  absent (useful if you ever wire FTP secrets into a hosted environment).
+  absent (this is how the GitHub Action supplies the credentials as secrets).
 
 Notes:
   - A file's path relative to this folder is preserved on the server, so
     "css/custom.css" lands in "<FTP_PATH>/css/custom.css".
   - Missing remote subdirectories are created automatically.
-  - This must run somewhere that has the FTP credentials AND is allowed to
-    make outbound FTP connections (your local machine). It will NOT work from
-    the claude.ai web sandbox, which blocks raw FTP.
+  - This must run somewhere with the FTP credentials AND outbound FTP access.
+    It will NOT work from the claude.ai web sandbox, which blocks raw FTP — use
+    the GitHub Action or a local machine instead.
 """
 
 import argparse
@@ -88,8 +91,35 @@ def load_env() -> dict:
 
 # ── File selection ──────────────────────────────────────────────────────────────
 
-def git_changed_files() -> list[str]:
-    """Return tracked files git reports as modified/added (for --all-changed)."""
+def _is_web_file(path: str) -> bool:
+    """True for real, web-servable files we should deploy.
+
+    Excludes tooling/state files (_*), CI config (.github/), the
+    WordPress-managed blog/ tree, docs (*.md), and scripts (*.py).
+    """
+    p = path.strip()
+    if not p or p == ".gitignore":
+        return False
+    if p.startswith("_") or p.startswith(".github/") or p.startswith("blog/"):
+        return False
+    low = p.lower()
+    if low.endswith(".py") or low.endswith(".md"):
+        return False
+    return (SCRIPT_DIR / p).is_file()
+
+
+def _filter_web_files(paths) -> list:
+    seen, out = set(), []
+    for p in paths:
+        p = p.strip()
+        if p and p not in seen and _is_web_file(p):
+            seen.add(p)
+            out.append(p)
+    return out
+
+
+def git_changed_files() -> list:
+    """Tracked files git reports as modified/added in the working tree."""
     try:
         out = subprocess.check_output(
             ["git", "status", "--porcelain"], cwd=SCRIPT_DIR, text=True
@@ -98,20 +128,41 @@ def git_changed_files() -> list[str]:
         print(f"ERROR: could not run git status: {e}")
         sys.exit(1)
 
-    files = []
+    paths = []
     for line in out.splitlines():
         if not line.strip():
             continue
         path = line[3:].strip()
-        # Handle renames "old -> new"
-        if " -> " in path:
+        if " -> " in path:  # renames: "old -> new"
             path = path.split(" -> ", 1)[1]
-        # Only deploy real, web-servable files (skip the tooling/state files)
-        if path.startswith("_") or path == ".gitignore":
+        paths.append(path)
+    return _filter_web_files(paths)
+
+
+def git_range_files(rng: str) -> list:
+    """Files added/modified in a git range (CI use). Robust to bad/zero refs."""
+    for candidate in (rng, "HEAD~1..HEAD"):
+        if not candidate or candidate.startswith(".."):
             continue
-        if (SCRIPT_DIR / path).is_file():
-            files.append(path)
-    return files
+        try:
+            out = subprocess.check_output(
+                ["git", "diff", "--name-only", "--diff-filter=ACMR", candidate],
+                cwd=SCRIPT_DIR, text=True, stderr=subprocess.DEVNULL,
+            )
+        except Exception:
+            continue
+        files = _filter_web_files(out.splitlines())
+        if files:
+            return files
+    # Last resort: whatever changed in the latest commit
+    try:
+        out = subprocess.check_output(
+            ["git", "show", "--pretty=", "--name-only", "--diff-filter=ACMR", "HEAD"],
+            cwd=SCRIPT_DIR, text=True, stderr=subprocess.DEVNULL,
+        )
+        return _filter_web_files(out.splitlines())
+    except Exception:
+        return []
 
 
 # ── FTP ─────────────────────────────────────────────────────────────────────────
@@ -131,8 +182,7 @@ def ftp_connect(env: dict) -> ftplib.FTP:
 
 def ftp_ensure_dir(ftp: ftplib.FTP, remote_dir: str):
     """Change to remote_dir, creating any missing path segments along the way."""
-    # Always start from an absolute base
-    ftp.cwd("/")
+    ftp.cwd("/")  # always start from an absolute base
     for part in remote_dir.strip("/").split("/"):
         if not part:
             continue
@@ -167,11 +217,20 @@ def main():
     parser = argparse.ArgumentParser(description="Deploy file(s) to the No-BS Yardwork server over FTP")
     parser.add_argument("files", nargs="*", help="File(s) to upload, relative to this folder")
     parser.add_argument("--all-changed", action="store_true", help="Deploy every file git reports as modified")
+    parser.add_argument("--git-range", metavar="RANGE", help="Deploy files changed in a git range, e.g. BEFORE..AFTER (CI)")
     parser.add_argument("--dry-run", action="store_true", help="Show what would upload without connecting")
     args = parser.parse_args()
 
     files = list(args.files)
-    if args.all_changed:
+    if args.git_range:
+        files = git_range_files(args.git_range)
+        if not files:
+            print("No web files changed in range — nothing to deploy.")
+            return
+        print("Files changed in range:")
+        for f in files:
+            print(f"  - {f}")
+    elif args.all_changed:
         files = git_changed_files()
         if not files:
             print("Nothing to deploy — git reports no modified web files.")
@@ -181,13 +240,12 @@ def main():
             print(f"  - {f}")
 
     if not files:
-        parser.error("no files given (pass filenames or use --all-changed)")
+        parser.error("no files given (pass filenames, --all-changed, or --git-range)")
 
     env = load_env()
 
     if args.dry_run:
-        print("\nDRY RUN — would upload these to "
-              f"{env['FTP_HOST']}:{env['FTP_PATH']} :")
+        print(f"\nDRY RUN — would upload these to {env['FTP_HOST']}:{env['FTP_PATH']} :")
         for f in files:
             exists = "" if (SCRIPT_DIR / f).is_file() else "  (MISSING LOCALLY)"
             print(f"  {f}{exists}")

@@ -29,7 +29,7 @@ jobs:
           set net:reconnect-interval-base 5
           debug 3
           open -u ${FTP_USERNAME},${FTP_PASSWORD} ${FTP_SERVER}
-          mirror --reverse --delete --verbose --exclude .git/ --exclude .github/ --exclude node_modules/ --exclude .gitignore --exclude README.md --exclude CLAUDE.md ./ /public_html/
+          mirror --reverse --verbose --exclude .git/ --exclude .github/ --exclude node_modules/ --exclude .gitignore --exclude README.md --exclude CLAUDE.md --exclude blog/ ./ /public_html/
           bye
           SCRIPT
           lftp -f /tmp/lftp_script.txt

@@ -1,99 +1,75 @@
 # Deploying the No-BS Yardwork Website
 
-This is the single source of truth for how edits get from files to the **live
-site** at <https://no-bs-yardwork.com>.
+How site updates reach **https://no-bs-yardwork.com**.
 
-> **TL;DR for Claude:** When the user says *"update the site"* / *"push that
-> live"* / *"deploy it"*, run:
-> ```
-> python3 _deploy.py <files they changed>
-> ```
-> or to push everything that changed:
-> ```
-> python3 _deploy.py --all-changed
-> ```
-> This only works in a session that has the FTP credentials **and** is allowed
-> to make outbound FTP connections (i.e. running locally — **not** the
-> claude.ai web app). See "Where this works" below.
+> **TL;DR — to update the live site:** make your edits, then get them onto the
+> **`main`** branch (merge the working branch, or push to `main`). The GitHub
+> Action publishes to the server over FTP within about a minute. Edits on any
+> other branch do **not** deploy.
 
 ---
 
-## The key thing to understand
+## How the site actually updates
 
-**GitHub does NOT deploy this site.** Pushing to GitHub only updates the Git
-repo. The live website is hosted on shared hosting (Moniker) and is updated by
-**uploading files over FTP**. They are two separate worlds:
+There are two real deploy paths (an earlier version of this doc wrongly said
+GitHub doesn't deploy — it does):
 
-| Action | What it changes |
-|---|---|
-| `git push` | The GitHub repo only. **Live site unchanged.** |
-| `python3 _deploy.py <file>` | The **live site** (uploads over FTP). |
+1. **GitHub Actions — primary, automatic.**
+   `.github/workflows/deploy.yml` runs on every **push to `main`** (and can be
+   run manually from the Actions tab). It uses `lftp` to upload the site to
+   `/public_html/` on the server over FTP. Credentials come from repository
+   **secrets**: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`.
 
-So a normal workflow is: **edit → deploy (go live) → optionally commit to Git**
-for history.
+2. **Blog autopilot — for blog posts only.**
+   `_blog-autopilot.py` uploads new posts directly over FTP using
+   `_blog-ftp.env` (keys `FTP_HOST`, `FTP_USER`, `FTP_PASS`, `FTP_PATH`). This
+   is separate from GitHub and has been the thing actually keeping the site
+   current while the GitHub deploy was failing.
 
----
-
-## How to deploy
-
-```bash
-# One page
-python3 _deploy.py projects.html
-
-# Several files at once
-python3 _deploy.py index.html about.html css/custom.css
-
-# A file in a subfolder (the folder structure is preserved on the server)
-python3 _deploy.py images/blog-foo.webp
-
-# Everything git currently sees as modified
-python3 _deploy.py --all-changed
-
-# Preview without uploading anything
-python3 _deploy.py --dry-run projects.html
-```
-
-`_deploy.py` uses the **same FTP login and the same upload logic** as the blog
-autopilot (`_blog-autopilot.py`), so if blog auto-posting works, deploying does
-too.
-
-> **Blog posts are special.** New blog posts should still go through
-> `_blog-autopilot.py`, because that also fetches the image, updates
-> `posts.json`, and patches the inline post list in `blog.html`. Use `_deploy.py`
-> for everything else (regular pages, CSS, images, fixes).
+3. **Manual targeted deploy — optional helper.**
+   `_deploy.py <files>` uploads specific files over FTP from a machine that has
+   `_blog-ftp.env` (e.g. your local computer). Useful for a quick one-off push
+   without going through `main`. Example: `python3 _deploy.py projects.html`
 
 ---
 
-## Credentials (one-time setup)
+## ⚠️ The GitHub deploy needs correct FTP secrets
 
-`_deploy.py` reads `_blog-ftp.env` in this folder — the **same file the blog
-robot already uses**. If blog auto-posting is working on a machine, this file
-already exists there and deploying needs no extra setup.
+Every GitHub deploy so far has failed with **`530 Login authentication
+failed`** — the workflow reaches the server (port 21) but the stored login is
+wrong. Fix it under **Settings → Secrets and variables → Actions**:
 
-`_blog-ftp.env` format (this file is git-ignored and must **never** be committed):
-
-```
-FTP_HOST=ftp.your-host.com
-FTP_PORT=21
-FTP_USER=your-ftp-username
-FTP_PASS=your-ftp-password
-FTP_PATH=/public_html            # the remote web root that serves the site
-SITE_URL=https://no-bs-yardwork.com
-```
-
-If `_blog-ftp.env` is absent, `_deploy.py` will also read these same names from
-OS environment variables as a fallback.
-
----
-
-## Where this works (important)
-
-| Environment | Can deploy? | Why |
+| Secret | What it is | Value (from your working `_blog-ftp.env`) |
 |---|---|---|
-| **Your local machine** (Claude Code / terminal) | ✅ Yes | `_blog-ftp.env` is present and FTP is allowed. This is where the blog robot runs. |
-| **claude.ai web app** (this cloud session) | ❌ No | The sandbox blocks all outbound FTP (port 21), and `_blog-ftp.env` isn't present. Edits can be made and pushed to GitHub here, but **going live must happen locally.** |
+| `FTP_SERVER` | FTP host / IP | `FTP_HOST` |
+| `FTP_USERNAME` | FTP user | `FTP_USER` |
+| `FTP_PASSWORD` | FTP password | `FTP_PASS` |
 
-**Practical workflow when working from the web app:** Claude edits the files
-and pushes them to the Git branch. To publish, pull the branch on your local
-machine and run `python3 _deploy.py --all-changed` (or just ask Claude to do it
-in a local session).
+After updating the secrets, push to `main` (or re-run the latest deploy from
+the Actions tab) and confirm it goes green.
+
+> Note: the login line uses `open -u user,password`. If the password contains a
+> **comma or space**, that form breaks even when the password is correct — say
+> so and the login can be hardened.
+
+---
+
+## Safety notes (important)
+
+- The deploy uses `mirror --reverse` **without `--delete`**, and **excludes the
+  WordPress `blog/` directory**. So it never deletes remote files and never
+  overwrites the live WordPress install or its uploads. (The previous
+  `--delete` would have wiped `wp-config.php`, `/uploads/`, and `.htaccess` on
+  the first successful run.)
+- Never commit `_blog-ftp.env` or real credentials. Secrets live in
+  `_blog-ftp.env` locally and in GitHub repository secrets for CI.
+
+---
+
+## Where deploys can run
+
+| Environment | Deploy works? | Why |
+|---|---|---|
+| **GitHub Actions** (push to `main`) | ✅ once secrets are correct | GitHub's runners can reach FTP |
+| **Your local machine** | ✅ | `_blog-ftp.env` present, FTP allowed (`_deploy.py` / blog robot) |
+| **claude.ai web app** (this cloud session) | ❌ | sandbox blocks outbound FTP entirely; edits here must be pushed to `main` so the Action deploys them |
