@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /_pages/
+Disallow: /form-process.php
+
+Sitemap: https://www.no-bs-junkremoval.com/sitemap.xml
