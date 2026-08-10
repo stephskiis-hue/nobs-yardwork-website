@@ -18,11 +18,11 @@ These are the things only you can do. Nothing on this list is code.
 - [ ] **Register `no-bs-junkremoval.com`** (and `.ca`, redirected to it)
 - [ ] **Add the addon domain** in cPanel and note its document root
 - [ ] **Set the prices.** Every price is a `$XXX` placeholder rendered as a
-      dashed orange box. They are all in one commented block at the top of
+      dashed green box. They are all in one commented block at the top of
       `_pages/pricing.html`, plus three teasers in `_pages/index.html`.
 - [ ] **Uncomment the canonical-host rule** in `.htaccess` — *only after* DNS
       resolves. Doing it early makes the site unreachable.
-- [ ] **Take the photos.** Every missing shot is marked on-page with an orange
+- [ ] **Take the photos.** Every missing shot is marked on-page with a green
       dashed block containing the brief and the filename. See below.
 - [ ] **Add your liability coverage amount** to the box on `_pages/about.html`
 - [ ] **Test the quote form** end to end and check your spam folder — PHP
@@ -74,13 +74,36 @@ python3 _build.py      # regenerates all 14 .html files + sitemap.xml
 
 - **Page content** → `_pages/<name>.html` (plain HTML fragments)
 - **Header, footer, nav, schema, page titles** → `_build.py`
-- **Division styling** → `css/junk.css`
+- **Styling** → `css/junk.css`
 
 The generated `.html` files are committed, so the site works for anyone who never
-runs the script. `python3 -m http.server 8000` serves it locally.
+runs the script.
 
 **Prefer no build step?** Run `_build.py` once, delete it along with `_pages/`,
 and hand-edit the `.html` files from then on. Nothing else depends on it.
+
+### Previewing it yourself
+
+**Quickest — open one file.** Download the repo (GitHub → green **Code** button →
+**Download ZIP**), unzip, and double-click `index.html`. It opens in your browser
+and every link works. Nothing to install.
+
+The only thing that misbehaves this way is the extensionless URLs — clicking
+around uses the `.html` filenames, which is exactly what happens on the real
+server before `.htaccess` rewrites them. Cosmetic only.
+
+**Closer to the real thing — run a local server.** From inside the folder:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open <http://localhost:8000> . Python is already on macOS and most Linux;
+on Windows install it from python.org, or use `npx serve` if you have Node.
+
+**On the live server**, once the addon domain is pointed at this folder, it is
+just the domain in a browser. To check a change before it is public, upload to a
+staging subfolder rather than the document root.
 
 ### Design system
 
@@ -88,15 +111,33 @@ and hand-edit the `.html` files from then on. Nothing else depends on it.
 re-synced from the parent later. Do not edit it — every junk-specific rule belongs
 in `css/junk.css`, which loads after it.
 
-The brand green (`--accent-color: #2A7D2E`) and dark green (`--primary-color:
-#0B3D2C`) are inherited unchanged; that is the family link. The division layer
-adds hi-vis orange `--division-color: #FF6B00`.
+**`junk.css` defines no colours of its own.** Every value comes from the tokens
+`custom.css` already declares, so this site and the lawn site stay in step and
+re-syncing the parent's palette updates this one for free:
 
-One rule worth knowing before you change a colour: **orange never pairs with
-white text.** `#FF6B00` on white is 2.85:1 contrast, which fails WCAG AA. Orange
-pairs with near-black `--on-division: #141414` (6.45:1) — which is also what
-makes it read as safety signage. For orange *text* on a light background, use
-`--division-text: #B84A00` (5.2:1).
+| Token | Value | Used for |
+|---|---|---|
+| `--primary-color` | `#0B3D2C` | dark green — header, footer, dark bands, headings |
+| `--accent-color` | `#2A7D2E` | brand green — buttons, icons, highlights |
+| `--secondary-color` | `#F0FFF0` | honeydew — alternating section bands |
+| `--divider-color` | `#E7ECEA` | card borders, table rules |
+| `--text-color` | `#555555` | body copy |
+| `--white-color` | `#FFFFFF` | page ground |
+
+White page, green furniture — the same arrangement as no-bs-yardwork.com. If you
+need a new colour, add it as a token first; don't hard-code a hex in a component
+rule. The green button on white measures 5.16:1, which passes WCAG AA.
+
+Two class-naming traps worth knowing, both already hit and fixed:
+
+- **Don't name a section band `.bg-dark`.** Bootstrap defines `.bg-dark` with
+  `!important` (`#212529`) and wins, painting the band charcoal. The dark green
+  bands use `.bg-forest`.
+- **Don't put an icon path in a CSS custom property set on the element.** A
+  `url()` inside a custom property resolves relative to the *stylesheet* that
+  substitutes it, not the document, so `images/x.svg` became `css/images/x.svg`
+  and 404'd. The What We Take icon masks are declared in `junk.css` with
+  `../images/` paths.
 
 ---
 
@@ -106,10 +147,10 @@ makes it read as safety signage. For orange *text* on a light background, use
 |---|---|
 | No `.preloader` | On the parent it is a full-screen overlay removed only by jQuery. If a script fails, the site is a green screen. Not worth the risk. |
 | No `text-anime-style-2` on headings | The GSAP SplitText treatment adds an invisible-text failure mode and delays the largest contentful paint. Plain headings are faster and safer. |
-| Solid sticky header, not transparent | Survives an empty hero image slot, legible on every page, and `position: sticky` gives an always-visible phone number with no JavaScript. |
 | `css/all.min.css`, not `css/all.css` | The parent's `index.html` requests `all.css`, which does not exist on the server. |
 | No `aggregateRating` in the structured data | The 4.9/23 rating belongs to the landscaping business. Claiming it here would be a Google structured-data violation. It goes in once this division earns its own. |
 | Reviews labelled "From No-BS Yardwork" | They are genuine, but they are not junk removal reviews. Labelling them is the whole point of the brand name. |
+| Solid dark-green sticky header, not the parent's transparent one | The parent's header is transparent until you scroll, which relies on a dark hero image sitting behind it. With the hero photo slot still empty that would leave white nav text on white. Same `#0B3D2C` as the parent's scrolled state. |
 
 ---
 
@@ -128,8 +169,8 @@ To route leads through the JotForm the yardwork site already uses, replace the
     formId: "260105131967250",
     base: "https://form.jotform.com/",
     windowTitle: "Request a Junk Removal Quote",
-    backgroundColor: "#FF6B00",
-    fontColor: "#141414",
+    backgroundColor: "#2A7D2E",
+    fontColor: "#FFFFFF",
     type: "1", height: 500, width: 700, openOnLoad: false
   });
 </script>

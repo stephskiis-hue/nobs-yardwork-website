@@ -1,16 +1,30 @@
 /*==========================================================================
-  junk.css — No BS Junk Removal division layer
+  junk.css — No BS Junk Removal
   ==========================================================================
 
   Loaded AFTER css/custom.css. custom.css is kept byte-identical to the copy
   on no-bs-yardwork.com so it can be re-synced from the parent site later —
   every junk-removal-specific rule lives in this file and nowhere else.
 
+  COLOUR POLICY: this file defines no colours of its own. Every value comes
+  from the tokens custom.css already declares, so the two sites stay in step
+  and re-syncing the parent's palette updates this one for free:
+
+      --primary-color    #0B3D2C   dark green — headers, footers, dark bands
+      --accent-color     #2A7D2E   brand green — buttons, icons, highlights
+      --secondary-color  #F0FFF0   honeydew — alternating section bands
+      --divider-color    #E7ECEA   card borders, table rules
+      --text-color       #555555   body copy
+      --white-color      #FFFFFF   page ground
+
+  White page, green furniture. If you need a new colour, add it to the list
+  above as a token first — do not hard-code a hex in a component rule.
+
   Contents
-    01. Division tokens
+    01. Tokens & section utilities
     02. Header / nav
     03. Buttons
-    04. Page header banner
+    04. Page header banner & hero
     05. Trust bar
     06. Reason cards
     07. What We Take grid
@@ -29,51 +43,42 @@
 
 
 /************************************/
-/***     01. Division tokens      ***/
+/***  01. Tokens & section utils  ***/
 /************************************/
 
 :root{
-	/* --- Inherited from No-BS Yardwork, deliberately unchanged. --- */
-	/* These are the family link: a customer who has seen the lawn site   */
-	/* should recognise this one instantly. Do not retune them.           */
-	--primary-color   : #0B3D2C;
-	--accent-color    : #2A7D2E;
-	--text-color      : #555555;
-	--secondary-color : #F0FFF0;
-
-	/* --- Division layer: hi-vis orange for the heavier work. --- */
-	--division-color  : #FF6B00;  /* fills, icons, CTA backgrounds        */
-	--division-hover  : #E05F00;
-	--division-text   : #B84A00;  /* orange TEXT on white — 5.2:1 contrast */
-	--on-division     : #141414;  /* text ON orange — 6.45:1 contrast      */
-	--asphalt         : #141414;  /* header, footer, heavy sections        */
-	--asphalt-soft    : #23262B;
-	--bone            : #F7F6F3;
-
-	--division-radius : 14px;
+	/* The only genuinely new value in this file — a corner radius, not a colour. */
+	--jr-radius: 14px;
 }
-
-/* White text on #FF6B00 is only 2.85:1 and fails WCAG AA. Orange always
-   pairs with --on-division, never with white. Where orange must appear as
-   text on a light background, --division-text is the accessible substitute. */
 
 body{
 	font-size: 17px;   /* blueprint: 17-18px minimum, read on a phone */
+	background-color: var(--white-color);
 }
 
 .section-space{ padding: 90px 0; }
 .section-space-sm{ padding: 60px 0; }
-.bg-bone{ background-color: var(--bone); }
-.bg-asphalt{ background-color: var(--asphalt); }
-.bg-asphalt h2,
-.bg-asphalt h3,
-.bg-asphalt h4,
-.bg-asphalt p,
-.bg-asphalt li{ color: var(--white-color); }
+
+/* Alternating bands. .bg-tint is the honeydew the parent uses between white
+   sections; .bg-forest is the parent's dark green, same value as the footer. */
+.bg-tint{ background-color: var(--secondary-color); }
+/* Named .bg-forest, not .bg-dark: Bootstrap already defines .bg-dark with
+   !important (#212529) and would win, painting these bands charcoal. */
+.bg-forest{ background-color: var(--primary-color); }
+.bg-forest h2,
+.bg-forest h3,
+.bg-forest h4,
+.bg-forest p,
+.bg-forest li,
+.bg-forest strong{ color: var(--white-color); }
+.bg-forest a{ color: var(--white-color); }
+
+/* Kept so older markup using .bg-bone still lands on the tint band. */
+.bg-bone{ background-color: var(--secondary-color); }
 
 .section-title h2{ font-size: 44px; font-weight: 800; text-transform: uppercase; }
-.section-title h3{ color: var(--division-text); }
-.bg-asphalt .section-title h3{ color: var(--division-color); }
+.section-title h3{ color: var(--accent-color); }
+.bg-forest .section-title h3{ color: var(--white-color); }
 .lead-in{ font-size: 19px; max-width: 760px; }
 
 
@@ -81,17 +86,17 @@ body{
 /***      02. Header / nav        ***/
 /************************************/
 
-/* The parent site leaves the header transparent so it floats over a dark
-   hero. This division runs a solid asphalt bar instead: it survives an
-   empty hero image slot, it is legible on every page without a banner
-   behind it, and it reads as the heavier side of the business.
-   `position: sticky` gives the blueprint's always-visible phone number
-   with no JavaScript involved. */
+/* The parent leaves the header transparent so it floats over a dark hero,
+   turning dark green only once scrolled. This site runs that dark green
+   permanently: it stays legible with an empty hero photo slot and on every
+   inner page, and `position: sticky` keeps the phone number on screen with
+   no JavaScript involved. Same colour as the parent's scrolled header and
+   its footer, so the family resemblance is exact. */
 header.main-header .header-sticky{
 	position: sticky;
 	top: 0;
-	background-color: var(--asphalt);
-	border-bottom: 3px solid var(--division-color);
+	background-color: var(--primary-color);
+	border-bottom: 3px solid var(--accent-color);
 	backdrop-filter: none;
 }
 
@@ -101,45 +106,39 @@ header.main-header .header-sticky{
 	font-weight: 800;
 	letter-spacing: .14em;
 	text-transform: uppercase;
-	color: var(--on-division);
-	background-color: var(--division-color);
+	color: var(--white-color);
+	background-color: var(--accent-color);
 	padding: 5px 9px;
 	border-radius: 6px;
 	line-height: 1;
 	white-space: nowrap;
 }
 
-.main-menu ul li a:hover{ color: var(--division-color); }
-.main-menu ul ul{ background-color: var(--asphalt-soft); }
-.main-menu ul ul li a:hover{ color: var(--division-color); }
-.contact-now-box .icon-box{ background-color: var(--division-color); }
-.contact-now-box:hover .icon-box{ background-color: var(--division-hover); }
-.contact-now-box .icon-box img{ filter: brightness(0); }
+.main-menu ul li a:hover{ color: var(--secondary-color); }
+.main-menu ul ul{ background-color: var(--accent-color); }
+.contact-now-box .icon-box{ background-color: var(--accent-color); }
+.contact-now-box:hover .icon-box{ background-color: var(--white-color); }
 .contact-now-box-content h3{ font-size: 20px; font-weight: 800; }
 /* The number is a tel: link, so without this it renders as default link blue. */
 .contact-now-box-content h3 a{ color: var(--white-color); text-decoration: none; }
-.contact-now-box-content h3 a:hover{ color: var(--division-color); }
+.contact-now-box-content h3 a:hover{ color: var(--secondary-color); }
 
 
 /************************************/
 /***        03. Buttons           ***/
 /************************************/
 
+/* .btn-default is deliberately NOT restyled — the parent's green pill with
+   the circular arrow badge is the brand's button and it carries over intact.
+   Only the typographic weight is nudged, and a ghost variant added for the
+   secondary action sitting beside it. */
 .btn-default{
-	background: var(--division-color);
-	color: var(--on-division) !important;
 	font-weight: 800;
 	text-transform: uppercase;
 	letter-spacing: .02em;
 }
-.btn-default::before{
-	background-color: var(--on-division);
-	background-image: url('../images/arrow-white.svg');
-}
-.btn-default:hover{ background: var(--division-hover); }
-.btn-default:hover::before{ background-color: var(--on-division); right: -3px; }
 
-/* Outlined secondary — used for "call" next to the primary "get a quote". */
+/* Outlined secondary — "call us" next to the primary "get a quote". */
 .btn-default.btn-ghost{
 	background: transparent;
 	color: var(--white-color) !important;
@@ -149,14 +148,15 @@ header.main-header .header-sticky{
 .btn-default.btn-ghost::before{ display: none; }
 .btn-default.btn-ghost:hover{
 	background: var(--white-color);
-	color: var(--asphalt) !important;
+	color: var(--primary-color) !important;
 }
+/* Same button, on a white or honeydew band instead of a dark one. */
 .btn-default.btn-ghost.on-light{
-	color: var(--asphalt) !important;
-	border-color: var(--asphalt);
+	color: var(--primary-color) !important;
+	border-color: var(--primary-color);
 }
 .btn-default.btn-ghost.on-light:hover{
-	background: var(--asphalt);
+	background: var(--primary-color);
 	color: var(--white-color) !important;
 }
 
@@ -164,7 +164,7 @@ header.main-header .header-sticky{
 
 
 /************************************/
-/***    04. Page header banner    ***/
+/***  04. Page header & hero      ***/
 /************************************/
 
 /* The parent pulls the banner up under a transparent header
@@ -173,11 +173,11 @@ header.main-header .header-sticky{
 .page-header{
 	margin-top: 0;
 	padding: 90px 0 80px;
-	background-color: var(--asphalt);
+	background-color: var(--primary-color);
 }
 .page-header::before{
-	background-color: var(--asphalt);
-	opacity: .72;
+	background-color: var(--primary-color);
+	opacity: .78;
 }
 .page-header-box h1{
 	font-size: 52px;
@@ -188,7 +188,7 @@ header.main-header .header-sticky{
 .page-header-box .breadcrumb{ margin-bottom: 0; }
 /* custom.css sets `.page-header-box ol li.breadcrumb-item a { color: inherit }`,
    which outranks a plainer selector — this has to match its specificity. */
-.page-header-box ol li.breadcrumb-item a{ color: var(--division-color); }
+.page-header-box ol li.breadcrumb-item a{ color: var(--secondary-color); }
 .page-header-box ol li.breadcrumb-item a:hover{ color: var(--white-color); }
 .page-header-box .breadcrumb li{ color: rgba(255,255,255,.75); }
 .page-header-box .breadcrumb li + li::before{ content: "/"; padding: 0 10px; }
@@ -196,7 +196,7 @@ header.main-header .header-sticky{
 
 /* ---- Homepage hero ---- */
 .junk-hero{
-	background-color: var(--asphalt);
+	background-color: var(--primary-color);
 	background-size: cover;
 	background-position: center;
 	position: relative;
@@ -206,7 +206,7 @@ header.main-header .header-sticky{
 	content: '';
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(90deg, rgba(20,20,20,.94) 0%, rgba(20,20,20,.72) 100%);
+	background: linear-gradient(90deg, rgba(11,61,44,.95) 0%, rgba(11,61,44,.75) 100%);
 }
 .junk-hero .container{ position: relative; z-index: 2; }
 .junk-hero h1{
@@ -217,7 +217,7 @@ header.main-header .header-sticky{
 	text-transform: uppercase;
 	margin-bottom: 22px;
 }
-.junk-hero h1 .accent{ color: var(--division-color); }
+.junk-hero h1 .accent{ color: var(--accent-color); }
 .junk-hero .hero-sub{
 	font-size: 20px;
 	color: rgba(255,255,255,.9);
@@ -235,20 +235,20 @@ header.main-header .header-sticky{
 /************************************/
 
 .trust-bar{
-	background-color: var(--accent-color);
-	border-left: 6px solid var(--division-color);
-	border-radius: var(--division-radius);
+	background-color: var(--white-color);
+	border-left: 6px solid var(--accent-color);
+	border-radius: var(--jr-radius);
 	padding: 20px 26px;
 	margin: 28px 0 30px;
 	max-width: 660px;
 }
 .trust-bar p{
 	margin: 0;
-	color: var(--white-color);
+	color: var(--text-color);
 	font-size: 17px;
 	line-height: 1.55em;
 }
-.trust-bar strong{ color: var(--white-color); font-weight: 800; }
+.trust-bar strong{ color: var(--primary-color); font-weight: 800; }
 
 .trust-stats{
 	display: flex;
@@ -258,15 +258,14 @@ header.main-header .header-sticky{
 	padding: 0;
 	margin: 0;
 }
-.trust-stats li{ color: var(--white-color); }
 .trust-stats .num{
 	display: block;
 	font-size: 40px;
 	font-weight: 800;
 	line-height: 1;
-	color: var(--division-color);
+	color: var(--accent-color);
 }
-.trust-stats .lab{ font-size: 15px; color: rgba(255,255,255,.8); }
+.trust-stats .lab{ font-size: 15px; color: var(--text-color); }
 
 
 /************************************/
@@ -276,8 +275,8 @@ header.main-header .header-sticky{
 .reason-card{
 	background-color: var(--white-color);
 	border: 1px solid var(--divider-color);
-	border-top: 5px solid var(--division-color);
-	border-radius: var(--division-radius);
+	border-top: 5px solid var(--accent-color);
+	border-radius: var(--jr-radius);
 	padding: 34px 30px;
 	height: 100%;
 }
@@ -285,8 +284,8 @@ header.main-header .header-sticky{
 	width: 56px;
 	height: 56px;
 	border-radius: 12px;
-	background-color: var(--division-color);
-	color: var(--on-division);
+	background-color: var(--accent-color);
+	color: var(--white-color);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -295,6 +294,7 @@ header.main-header .header-sticky{
 .reason-card .rc-icon svg{ width: 30px; height: 30px; }
 .reason-card h3{ font-size: 22px; margin-bottom: 12px; text-transform: uppercase; }
 .reason-card p{ margin-bottom: 0; }
+.reason-card a{ color: var(--accent-color); }
 
 
 /************************************/
@@ -320,7 +320,7 @@ header.main-header .header-sticky{
 	height: 100%;
 	padding: 24px 12px;
 	border: 1px solid var(--divider-color);
-	border-radius: var(--division-radius);
+	border-radius: var(--jr-radius);
 	background-color: var(--white-color);
 	color: var(--primary-color);
 	font-weight: 700;
@@ -329,23 +329,28 @@ header.main-header .header-sticky{
 	text-decoration: none;
 	transition: all .25s ease-in-out;
 }
-/* The icons are masked rather than loaded as <img>: an external SVG file is a
-   separate document and never inherits currentColor, so masking is what lets
-   one declaration tint all twelve. Each <li> supplies its own file through
-   the --icon custom property. */
+.take-grid a:hover{
+	border-color: var(--accent-color);
+	background-color: var(--secondary-color);
+	transform: translateY(-3px);
+}
+
 /* Longhand, not the `mask:` shorthand — the shorthand's `position / size`
    syntax does not reliably resolve when the value comes from var().
 
-   The mask URLs live here rather than in a --icon custom property set on the
+   The mask URLs live here rather than in a custom property set on the
    element: a url() inside a custom property resolves relative to the
    stylesheet where it is substituted, not the document, so `images/x.svg`
    set inline on the HTML resolved to `css/images/x.svg` and 404'd. Declared
-   here, `../images/` is correct and stays correct. */
+   here, `../images/` is correct and stays correct.
+
+   Masking (rather than <img>) is what lets one declaration recolour all
+   twelve icons: an external SVG file never inherits currentColor. */
 .take-grid .ti{
 	display: block;
 	width: 44px;
 	height: 44px;
-	background-color: var(--division-color);
+	background-color: var(--accent-color);
 	-webkit-mask-repeat: no-repeat;
 	mask-repeat: no-repeat;
 	-webkit-mask-position: center;
@@ -353,6 +358,8 @@ header.main-header .header-sticky{
 	-webkit-mask-size: contain;
 	mask-size: contain;
 }
+.take-grid a:hover .ti{ background-color: var(--primary-color); }
+
 .ti-furniture   { -webkit-mask-image: url('../images/icon-take-furniture.svg');   mask-image: url('../images/icon-take-furniture.svg'); }
 .ti-appliance   { -webkit-mask-image: url('../images/icon-take-appliance.svg');   mask-image: url('../images/icon-take-appliance.svg'); }
 .ti-mattress    { -webkit-mask-image: url('../images/icon-take-mattress.svg');    mask-image: url('../images/icon-take-mattress.svg'); }
@@ -365,16 +372,11 @@ header.main-header .header-sticky{
 .ti-estate      { -webkit-mask-image: url('../images/icon-take-estate.svg');      mask-image: url('../images/icon-take-estate.svg'); }
 .ti-scrap       { -webkit-mask-image: url('../images/icon-take-scrap-metal.svg'); mask-image: url('../images/icon-take-scrap-metal.svg'); }
 .ti-piano       { -webkit-mask-image: url('../images/icon-take-piano.svg');       mask-image: url('../images/icon-take-piano.svg'); }
-.take-grid a:hover .ti{ background-color: var(--asphalt); }
-.take-grid a:hover{
-	border-color: var(--division-color);
-	background-color: var(--bone);
-	transform: translateY(-3px);
-}
 
 .take-list{
-	background-color: var(--bone);
-	border-radius: var(--division-radius);
+	background-color: var(--white-color);
+	border: 1px solid var(--divider-color);
+	border-radius: var(--jr-radius);
 	padding: 28px 30px;
 	font-size: 16px;
 	line-height: 2em;
@@ -391,9 +393,10 @@ header.main-header .header-sticky{
 	border-collapse: separate;
 	border-spacing: 0;
 	border: 1px solid var(--divider-color);
-	border-radius: var(--division-radius);
+	border-radius: var(--jr-radius);
 	overflow: hidden;
 	margin-bottom: 18px;
+	background-color: var(--white-color);
 }
 .price-table caption{
 	caption-side: top;
@@ -409,7 +412,7 @@ header.main-header .header-sticky{
 	border-bottom: 1px solid var(--divider-color);
 }
 .price-table thead th{
-	background-color: var(--asphalt);
+	background-color: var(--primary-color);
 	color: var(--white-color);
 	font-size: 15px;
 	text-transform: uppercase;
@@ -417,25 +420,26 @@ header.main-header .header-sticky{
 }
 .price-table tbody tr:last-child th,
 .price-table tbody tr:last-child td{ border-bottom: 0; }
-.price-table tbody tr:nth-child(even){ background-color: var(--bone); }
+.price-table tbody tr:nth-child(even){ background-color: var(--secondary-color); }
 .price-table th{ font-weight: 600; color: var(--primary-color); }
 .price-table .price{
 	font-weight: 800;
 	font-size: 20px;
-	color: var(--division-text);
+	color: var(--accent-color);
 	white-space: nowrap;
 	text-align: right;
+	font-variant-numeric: tabular-nums;
 }
 .price-table .note{ font-size: 14px; color: var(--text-color); font-weight: 400; }
 
 /* Every unset price is wrapped in this so it is impossible to publish by
    accident — see the PRICES block at the top of pricing.html. */
 .price-tbd{
-	background-color: #FFF3E6;
-	border: 1px dashed var(--division-color);
+	background-color: var(--secondary-color);
+	border: 1px dashed var(--accent-color);
 	border-radius: 6px;
 	padding: 1px 8px;
-	color: var(--division-text);
+	color: var(--accent-color);
 }
 
 .price-includes{ list-style: none; padding: 0; margin: 0 0 30px; }
@@ -459,6 +463,7 @@ header.main-header .header-sticky{
 	background-position: center;
 	background-repeat: no-repeat;
 }
+.bg-forest .price-includes li{ color: var(--white-color); }
 
 .price-excludes{ list-style: none; padding: 0; margin: 0 0 24px; }
 .price-excludes li{
@@ -487,9 +492,9 @@ header.main-header .header-sticky{
 /************************************/
 
 .callout{
-	border-left: 6px solid var(--division-color);
-	background-color: var(--bone);
-	border-radius: var(--division-radius);
+	border-left: 6px solid var(--accent-color);
+	background-color: var(--secondary-color);
+	border-radius: var(--jr-radius);
 	padding: 26px 30px;
 	margin: 30px 0;
 }
@@ -497,11 +502,14 @@ header.main-header .header-sticky{
 	font-size: 20px;
 	text-transform: uppercase;
 	margin-bottom: 10px;
-	color: var(--division-text);
+	color: var(--primary-color);
 }
 .callout p:last-child{ margin-bottom: 0; }
-.bg-asphalt .callout{ background-color: var(--asphalt-soft); }
-.bg-asphalt .callout h3{ color: var(--division-color); }
+.callout a:not(.btn-default){ color: var(--accent-color); }
+/* On a honeydew band the callout needs to separate from its ground. */
+.bg-tint .callout,
+.bg-bone .callout{ background-color: var(--white-color); }
+
 
 
 /************************************/
@@ -516,9 +524,9 @@ header.main-header .header-sticky{
 }
 .beforeafter figure{
 	margin: 0;
-	border-radius: var(--division-radius);
+	border-radius: var(--jr-radius);
 	overflow: hidden;
-	background-color: var(--bone);
+	background-color: var(--secondary-color);
 }
 .beforeafter img{ width: 100%; height: auto; display: block; }
 .beforeafter figcaption{
@@ -527,30 +535,26 @@ header.main-header .header-sticky{
 	letter-spacing: .12em;
 	text-transform: uppercase;
 	padding: 10px 14px;
-	color: var(--on-division);
-	background-color: var(--division-color);
-}
-.beforeafter figure.is-after figcaption{
-	background-color: var(--accent-color);
 	color: var(--white-color);
+	background-color: var(--primary-color);
 }
+.beforeafter figure.is-after figcaption{ background-color: var(--accent-color); }
 
 
 /************************************/
 /***      11. Photo slots         ***/
 /************************************/
 
-/* Deliberately loud. These mark shots that have not been taken yet — the
+/* Deliberately visible. These mark shots that have not been taken yet — the
    brief is written into the block so nobody has to go looking for it, and
    no stock photography is ever substituted. Delete the whole <div> and drop
    in the named file. */
 .photo-slot{
-	border: 3px dashed var(--division-color);
-	border-radius: var(--division-radius);
-	background-color: #FFF7F0;
+	border: 3px dashed var(--accent-color);
+	border-radius: var(--jr-radius);
+	background-color: var(--secondary-color);
 	padding: 30px 26px;
 	text-align: center;
-	color: var(--division-text);
 	margin-bottom: 24px;
 }
 .photo-slot .ps-label{
@@ -559,17 +563,19 @@ header.main-header .header-sticky{
 	font-weight: 800;
 	letter-spacing: .14em;
 	text-transform: uppercase;
-	background-color: var(--division-color);
-	color: var(--on-division);
+	background-color: var(--accent-color);
+	color: var(--white-color);
 	padding: 5px 10px;
 	border-radius: 6px;
 	margin-bottom: 12px;
 }
-.photo-slot p{ margin: 0 0 6px; font-size: 16px; color: var(--asphalt); }
+.photo-slot p{ margin: 0 0 6px; font-size: 16px; color: var(--text-color); }
+.photo-slot strong{ color: var(--primary-color); }
 .photo-slot code{
 	font-size: 14px;
-	color: var(--division-text);
-	background: rgba(255,107,0,.12);
+	color: var(--primary-color);
+	background: var(--white-color);
+	border: 1px solid var(--divider-color);
 	padding: 2px 7px;
 	border-radius: 4px;
 }
@@ -591,10 +597,11 @@ header.main-header .header-sticky{
 .steps li{
 	counter-increment: step;
 	background-color: var(--white-color);
-	border-radius: var(--division-radius);
+	border-radius: var(--jr-radius);
 	padding: 30px 26px;
 	border: 1px solid var(--divider-color);
 }
+/* Numbered because the four steps genuinely are a sequence. */
 .steps li::before{
 	content: counter(step);
 	display: flex;
@@ -603,8 +610,8 @@ header.main-header .header-sticky{
 	width: 46px;
 	height: 46px;
 	border-radius: 50%;
-	background-color: var(--division-color);
-	color: var(--on-division);
+	background-color: var(--accent-color);
+	color: var(--white-color);
 	font-size: 22px;
 	font-weight: 800;
 	margin-bottom: 18px;
@@ -620,11 +627,11 @@ header.main-header .header-sticky{
 .review-card{
 	background-color: var(--white-color);
 	border: 1px solid var(--divider-color);
-	border-radius: var(--division-radius);
+	border-radius: var(--jr-radius);
 	padding: 30px;
 	height: 100%;
 }
-.review-card .stars{ color: var(--division-color); font-size: 18px; letter-spacing: 2px; margin-bottom: 14px; }
+.review-card .stars{ color: var(--accent-color); font-size: 18px; letter-spacing: 2px; margin-bottom: 14px; }
 .review-card blockquote{ margin: 0 0 20px; font-size: 17px; line-height: 1.7em; color: var(--text-color); }
 .review-card .reviewer{ display: flex; align-items: center; gap: 14px; }
 .review-card .reviewer img{ width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
@@ -633,7 +640,7 @@ header.main-header .header-sticky{
 
 /* Reviews carried over from the landscaping side are always visually
    distinct and labelled, never presented as junk removal reviews. */
-.review-card.is-carryover{ border-left: 5px solid var(--accent-color); background-color: var(--secondary-color); }
+.review-card.is-carryover{ border-left: 5px solid var(--accent-color); }
 .carryover-flag{
 	display: inline-block;
 	font-size: 12px;
@@ -652,8 +659,9 @@ header.main-header .header-sticky{
 	border-collapse: separate;
 	border-spacing: 0;
 	border: 1px solid var(--divider-color);
-	border-radius: var(--division-radius);
+	border-radius: var(--jr-radius);
 	overflow: hidden;
+	background-color: var(--white-color);
 }
 .where-table th,
 .where-table td{ padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--divider-color); vertical-align: top; }
@@ -666,7 +674,7 @@ header.main-header .header-sticky{
 }
 .where-table tbody tr:last-child th,
 .where-table tbody tr:last-child td{ border-bottom: 0; }
-.where-table tbody tr:nth-child(even){ background-color: var(--bone); }
+.where-table tbody tr:nth-child(even){ background-color: var(--secondary-color); }
 .where-table th{ font-weight: 600; color: var(--primary-color); }
 
 .table-scroll{ overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -679,8 +687,8 @@ header.main-header .header-sticky{
 .quote-card{
 	background-color: var(--white-color);
 	border: 1px solid var(--divider-color);
-	border-top: 5px solid var(--division-color);
-	border-radius: var(--division-radius);
+	border-top: 5px solid var(--accent-color);
+	border-radius: var(--jr-radius);
 	padding: 34px 30px;
 	height: 100%;
 }
@@ -691,8 +699,8 @@ header.main-header .header-sticky{
 	width: 40px;
 	height: 40px;
 	border-radius: 50%;
-	background-color: var(--division-color);
-	color: var(--on-division);
+	background-color: var(--accent-color);
+	color: var(--white-color);
 	font-weight: 800;
 	font-size: 19px;
 	margin-bottom: 16px;
@@ -721,12 +729,14 @@ header.main-header .header-sticky{
 .junk-form input:focus,
 .junk-form select:focus,
 .junk-form textarea:focus{
-	outline: 3px solid var(--division-color);
+	outline: 3px solid var(--accent-color);
 	outline-offset: 2px;
-	border-color: var(--division-color);
+	border-color: var(--accent-color);
 }
 .junk-form textarea{ min-height: 130px; resize: vertical; }
 .junk-form .form-note{ font-size: 14px; color: var(--text-color); }
+.junk-form .form-note a{ color: var(--accent-color); }
+.junk-form button.btn-default{ cursor: pointer; }
 
 
 /************************************/
@@ -746,7 +756,7 @@ header.main-header .header-sticky{
 		right: 0;
 		bottom: 0;
 		z-index: 999;
-		border-top: 2px solid var(--asphalt);
+		border-top: 2px solid var(--primary-color);
 	}
 	.mobile-call-bar a{
 		display: flex;
@@ -759,8 +769,8 @@ header.main-header .header-sticky{
 		text-transform: uppercase;
 		text-decoration: none;
 	}
-	.mobile-call-bar .mcb-call{ background-color: var(--division-color); color: var(--on-division); }
-	.mobile-call-bar .mcb-text{ background-color: var(--asphalt); color: var(--white-color); }
+	.mobile-call-bar .mcb-call{ background-color: var(--accent-color); color: var(--white-color); }
+	.mobile-call-bar .mcb-text{ background-color: var(--primary-color); color: var(--white-color); }
 	.mobile-call-bar svg{ width: 20px; height: 20px; }
 	/* Keep the bar from covering the end of the page. */
 	body{ padding-bottom: 58px; }
@@ -787,10 +797,21 @@ header.main-header .header-sticky{
 /***      17. Responsive          ***/
 /************************************/
 
+/* This site's nav carries six items plus the phone block, two more than the
+   parent's. custom.css pads every item 14px, which pushes "What We Take" onto
+   a second line on a 1280px laptop — tighten the spacing before that happens. */
+@media only screen and (max-width: 1400px){
+	.main-menu ul li{ margin: 0 1px; }
+	.main-menu ul li a{ padding: 14px 9px !important; font-size: 15px; }
+	.contact-now-box .icon-box{ margin-right: 12px; }
+}
+
 @media only screen and (max-width: 1200px){
 	.junk-hero h1{ font-size: 54px; }
 	.section-title h2{ font-size: 38px; }
 	.take-grid{ grid-template-columns: repeat(4, 1fr); }
+	.main-menu ul li a{ padding: 14px 7px !important; font-size: 14px; }
+	.contact-now-box-content p{ display: none; }
 }
 
 @media only screen and (max-width: 991px){
@@ -808,7 +829,6 @@ header.main-header .header-sticky{
 }
 
 @media only screen and (max-width: 767px){
-	body{ font-size: 17px; }
 	.junk-hero h1{ font-size: 34px; }
 	.page-header-box h1{ font-size: 29px; }
 	.section-title h2{ font-size: 27px; }
@@ -833,7 +853,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible{
-	outline: 3px solid var(--division-color);
+	outline: 3px solid var(--accent-color);
 	outline-offset: 3px;
 	border-radius: 4px;
 }
@@ -844,8 +864,8 @@ textarea:focus-visible{
 	top: 0;
 	z-index: 1000;
 	padding: 12px 20px;
-	background-color: var(--division-color);
-	color: var(--on-division);
+	background-color: var(--accent-color);
+	color: var(--white-color);
 	font-weight: 800;
 	text-decoration: none;
 }
