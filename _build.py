@@ -425,11 +425,11 @@ PAGE = """<!doctype html>
     </script>
 
     <style>
-      /* Mobile nav colours, matched to the division palette. */
-      .slicknav_btn {{ background-color: #FF6B00 !important; border-radius: 12px !important; }}
-      .slicknav_btn .slicknav_icon-bar {{ background-color: #141414 !important; }}
-      .slicknav_nav {{ background-color: #141414 !important; }}
-      body {{ font-family: "Plus Jakarta Sans", sans-serif; }}
+      /* Mobile nav colours. Same values the parent site inlines on every page
+         (#1b3d2f), so the hamburger menu matches no-bs-yardwork.com exactly. */
+      .slicknav_btn {{ background-color: #1b3d2f !important; border-radius: 12px !important; }}
+      .slicknav_nav {{ background-color: #1b3d2f !important; }}
+      body {{ font-family: "Plus Jakarta Sans", sans-serif; background-color: #ffffff; }}
     </style>
 {schema}  </head>
   <body class="{body_class}">
