@@ -105,6 +105,52 @@ on Windows install it from python.org, or use `npx serve` if you have Node.
 just the domain in a browser. To check a change before it is public, upload to a
 staging subfolder rather than the document root.
 
+### Deploying to Railway (always-on staging URL)
+
+`Dockerfile` + `deploy/` give you a live URL that redeploys on every push.
+
+It runs **php:apache**, not a static file server, on purpose: production is
+cPanel + Apache + PHP, so this image runs the *same* `.htaccess` and the *same*
+`form-process.php`. Extensionless URLs, the 404 page, gzip, cache headers and
+the quote form all behave exactly as they will on the real host.
+
+Setup:
+
+1. Railway → **New Project → Deploy from GitHub repo** → pick this repo.
+2. **Settings → Root Directory → `junk-removal`.** Miss this and Railway tries
+   to build the yardwork site instead.
+3. Railway auto-detects the Dockerfile. No build command, no start command, no
+   environment variables needed — `$PORT` is handled in `deploy/entrypoint.sh`.
+4. **Settings → Networking → Generate Domain** for the `*.up.railway.app` URL.
+
+Verified locally with `docker build` + `docker run`: all 14 extensionless URLs
+return 200, `/pricing.html` 301s to `/pricing`, the custom 404 renders, gzip and
+cache headers are applied, build tooling under `_pages/`, `_build.py`, `deploy/`
+and `Dockerfile` returns 403, and the quote form POSTs through to `thanks.html`
+with validation, the honeypot and the header-injection guard all behaving.
+
+**The Railway URL is deliberately `noindex`.** `deploy/railway.conf` sets
+`X-Robots-Tag: noindex, nofollow, noarchive` on every response. Without it,
+Google can index a staging copy carrying placeholder prices, which then competes
+with the real no-bs-junkremoval.com later — a duplicate-content mess that is
+tedious to unwind. That header lives in the container config, *not* in
+`.htaccess`, so it can never follow the site to production.
+
+Two things to leave alone while you are on Railway:
+
+- **Keep the canonical-host rule in `.htaccess` commented out.** Uncommenting it
+  redirects the Railway URL to a domain that does not resolve yet.
+- **The `.github/workflows/deploy.yml` FTP workflow is unrelated** and stays
+  disabled. Railway and cPanel are separate paths; nothing here touches the live
+  yardwork site.
+
+Locally, the same image runs with:
+
+```bash
+docker build -t nobs-junk .
+docker run --rm -p 8080:8080 nobs-junk    # then open http://localhost:8080
+```
+
 ### Design system
 
 `css/custom.css` is a **byte-identical copy** from no-bs-yardwork.com so it can be

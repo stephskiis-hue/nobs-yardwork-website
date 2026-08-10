@@ -1,0 +1,9 @@
+.git
+.github
+_pages
+_build.py
+images/_make-icons.py
+MIGRATE.md
+__pycache__
+*.pyc
+.DS_Store
