@@ -1,0 +1,17 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Secrets — never commit these
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Node (if ever used)
+node_modules/

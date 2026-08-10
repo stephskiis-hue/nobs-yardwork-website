@@ -1,0 +1,87 @@
+# ----------------------------------------------------------------------
+# no-bs-junkremoval.com
+#
+# Mirrors the conventions on no-bs-yardwork.com: extensionless URLs, long
+# cache on static assets, short cache on HTML, gzip.
+#
+# This file works in both hosting arrangements:
+#   - as the document root of an addon domain  (the intended setup)
+#   - as a subdirectory of no-bs-yardwork.com  (the fallback, works today)
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# BROWSER CACHING
+# ----------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType text/html "access plus 1 hour"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(jpg|jpeg|png|webp|svg|ico|css|js|woff|woff2)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
+</IfModule>
+
+# ----------------------------------------------------------------------
+# GZIP
+# ----------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# ----------------------------------------------------------------------
+# URL REWRITING
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# ......................................................................
+# CANONICAL HOST — LEAVE COMMENTED UNTIL THE DOMAIN IS LIVE
+#
+# Until no-bs-junkremoval.com resolves, this site is reachable as a
+# subdirectory of no-bs-yardwork.com. Uncommenting these three lines before
+# DNS is working would 301 every visitor to a domain that does not answer,
+# making the site unreachable by any route.
+#
+# AFTER the addon domain is set up and resolving, uncomment to force the
+# junk domain and stop the subdirectory copy competing in search results.
+# The canonical tags on every page already point at the junk domain, which
+# is enough on its own in the meantime.
+# ......................................................................
+# RewriteCond %{HTTP_HOST} !^(www\.)?no-bs-junkremoval\.com$ [NC]
+# RewriteRule ^(.*)$ https://www.no-bs-junkremoval.com/$1 [R=301,L]
+
+# Strip .html when it is typed or linked explicitly.
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.html\ HTTP/
+RewriteRule ^(.*)\.html$ /$1 [R=301,L]
+
+# Map the extensionless URL back to the file on disk.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [NC,L]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# 404
+# ----------------------------------------------------------------------
+ErrorDocument 404 /404.html
+
+# ----------------------------------------------------------------------
+# Keep build tooling off the public web.
+# ----------------------------------------------------------------------
+<FilesMatch "^(_build\.py|_make-icons\.py)$">
+  Require all denied
+</FilesMatch>

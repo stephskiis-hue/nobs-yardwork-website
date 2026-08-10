@@ -1,0 +1,147 @@
+      <div class="page-header">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-12">
+              <div class="page-header-box">
+                <h1>Get your free quote</h1>
+                <nav aria-label="Breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Get a Quote</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section-space">
+        <div class="container">
+          <div class="section-title text-center">
+            <h3 class="wow fadeInUp">three ways</h3>
+            <h2>Pick whichever is easiest</h2>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="quote-card">
+                <span class="qc-num">1</span>
+                <h3>Text us a photo</h3>
+                <p>
+                  Fastest option by a mile. Snap it, send it, and you'll usually get a price back
+                  within the hour.
+                </p>
+                <a href="sms:{PHONE_E164}" class="btn-default">Text {PHONE_DISPLAY}</a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="quote-card">
+                <span class="qc-num">2</span>
+                <h3>Call us</h3>
+                <p>
+                  A real person, seven days a week. Not a call centre in another province.
+                </p>
+                <a href="tel:{PHONE_TEL}" class="btn-default">Call {PHONE_DISPLAY}</a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="quote-card">
+                <span class="qc-num">3</span>
+                <h3>Fill out the form</h3>
+                <p>
+                  Tell us what you've got and we'll get back to you the same day.
+                </p>
+                <a href="#quote-form" class="btn-default">Go to the form</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-space bg-bone" id="quote-form">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="section-title text-center">
+                <h2>Tell us what you've got</h2>
+              </div>
+
+              <!--
+                Posts to form-process.php (plain POST, no JavaScript required, so it
+                still works if scripts fail). On success the visitor lands on
+                thanks.html.
+
+                Prefer to route leads through the JotForm your yardwork site already
+                uses? Replace this whole <form> with the JotForm embed — the README
+                has the snippet and the form ID.
+              -->
+              <form class="junk-form" action="form-process.php" method="post">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="name">Your name</label>
+                    <input type="text" id="name" name="name" required autocomplete="name" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" required autocomplete="tel" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required autocomplete="email" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="postal">Postal code</label>
+                    <input type="text" id="postal" name="postal" autocomplete="postal-code"
+                           placeholder="R2J 4A9" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="preferred">Preferred date</label>
+                    <input type="date" id="preferred" name="preferred" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="jobtype">What kind of job?</label>
+                    <select id="jobtype" name="jobtype">
+                      <option value="">Choose one</option>
+                      <option>Single item or small load</option>
+                      <option>Furniture / mattress</option>
+                      <option>Appliances</option>
+                      <option>Hot tub</option>
+                      <option>Renovation debris</option>
+                      <option>Concrete or heavy material</option>
+                      <option>Shed, deck or fence</option>
+                      <option>Garage, basement or estate cleanout</option>
+                      <option>Commercial / job site</option>
+                      <option>Snow removal or hauling</option>
+                      <option>Something else</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <label for="details">What are you getting rid of?</label>
+                    <textarea id="details" name="details" required
+                              placeholder="A couch, two chairs and about ten bags of reno debris in the back lane."></textarea>
+                  </div>
+                </div>
+
+                <!-- Simple honeypot: real people leave this empty, most bots do not. -->
+                <p style="position: absolute; left: -9999px" aria-hidden="true">
+                  <label for="website">Leave this field empty</label>
+                  <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+                </p>
+
+                <button type="submit" class="btn-default">Send my request</button>
+
+                <p class="form-note" style="margin-top: 20px">
+                  Got a photo? <a href="sms:{PHONE_E164}">Text it to {PHONE_DISPLAY}</a> &mdash;
+                  it's the fastest way to get an accurate price, and it beats describing a pile in
+                  words.
+                </p>
+                <p class="form-note">
+                  No obligation. No pressure. No sales script. If we're not the right fit, we'll
+                  say so.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
