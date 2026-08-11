@@ -45,9 +45,15 @@ JOTFORM_ID = "260105131967250"
 # ---------------------------------------------------------------------------
 NAV = [
     ("What We Take", "what-we-take.html", [
-        ("All Categories", "what-we-take.html"),
-        ("Hot Tub Removal", "hot-tub-removal-winnipeg.html"),
+        # All twelve categories have their own page; the dropdown carries the
+        # six most-searched and the hub page carries the full set, because a
+        # thirteen-item dropdown is unusable on a laptop.
+        ("All 12 Categories", "what-we-take.html"),
+        ("Furniture Removal", "furniture-removal-winnipeg.html"),
         ("Appliance Removal", "appliance-removal-winnipeg.html"),
+        ("Mattress Disposal", "mattress-disposal-winnipeg.html"),
+        ("Hot Tub Removal", "hot-tub-removal-winnipeg.html"),
+        ("Renovation Debris", "renovation-debris-removal-winnipeg.html"),
         ("Concrete &amp; Heavy Material", "concrete-removal-winnipeg.html"),
     ]),
     ("Pricing", "pricing.html", []),
@@ -586,6 +592,268 @@ PAGES = [
           ]),
       ]),
 
+    # ---- The nine remaining What We Take categories -----------------------
+    P("furniture-removal-winnipeg",
+      "Furniture Removal Winnipeg | Couches, Sectionals &amp; Sofa Beds",
+      "Furniture removal in Winnipeg. Couches, sectionals, sofa beds, dressers, tables and "
+      "carpet carried out and hauled away. Anything still usable is offered to local charities "
+      "first. Free quotes.",
+      crumbs=[("What We Take", "/what-we-take"), ("Furniture Removal", "/furniture-removal-winnipeg")],
+      schema=[
+          service_schema("Furniture Removal Winnipeg",
+                         "Removal of couches, sectionals, sofa beds, dressers, tables, desks and "
+                         "carpet from homes and apartments in Winnipeg, including stairs and "
+                         "tight-access carries.",
+                         f"{SITE}/furniture-removal-winnipeg", "Furniture Removal"),
+          faq_schema([
+              ("Do I have to move the furniture outside first?",
+               "No. We carry it out from wherever it sits — upstairs bedroom, finished basement, "
+               "third-floor walk-up. You point at it, we do the lifting. That is the service."),
+              ("What happens to furniture that is still in good shape?",
+               "It gets offered to local Winnipeg charities and reuse centres before anything else. "
+               "A couch someone can still use is worth more donated than buried, and it keeps our "
+               "landfill costs down, which is part of how the pricing works."),
+              ("Can you get a sectional through a narrow doorway?",
+               "Usually yes. Most sectionals come apart, and where they do not we can often take the "
+               "legs and back off. Tell us the access when you book and we will bring the right tools."),
+              ("Will you damage my walls or floors?",
+               "We put down floor protection and pad the doorframes on interior carries. If a piece "
+               "genuinely will not fit without damage, we will stop and tell you before anything "
+               "gets scratched."),
+          ]),
+      ]),
+
+    P("mattress-disposal-winnipeg",
+      "Mattress Disposal Winnipeg | Mattress &amp; Box Spring Removal",
+      "Mattress disposal in Winnipeg. Curbside pickup will not take them and they do not fit in a "
+      "car. We bag them on site and take them to a facility that strips the metal and foam for "
+      "recycling.",
+      crumbs=[("What We Take", "/what-we-take"), ("Mattress Disposal", "/mattress-disposal-winnipeg")],
+      schema=[
+          service_schema("Mattress Disposal Winnipeg",
+                         "Removal and recycling of mattresses and box springs in Winnipeg, bagged on "
+                         "site and taken to a facility that recovers the steel and foam.",
+                         f"{SITE}/mattress-disposal-winnipeg", "Mattress Disposal"),
+          faq_schema([
+              ("Why can I not just put a mattress at the curb?",
+               "City of Winnipeg garbage collection does not take mattresses or box springs with "
+               "regular pickup. Left at the curb they usually just sit there, and in an alley they "
+               "attract a bylaw complaint."),
+              ("Do you bag them?",
+               "Yes, on site before we carry them out. It keeps dust, fibres and anything living in "
+               "an old mattress out of your hallway and out of our trailer."),
+              ("What if the mattress has bed bugs?",
+               "Tell us before we arrive. We will still take it, but it has to be sealed properly "
+               "and handled separately so nothing spreads to the next job. Not telling us is how a "
+               "problem becomes several people's problem."),
+              ("Where does it end up?",
+               "At a facility that strips the steel springs for scrap and the foam and fibre for "
+               "recycling, rather than straight to the landfill."),
+          ]),
+      ]),
+
+    P("e-waste-removal-winnipeg",
+      "E-Waste Removal Winnipeg | TVs, Computers &amp; Electronics Recycling",
+      "E-waste removal in Winnipeg. TVs, monitors, computers, printers and satellite dishes taken "
+      "to a certified EPRA Manitoba recycler — not the dump, where most of it is illegal anyway.",
+      crumbs=[("What We Take", "/what-we-take"), ("E-Waste Removal", "/e-waste-removal-winnipeg")],
+      schema=[
+          service_schema("E-Waste and Electronics Removal Winnipeg",
+                         "Collection of televisions, monitors, computers, printers, cables and "
+                         "satellite dishes in Winnipeg for certified EPRA Manitoba e-waste recycling.",
+                         f"{SITE}/e-waste-removal-winnipeg", "Electronics Recycling"),
+          faq_schema([
+              ("What counts as e-waste?",
+               "Televisions, monitors, desktops, laptops, printers, scanners, stereo equipment, "
+               "cables, keyboards, satellite dishes and most things with a circuit board in them."),
+              ("What happens to the data on my old computer?",
+               "We do not wipe drives, and you should not assume anyone else will either. Pull the "
+               "hard drive out before we take the tower, or physically destroy it. That is the only "
+               "advice we will give you that we can actually stand behind."),
+              ("Is it true you cannot put a TV in the garbage?",
+               "Correct. Most electronics are banned from Manitoba landfills because of the lead, "
+               "mercury and flame retardants in them. They have to go to a certified recycler."),
+              ("Do you take old tube TVs?",
+               "Yes. The big CRT sets are the heaviest and most awkward thing in this category, and "
+               "they are exactly the reason people call rather than deal with it themselves."),
+          ]),
+      ]),
+
+    P("renovation-debris-removal-winnipeg",
+      "Renovation Debris Removal Winnipeg | Construction Waste Haul-Away",
+      "Renovation and construction debris removal in Winnipeg. Drywall, lumber, shingles, plaster, "
+      "lathe and tile hauled away on a schedule that fits your build. Repeat pickups available.",
+      crumbs=[("What We Take", "/what-we-take"),
+              ("Renovation Debris", "/renovation-debris-removal-winnipeg")],
+      schema=[
+          service_schema("Renovation and Construction Debris Removal Winnipeg",
+                         "Removal of drywall, lumber, shingles, ceiling tile, plaster, lathe and tile "
+                         "from renovation and construction sites in Winnipeg, scheduled around the build.",
+                         f"{SITE}/renovation-debris-removal-winnipeg", "Construction Debris Removal"),
+          faq_schema([
+              ("Is this cheaper than renting a bin?",
+               "It depends on the job. A bin makes sense if you are producing debris steadily for "
+               "weeks. We make more sense for a defined pile, a job with no room for a bin on the "
+               "driveway, or a site where a bin would sit half-empty for a month collecting the "
+               "neighbourhood's garbage."),
+              ("Can you come back more than once?",
+               "Yes. On longer renovations we schedule repeat pickups around your trades so debris "
+               "never builds up to the point where people are working around it."),
+              ("Do you take drywall and plaster?",
+               "Yes, both, along with lathe, ceiling tile, lumber, shingles and tile. Plaster and "
+               "shingles are heavy, so those get priced by weight — same as concrete."),
+              ("What about asbestos?",
+               "We cannot take it. Older Winnipeg homes can have it in plaster, tile and insulation. "
+               "If there is any doubt, get it tested before demolition starts. We will point you to "
+               "an abatement contractor rather than guess."),
+          ]),
+      ]),
+
+    P("shed-deck-removal-winnipeg",
+      "Shed, Deck &amp; Fence Removal Winnipeg | Teardown and Haul-Away",
+      "Shed, deck and fence removal in Winnipeg. We tear it down and take it away in one visit — "
+      "one contractor, one invoice. Winter teardowns cause less lawn damage.",
+      crumbs=[("What We Take", "/what-we-take"), ("Shed &amp; Deck Removal", "/shed-deck-removal-winnipeg")],
+      schema=[
+          service_schema("Shed, Deck and Fence Removal Winnipeg",
+                         "Demolition and haul-away of sheds, decks, fences and garages in Winnipeg, "
+                         "completed in a single visit with the site left clean.",
+                         f"{SITE}/shed-deck-removal-winnipeg", "Demolition and Removal"),
+          faq_schema([
+              ("Do you take the concrete pad or footings too?",
+               "We can. Pads, deck footings and post bases all come out with the skid steer. It gets "
+               "priced by weight because it is concrete, so say so when you book and it goes in the "
+               "quote instead of becoming a surprise."),
+              ("Will it wreck my lawn?",
+               "Some marking is normal where equipment runs. We came from a landscaping company, so "
+               "we plan the approach around access and drainage rather than driving straight across "
+               "the middle of your yard. Frozen ground in winter is genuinely the gentlest time."),
+              ("Do I need a permit?",
+               "For a straightforward shed, deck or fence teardown on residential property, usually "
+               "not. Detached garages and anything structural can be different — check with the "
+               "City of Winnipeg first, because that is on the property owner, not the hauler."),
+              ("What about the fence posts set in concrete?",
+               "They come out with the post and concrete plug attached. Leaving broken posts in the "
+               "ground is how the next person building a fence ends up with a bad day."),
+          ]),
+      ]),
+
+    P("yard-waste-removal-winnipeg",
+      "Yard Waste Removal Winnipeg | Branches, Brush &amp; Storm Cleanup",
+      "Yard waste and brush removal in Winnipeg. Branches, brush, sod, leaves and storm damage "
+      "hauled to composting and organics facilities. The crossover with our landscaping side.",
+      crumbs=[("What We Take", "/what-we-take"), ("Yard Waste", "/yard-waste-removal-winnipeg")],
+      schema=[
+          service_schema("Yard Waste and Brush Removal Winnipeg",
+                         "Removal of branches, brush, sod, leaves and storm debris in Winnipeg, taken "
+                         "to composting and organics facilities.",
+                         f"{SITE}/yard-waste-removal-winnipeg", "Yard Waste Removal"),
+          faq_schema([
+              ("How is this different from the City's yard waste pickup?",
+               "The City takes bagged leaves and grass on a schedule. It does not take a downed "
+               "tree, a hedge you just tore out, or forty feet of brush pile. That is the gap we fill."),
+              ("Do you cut the branches down as well?",
+               "We handle brush, hedges and small trees. Anything requiring a climber or a bucket "
+               "truck is an arborist's job, and we will tell you that rather than take a run at it."),
+              ("Can you take sod and dirt?",
+               "Yes, but they are heavy and get priced by weight rather than trailer space. A "
+               "half-trailer of sod weighs far more than a half-trailer of branches."),
+              ("Do you do storm cleanup?",
+               "Yes, and it is usually the busiest week of our year when a big one comes through. "
+               "Call early — after a major storm the whole city calls at once."),
+          ]),
+      ]),
+
+    P("estate-cleanout-winnipeg",
+      "Estate Cleanout Winnipeg | Hoarding &amp; Full Property Cleanouts",
+      "Estate and hoarding cleanouts in Winnipeg. Whole houses, garages and storage units cleared "
+      "at your pace, with anything you want kept set aside and photos on completion.",
+      crumbs=[("What We Take", "/what-we-take"), ("Estate Cleanouts", "/estate-cleanout-winnipeg")],
+      schema=[
+          service_schema("Estate and Hoarding Cleanout Winnipeg",
+                         "Full property cleanouts in Winnipeg for estates, hoarding situations, "
+                         "landlord turnovers and realtor listings, with donation sorting and photo "
+                         "documentation on completion.",
+                         f"{SITE}/estate-cleanout-winnipeg", "Estate Cleanout"),
+          faq_schema([
+              ("How do you handle things that might matter to the family?",
+               "We work at your pace and set aside anything you flag. Paperwork, photographs and "
+               "small personal items get put in one place rather than thrown in the trailer. If you "
+               "are not sure about something, we leave it out and ask."),
+              ("Can you do this if I do not live in Winnipeg?",
+               "Yes. This is common with estates. We can walk the property on video, quote from "
+               "that, and send photos on completion so you have documentation without flying in."),
+              ("Do you handle hoarding situations?",
+               "Yes, and without commentary. What we will say honestly: if there is significant "
+               "biohazard, mould or pest infestation, that needs a specialist remediation company "
+               "before or alongside us, and we will tell you straight rather than take the job and "
+               "make it worse."),
+              ("What about items with resale value?",
+               "We are not an auction house and we will not pretend to value anything. Get an "
+               "estate appraiser through before we start if you think there is something worth "
+               "money — once it is in the trailer that decision is made."),
+          ]),
+      ]),
+
+    P("scrap-metal-removal-winnipeg",
+      "Scrap Metal Removal Winnipeg | Free Pickup on Full Metal Loads",
+      "Scrap metal removal in Winnipeg. Appliances, lawnmowers, fencing, bed frames, pipe and rims. "
+      "Full metal loads may be reduced or free, because we recover value at the yard.",
+      crumbs=[("What We Take", "/what-we-take"), ("Scrap Metal", "/scrap-metal-removal-winnipeg")],
+      schema=[
+          service_schema("Scrap Metal and Tire Removal Winnipeg",
+                         "Collection of scrap metal, appliances, lawnmowers, fencing, pipe and tires "
+                         "in Winnipeg, with recovery through local scrap yards and the Tire "
+                         "Stewardship Manitoba network.",
+                         f"{SITE}/scrap-metal-removal-winnipeg", "Scrap Metal Removal"),
+          faq_schema([
+              ("Is scrap metal removal really free?",
+               "Sometimes. If the load is all metal and there is enough of it, the scrap value can "
+               "cover the job — so we can cut the price or take it for nothing. A single rusty "
+               "barbecue is not that load. It costs nothing to ask, and we will give you a straight "
+               "answer either way."),
+              ("What counts as scrap metal?",
+               "Appliances, lawnmowers, BBQs, bed frames, fencing, eavestrough, pipe, rims, filing "
+               "cabinets, exercise equipment and most things that are mostly steel or aluminium."),
+              ("Do you take tires?",
+               "Yes. They go through the Tire Stewardship Manitoba network rather than the landfill. "
+               "Tires on rims are fine — the rim is scrap metal anyway."),
+              ("Will you take a vehicle?",
+               "No. A car needs a licensed auto recycler who can handle the fluids, the battery and "
+               "the ownership transfer properly. We will point you to one."),
+          ]),
+      ]),
+
+    P("piano-removal-winnipeg",
+      "Piano Removal Winnipeg | Pianos, Safes &amp; Awkward Heavy Items",
+      "Piano removal in Winnipeg. An upright is 400-800 lbs of cast iron in a wooden box and it is "
+      "not a two-person job. Neither is a safe, a pool table or a cast iron tub.",
+      crumbs=[("What We Take", "/what-we-take"), ("Piano Removal", "/piano-removal-winnipeg")],
+      schema=[
+          service_schema("Piano and Odd-Item Removal Winnipeg",
+                         "Removal of pianos, safes, pool tables, cast iron tubs and other heavy "
+                         "awkward items from Winnipeg homes, including stairs and tight access.",
+                         f"{SITE}/piano-removal-winnipeg", "Piano Removal"),
+          faq_schema([
+              ("How heavy is a piano really?",
+               "An upright runs 400 to 800 lbs, a baby grand 500 to 700, and a full grand can pass "
+               "1,000. Almost all of that is a cast iron plate. It is not a case of getting enough "
+               "friends together — it is a case of the wrong technique breaking a foot or a floor."),
+              ("Can my piano be donated instead?",
+               "Be realistic: most old uprights have no resale or donation value, and schools and "
+               "churches turn them down routinely. If yours is genuinely playable and in tune, try "
+               "to rehome it first. If it has been in a damp basement for fifteen years, it is a "
+               "removal job."),
+              ("Can you get it down a flight of stairs?",
+               "Yes. Stairs are the normal case, not the hard one. Tell us how many flights and how "
+               "tight the turns are when you book so we send enough people."),
+              ("What other odd items do you take?",
+               "Safes, pool tables, cast iron tubs, hot water tanks, treadmills, arcade cabinets, "
+               "commercial kitchen equipment. If it is heavy, awkward and everyone else said no, "
+               "that is usually why people call us."),
+          ]),
+      ]),
+
     P("commercial-junk-removal-winnipeg",
       "Commercial Junk Removal &amp; Skid Steer Services Winnipeg",
       "Skid steer and dump trailer for commercial lot cleanups, construction debris, concrete "
@@ -649,6 +917,36 @@ PAGES = [
 
 
 # ---------------------------------------------------------------------------
+def faq_accordion(pairs, slug):
+    """Render the visible FAQ accordion from the same data as the FAQPage schema.
+
+    Google requires FAQ structured data to match what the visitor can actually
+    see. Hand-writing the accordion separately from the schema is how those two
+    silently drift apart, so both come from one list.
+    """
+    items = []
+    for i, (q, a) in enumerate(pairs, start=1):
+        first = i == 1
+        items.append(f"""
+                <div class="accordion-item">
+                  <h3 class="accordion-header" id="faq{i}h-{slug}">
+                    <button class="accordion-button{'' if first else ' collapsed'}" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faq{i}-{slug}"
+                            aria-expanded="{'true' if first else 'false'}"
+                            aria-controls="faq{i}-{slug}">
+                      {q}
+                    </button>
+                  </h3>
+                  <div id="faq{i}-{slug}"
+                       class="accordion-collapse collapse{' show' if first else ''}"
+                       aria-labelledby="faq{i}h-{slug}" data-bs-parent="#faqAccordion-{slug}">
+                    <div class="accordion-body">{a}</div>
+                  </div>
+                </div>""")
+    return (f'<div class="accordion" id="faqAccordion-{slug}">'
+            + "".join(items) + "\n              </div>")
+
+
 def subst(text, mapping):
     """Token replacement for chrome and page fragments.
 
@@ -682,6 +980,15 @@ def main():
         if not frag.exists():
             raise SystemExit(f"missing page fragment: {frag}")
         body = subst(frag.read_text(encoding="utf-8"), common)
+
+        # Fill {FAQ_ACCORDION} from this page's FAQPage block, so the visible
+        # questions and the structured data are always the same text.
+        if "{FAQ_ACCORDION}" in body:
+            faqs = next((b for b in page["schema"] if b.get("@type") == "FAQPage"), None)
+            if faqs is None:
+                raise SystemExit(f"{slug}: uses {{FAQ_ACCORDION}} but defines no FAQ schema")
+            pairs = [(q["name"], q["acceptedAnswer"]["text"]) for q in faqs["mainEntity"]]
+            body = body.replace("{FAQ_ACCORDION}", faq_accordion(pairs, slug))
 
         canonical = SITE + ("/" if slug == "index" else f"/{slug}")
 
