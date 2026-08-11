@@ -53,6 +53,16 @@ brief rather than a substitute. Drop the file in `images/` and replace the
 | `junk-concrete-load.webp` | Loaded concrete trailer, ideally with the scale ticket visible |
 | `junk-commercial-before.webp` / `-after.webp` | Cluttered lot or back alley, then the same frame cleared |
 | `crew-*.webp` | The rest of the crew, for the About page |
+| `junk-furniture.webp` | Sectional coming out a front door, floor protection down, frame padded |
+| `junk-furniture-before.webp` / `-after.webp` | Cluttered living room, then the same frame swept |
+| `junk-mattress.webp` | Sealed mattress bag being carried out — the detail that sells the service |
+| `junk-ewaste.webp` | Trailer of stacked TVs and monitors, ideally at the recycler |
+| `junk-reno-debris.webp` | Trailer backed up to a reno in progress, trades still working |
+| `junk-shed-before.webp` / `-after.webp` | Leaning shed, then clean bare ground. Best pair on the site |
+| `junk-yard-waste.webp` | Trailer heaped with branches after a hedge removal or storm |
+| `junk-estate-before.webp` / `-after.webp` | Full room then empty — use a garage or basement, not a bedroom |
+| `junk-scrap-metal.webp` | Full metal load, ideally on the scale at the yard |
+| `junk-piano.webp` | Upright coming down a staircase on dollies with straps |
 
 For the hero, once `junk-hero.webp` exists, add to the `<section class="junk-hero">`
 tag in `_pages/index.html`:
@@ -69,7 +79,7 @@ The parent site has its header and footer hand-copied into 47 files, so changing
 one nav item means 47 edits. This site does not repeat that.
 
 ```bash
-python3 _build.py      # regenerates all 14 .html files + sitemap.xml
+python3 _build.py      # regenerates all 23 .html files + sitemap.xml
 ```
 
 - **Page content** → `_pages/<name>.html` (plain HTML fragments)
@@ -123,7 +133,7 @@ Setup:
    environment variables needed — `$PORT` is handled in `deploy/entrypoint.sh`.
 4. **Settings → Networking → Generate Domain** for the `*.up.railway.app` URL.
 
-Verified locally with `docker build` + `docker run`: all 14 extensionless URLs
+Verified locally with `docker build` + `docker run`: all extensionless URLs
 return 200, `/pricing.html` 301s to `/pricing`, the custom 404 renders, gzip and
 cache headers are applied, build tooling under `_pages/`, `_build.py`, `deploy/`
 and `Dockerfile` returns 403, and the quote form POSTs through to `thanks.html`
@@ -227,11 +237,10 @@ To route leads through the JotForm the yardwork site already uses, replace the
 
 ## Not built yet
 
-The blueprint specifies ~45 pages. This is the core launch set (14). Still to come:
+The blueprint specifies ~45 pages. 23 are built: all 12 "What We Take"
+categories now have their own page, plus commercial, winter, about, where-your-
+junk-goes, reviews, quote, pricing, the hub, 404 and thanks. Still to come:
 
-- The other 9 "What We Take" child pages (furniture, mattress, e-waste, reno
-  debris, shed/deck, yard waste, estate, scrap metal, piano) — the hub page
-  covers them with anchors for now
 - Service-area pages. Worth doing properly or not at all: the blueprint's own
   warning is that 25 near-identical pages with the place name swapped is thin
   content that Google ignores and customers see through. Each needs a real local
