@@ -12,11 +12,15 @@
 
 FROM php:8.2-apache
 
-# mod_rewrite  -> extensionless URLs (.htaccess RewriteRules)
-# mod_headers  -> Cache-Control and the noindex header below
-# mod_expires  -> the ExpiresByType rules in .htaccess
-# mod_deflate  -> gzip
-RUN a2enmod rewrite headers expires deflate
+# mod_rewrite    -> extensionless URLs (.htaccess RewriteRules)
+# mod_headers    -> Cache-Control and the noindex header
+# mod_expires    -> the ExpiresByType rules in .htaccess
+# mod_deflate    -> gzip
+# mod_substitute -> rewrites the production domain in canonical/OG tags to the
+#                   actual staging host, and injects the preview banner, so the
+#                   committed HTML stays production-correct
+# mod_filter     -> required by AddOutputFilterByType for SUBSTITUTE
+RUN a2enmod rewrite headers expires deflate substitute filter
 
 # .htaccess is ignored unless AllowOverride is on; Debian's default is None.
 COPY deploy/railway.conf /etc/apache2/conf-available/railway.conf
