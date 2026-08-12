@@ -6,8 +6,11 @@ Target domain: `no-bs-junkremoval.com`
 Hand-coded static HTML, same stack as no-bs-yardwork.com: no framework, no
 runtime dependencies, deploys by FTP to cPanel/Apache.
 
-> **Not in its own repo yet.** See [MIGRATE.md](MIGRATE.md) for the one command
-> that moves it, and why it started here.
+This is the standalone repository: the site lives at the root, on `main`, so a
+container host needs no path or branch configuration at all.
+
+It was extracted from `stephskiis-hue/nobs-yardwork-website` with
+`git subtree split`, so the commit history for these files came with it.
 
 ---
 
@@ -127,16 +130,11 @@ the quote form all behave exactly as they will on the real host.
 Setup:
 
 1. Railway → **New Project → Deploy from GitHub repo** → pick this repo.
-2. **Settings → Source → Branch** → `claude/no-bs-junk-removal-site-vn1784`
-   (or `main` once this is merged).
-3. Root Directory does not need setting. There is a `Dockerfile` at the repo
-   root that copies `junk-removal/` into the web root, so Railway serves the
-   junk removal site either way. Setting Root Directory to `junk-removal` also
-   works — it just uses `junk-removal/Dockerfile` instead, which builds the
-   same image.
-4. Railway auto-detects the Dockerfile. No build command, no start command, no
-   environment variables needed — `$PORT` is handled in `deploy/entrypoint.sh`.
-5. **Settings → Networking → Generate Domain** for the `*.up.railway.app` URL.
+2. **Settings → Networking → Generate Domain**.
+
+That is the whole setup. No Root Directory, no branch override, no builder
+override, no build or start command, no environment variables. `railway.json`
+pins the Dockerfile builder and `deploy/entrypoint.sh` handles `$PORT`.
 
 Verified locally with `docker build` + `docker run`: all extensionless URLs
 return 200, `/pricing.html` 301s to `/pricing`, the custom 404 renders, gzip and
