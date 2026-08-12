@@ -24,9 +24,23 @@ _build.py and _pages/, and hand-edit the .html files from then on. Nothing
 else depends on this script.
 """
 
+import html
 import json
 import re
+from datetime import datetime, timezone
+from email.utils import format_datetime
 from pathlib import Path
+
+
+def strip_tags(s):
+    """Plain text from a snippet of display HTML.
+
+    Headlines carry markup and entities (&minus;30) because they are written for
+    the page. Structured data and the RSS feed need the literal characters, so
+    they run titles through here rather than keeping a second, plain-text copy
+    of every headline that could drift from the visible one.
+    """
+    return html.unescape(re.sub(r"<[^>]+>", "", s)).strip()
 
 ROOT = Path(__file__).parent
 PAGES_DIR = ROOT / "_pages"
@@ -63,6 +77,7 @@ NAV = [
         ("Our Story", "about.html"),
         ("Where Your Junk Goes", "where-your-junk-goes.html"),
         ("Reviews", "reviews.html"),
+        ("Blog", "blog/index.html"),
     ]),
     ("Get a Quote", "quote.html", []),
 ]
@@ -75,6 +90,7 @@ FOOTER_LINKS = [
     ("Winter Services", "winter-services-winnipeg.html"),
     ("Where Your Junk Goes", "where-your-junk-goes.html"),
     ("Reviews", "reviews.html"),
+    ("Blog", "blog/index.html"),
     ("Get a Quote", "quote.html"),
 ]
 
@@ -198,21 +214,30 @@ def faq_schema(pairs):
 # Chrome
 # ---------------------------------------------------------------------------
 
-def render_nav():
+def render_nav(base=""):
+    """Render the nav. `base` is the prefix that walks back up to the web root.
+
+    Every link and asset on this site is relative, which is what lets the whole
+    thing run either as its own domain or as a subfolder of no-bs-yardwork.com
+    without a rebuild. Blog posts live one directory down, so they need "../"
+    in front of everything; root pages need "". Switching to root-relative
+    ("/css/...") would have been less code and would have broken the subfolder
+    arrangement the site is currently reachable through.
+    """
     out = []
     for label, href, children in NAV:
         if children:
             kids = "".join(
-                f'<li class="nav-item"><a class="nav-link" href="{h}">{l}</a></li>'
+                f'<li class="nav-item"><a class="nav-link" href="{base}{h}">{l}</a></li>'
                 for l, h in children
             )
             out.append(
-                f'<li class="nav-item submenu"><a class="nav-link" href="{href}">{label}</a>'
+                f'<li class="nav-item submenu"><a class="nav-link" href="{base}{href}">{label}</a>'
                 f"<ul>{kids}</ul></li>"
             )
         else:
             out.append(
-                f'<li class="nav-item"><a class="nav-link" href="{href}">{label}</a></li>'
+                f'<li class="nav-item"><a class="nav-link" href="{base}{href}">{label}</a></li>'
             )
     return "\n                  ".join(out)
 
@@ -222,8 +247,8 @@ HEADER = """    <a class="skip-link" href="#main">Skip to content</a>
       <div class="header-sticky">
         <nav class="navbar navbar-expand-lg">
           <div class="container">
-            <a class="navbar-brand brand-lockup" href="index.html">
-              <img src="images/logo.svg" alt="No-BS Yardwork" width="150" height="50"
+            <a class="navbar-brand brand-lockup" href="{BASE}index.html">
+              <img src="{BASE}images/logo.svg" alt="No-BS Yardwork" width="150" height="50"
                    style="height: 50px; width: auto" fetchpriority="high" />
               <span class="division-tag">Junk Removal</span>
             </a>
@@ -238,7 +263,7 @@ HEADER = """    <a class="skip-link" href="#main">Skip to content</a>
               <div class="contact-now-box d-inline-flex">
                 <div class="icon-box">
                   <a href="tel:{PHONE_TEL}" aria-label="Call No BS Junk Removal">
-                    <img src="images/icon-phone.svg" alt="" width="25" height="25" />
+                    <img src="{BASE}images/icon-phone.svg" alt="" width="25" height="25" />
                   </a>
                 </div>
                 <div class="contact-now-box-content">
@@ -261,7 +286,7 @@ FOOTER = """    <footer class="main-footer">
           <div class="col-lg-3 col-md-12">
             <div class="about-footer">
               <div class="footer-logo">
-                <img src="images/footer-logo.svg" alt="No BS Junk Removal Winnipeg"
+                <img src="{BASE}images/footer-logo.svg" alt="No BS Junk Removal Winnipeg"
                      loading="lazy" width="200" height="90" />
               </div>
               <div class="about-footer-content">
@@ -312,7 +337,7 @@ FOOTER = """    <footer class="main-footer">
             <div class="col-lg-8 col-md-6">
               <div class="footer-copyright-text">
                 <p>&copy; No BS Junk Removal &mdash; a No-BS Yardwork company. All Rights Reserved.
-                  &nbsp;&nbsp;<img src="images/payments.webp"
+                  &nbsp;&nbsp;<img src="{BASE}images/payments.webp"
                   alt="Pay by cheque, e-transfer or credit card" loading="lazy"
                   width="239" height="35" /></p>
               </div>
@@ -345,19 +370,19 @@ FOOTER = """    <footer class="main-footer">
     </div>
 """
 
-SCRIPTS = """    <script src="js/jquery-3.7.1.min.js" defer></script>
-    <script src="js/bootstrap.min.js" defer></script>
+SCRIPTS = """    <script src="{BASE}js/jquery-3.7.1.min.js" defer></script>
+    <script src="{BASE}js/bootstrap.min.js" defer></script>
     <!-- function.js calls $('#contactForm').validator() unconditionally; without
          this file that throws and every later handler in function.js (including
          the mobile nav) dies with it. -->
-    <script src="js/validator.min.js" defer></script>
-    <script src="js/jquery.slicknav.min.js" defer></script>
-    <script src="js/jquery.waypoints.min.js" defer></script>
-    <script src="js/jquery.counterup.min.js" defer></script>
-    <script src="js/gsap.min.js" defer></script>
-    <script src="js/SplitText.js" defer></script>
-    <script src="js/ScrollTrigger.min.js" defer></script>
-    <script src="js/function.js" defer></script>
+    <script src="{BASE}js/validator.min.js" defer></script>
+    <script src="{BASE}js/jquery.slicknav.min.js" defer></script>
+    <script src="{BASE}js/jquery.waypoints.min.js" defer></script>
+    <script src="{BASE}js/jquery.counterup.min.js" defer></script>
+    <script src="{BASE}js/gsap.min.js" defer></script>
+    <script src="{BASE}js/SplitText.js" defer></script>
+    <script src="{BASE}js/ScrollTrigger.min.js" defer></script>
+    <script src="{BASE}js/function.js" defer></script>
 """
 
 PAGE = """<!doctype html>
@@ -388,7 +413,7 @@ PAGE = """<!doctype html>
     <meta name="robots" content="{robots}" />
     <link rel="canonical" href="{canonical}" />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="{og_type}" />
     <meta property="og:site_name" content="No BS Junk Removal" />
     <meta property="og:title" content="{title}" />
     <meta property="og:description" content="{description}" />
@@ -396,7 +421,9 @@ PAGE = """<!doctype html>
     <meta property="og:image" content="{SITE}/images/{og_image}" />
     <meta property="og:locale" content="en_CA" />
 
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.webp" />
+    <link rel="shortcut icon" type="image/x-icon" href="{BASE}images/favicon.webp" />
+    <link rel="alternate" type="application/rss+xml"
+          title="No BS Junk Removal — Winnipeg" href="{BASE}feed.xml" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -406,21 +433,21 @@ PAGE = """<!doctype html>
     <noscript><link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" /></noscript>
 
-    <link rel="preload" href="css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet';" />
-    <link rel="preload" href="css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet';" />
-    <link rel="preload" href="css/slicknav.min.css" as="style" onload="this.onload=null;this.rel='stylesheet';" />
-    <link rel="preload" href="css/custom.css" as="style" onload="this.onload=null;this.rel='stylesheet';" />
-    <link rel="preload" href="css/junk.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet';" />
+    <link rel="preload" href="{BASE}css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet';" />
+    <link rel="preload" href="{BASE}css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet';" />
+    <link rel="preload" href="{BASE}css/slicknav.min.css" as="style" onload="this.onload=null;this.rel='stylesheet';" />
+    <link rel="preload" href="{BASE}css/custom.css" as="style" onload="this.onload=null;this.rel='stylesheet';" />
+    <link rel="preload" href="{BASE}css/junk.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet';" />
     <noscript>
-      <link rel="stylesheet" href="css/bootstrap.min.css" />
-      <link rel="stylesheet" href="css/all.min.css" />
-      <link rel="stylesheet" href="css/slicknav.min.css" />
-      <link rel="stylesheet" href="css/custom.css" />
-      <link rel="stylesheet" href="css/junk.css?v=1" />
+      <link rel="stylesheet" href="{BASE}css/bootstrap.min.css" />
+      <link rel="stylesheet" href="{BASE}css/all.min.css" />
+      <link rel="stylesheet" href="{BASE}css/slicknav.min.css" />
+      <link rel="stylesheet" href="{BASE}css/custom.css" />
+      <link rel="stylesheet" href="{BASE}css/junk.css?v=1" />
     </noscript>
 
-    <link rel="preload" href="webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="{BASE}webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="{BASE}webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin />
 
     <script async src="https://www.googletagmanager.com/gtag/js?id={GA4_ID}"></script>
     <script>
@@ -458,15 +485,39 @@ DEFAULT_ROBOTS = "follow, index, max-snippet:-1, max-video-preview:-1, max-image
 # ---------------------------------------------------------------------------
 # Page definitions
 # ---------------------------------------------------------------------------
+def clean_url(slug):
+    """The public URL path for a slug, as visitors and Google see it.
+
+    `.html` is stripped by .htaccess, and a directory index is reached by the
+    directory name alone — so index -> "/", blog/index -> "/blog". Canonical
+    tags, breadcrumbs, the sitemap and the feed all derive from this one
+    function, so they cannot disagree about what a page's address is.
+    """
+    if slug == "index":
+        return "/"
+    if slug.endswith("/index"):
+        return "/" + slug[: -len("/index")]
+    return "/" + slug
+
+
 def P(slug, title, description, og_image="skid_steer.webp", crumbs=None,
-      schema=None, robots=DEFAULT_ROBOTS, body_class=""):
+      schema=None, robots=DEFAULT_ROBOTS, body_class="", base="",
+      og_type="website", lastmod=None, priority=None, render=None):
+    """Define one page.
+
+    `render` is for pages whose body is generated rather than authored — the
+    blog index and the post wrapper. It returns text still containing {TOKENS},
+    which the page loop substitutes exactly as it does for a hand-written
+    fragment, so generated and authored pages go through one code path.
+    """
     blocks = list(schema or [])
     if crumbs is not None:
         blocks.append(breadcrumbs(crumbs))
     return {
         "slug": slug, "title": title, "description": description,
         "og_image": og_image, "schema": blocks, "robots": robots,
-        "body_class": body_class,
+        "body_class": body_class, "base": base, "og_type": og_type,
+        "lastmod": lastmod, "priority": priority, "render": render,
     }
 
 
@@ -917,6 +968,357 @@ PAGES = [
 
 
 # ---------------------------------------------------------------------------
+# Blog
+# ---------------------------------------------------------------------------
+# A post is defined once, here. Its prose lives in _pages/blog/<slug>.html —
+# the same fragment split the rest of the site already uses.
+#
+# Everything else about a post is derived from this list: the index card, the
+# BlogPosting schema, the breadcrumb, the sitemap entry and its lastmod, the
+# RSS item, and the related-posts strip. That is deliberate. The usual way a
+# small blog rots is the index and the feed drifting out of step with the posts
+# because each is maintained by hand. Here there is nothing to keep in sync.
+#
+# Posts sit in a real /blog/ subdirectory, so they carry base="../" — see
+# render_nav() for why the site stays on relative paths rather than switching
+# to root-relative ones.
+# ---------------------------------------------------------------------------
+
+# Attributed to the business rather than to Stephano or Ben by name. These are
+# company operating policies, and putting first-person opinions in a real
+# person's mouth is theirs to opt into, not mine. To switch to a named author,
+# change this and the "author" block in blog_posting_schema() to
+# {"@type": "Person", "name": "..."}.
+BLOG_AUTHOR = "No BS Junk Removal"
+
+_MONTHS = ("January", "February", "March", "April", "May", "June", "July",
+           "August", "September", "October", "November", "December")
+
+
+def pretty_date(iso):
+    """2026-08-10 -> 10 August 2026."""
+    y, m, d = (int(x) for x in iso.split("-"))
+    return f"{d} {_MONTHS[m - 1]} {y}"
+
+
+def BP(slug, title, h1, crumb, description, date, excerpt, read_min, tags,
+       og_image="skid_steer.webp", updated=None):
+    """Define one blog post. `slug` is the bare name; the URL is /blog/<slug>."""
+    return {
+        "slug": slug, "title": title, "h1": h1, "crumb": crumb,
+        "description": description, "date": date, "updated": updated or date,
+        "excerpt": excerpt, "read_min": read_min, "tags": tags,
+        "og_image": og_image,
+    }
+
+
+POSTS = [
+    BP("junk-removal-cost-winnipeg",
+       "What Junk Removal Actually Costs in Winnipeg | No BS Junk Removal",
+       "What junk removal actually costs in Winnipeg",
+       "What It Costs",
+       "A straight explanation of how junk removal is priced in Winnipeg — volume "
+       "versus weight, what a real quote includes, and the add-ons some companies "
+       "only mention once the truck is loaded.",
+       "2026-08-10",
+       "Most jobs in this city are quoted one way and billed another. Here is how "
+       "volume pricing actually works, and the five add-ons worth asking about before "
+       "anyone loads a thing.",
+       7, ["pricing"]),
+
+    BP("dumpster-rental-vs-junk-removal-winnipeg",
+       "Dumpster Rental vs Junk Removal in Winnipeg | No BS Junk Removal",
+       "Dumpster rental vs junk removal: which do you actually need?",
+       "Bin or Crew",
+       "An honest comparison of bin rental and junk removal for Winnipeg homeowners, "
+       "including the jobs where renting a dumpster is genuinely the cheaper call.",
+       "2026-07-28",
+       "We do junk removal for a living and we will still tell you when to rent a bin "
+       "instead. The honest breakdown — including the permit nobody mentions.",
+       8, ["pricing", "renovation"]),
+
+    BP("why-concrete-costs-more-than-couches",
+       "Why Concrete Costs More to Remove Than a Couch | No BS Junk Removal",
+       "Why a half-load of concrete costs more than a full load of couches",
+       "Weight vs Volume",
+       "Heavy material is priced by weight rather than volume because the landfill "
+       "bills by the tonne. Here is the arithmetic, with real trailer weights.",
+       "2026-07-14",
+       "A half-trailer of couches weighs about 400 lbs. A half-trailer of concrete can "
+       "pass 6,000 lbs. Same space, completely different cost — here is why.",
+       5, ["pricing", "renovation"]),
+
+    BP("hot-tub-removal-what-to-expect",
+       "Hot Tub Removal in Winnipeg: What Actually Happens | No BS Junk Removal",
+       "Hot tub removal: what actually happens on the day",
+       "Hot Tub Day",
+       "A step-by-step account of how a hot tub gets drained, disconnected, cut down "
+       "and hauled out of a Winnipeg backyard — including tight access and raised decks.",
+       "2026-06-30",
+       "Draining, disconnecting, cutting it down, and getting it through a 32-inch gate "
+       "without taking the fence with it. What the day looks like, start to finish.",
+       6, ["how-it-works"]),
+
+    BP("estate-cleanout-checklist-winnipeg",
+       "Estate Cleanout in Winnipeg: A Timeline That Works | No BS Junk Removal",
+       "Clearing a parent's house: a timeline that actually works",
+       "Estate Cleanouts",
+       "A practical, unhurried order of operations for an estate cleanout in Winnipeg — "
+       "what to do first, what to never throw out, and where most families get stuck.",
+       "2026-06-16",
+       "The hardest part is not the hauling, it is the deciding. Here is the order we "
+       "have watched families get through this in without regretting anything.",
+       9, ["estate", "how-it-works"]),
+
+    BP("what-happens-to-your-junk-winnipeg",
+       "Where Your Junk Actually Goes After We Load It | No BS Junk Removal",
+       "Where your junk actually goes after we drive away",
+       "Where It Goes",
+       "Every hauler in Winnipeg says they recycle. Here is what that means at our "
+       "shop — what gets donated, what gets scrapped, and what genuinely has to be buried.",
+       "2026-05-26",
+       "&ldquo;We recycle&rdquo; is the easiest sentence in this industry to say and "
+       "the hardest to check. So here is the sorting, category by category.",
+       6, ["recycling"]),
+
+    BP("winter-junk-removal-winnipeg",
+       "Winter Junk Removal in Winnipeg: What Changes | No BS Junk Removal",
+       "What changes when you haul junk at &minus;30",
+       "Winter Hauling",
+       "Frozen piles, ice-locked sheds and snow-buried yards change how junk removal "
+       "works in a Winnipeg winter. What we can still do, and what genuinely has to wait.",
+       "2026-05-12",
+       "Half of what makes a winter job slow is invisible in October. What actually "
+       "changes once the ground freezes, and what we can still take.",
+       6, ["winter"]),
+
+    BP("prepare-for-junk-removal-day",
+       "How to Prep for Junk Removal Day and Pay Less | No BS Junk Removal",
+       "Ten minutes of prep that can cut your bill",
+       "Prep Day",
+       "Simple things you can do before the trailer arrives that genuinely reduce what "
+       "a Winnipeg junk removal job costs — and the ones that make no difference at all.",
+       "2026-04-28",
+       "You are paying for space and for time. Here is what actually moves the needle "
+       "on both, and which bits of helpful prep are a waste of your Saturday.",
+       5, ["pricing", "how-it-works"]),
+]
+
+
+def blog_posting_schema(post):
+    url = f"{SITE}/blog/{post['slug']}"
+    return {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": strip_tags(post["h1"]),
+        "description": post["description"],
+        "datePublished": post["date"],
+        "dateModified": post["updated"],
+        "url": url,
+        "mainEntityOfPage": {"@type": "WebPage", "@id": url},
+        "image": f"{SITE}/images/{post['og_image']}",
+        "author": {"@type": "Organization", "name": BLOG_AUTHOR, "url": SITE + "/"},
+        "publisher": {
+            "@type": "Organization",
+            "name": "No BS Junk Removal",
+            "url": SITE + "/",
+            "logo": {"@type": "ImageObject", "url": f"{SITE}/images/logo.svg"},
+        },
+        "isPartOf": {"@type": "Blog", "name": "No BS Junk Removal Blog",
+                     "@id": f"{SITE}/blog"},
+    }
+
+
+def related_posts(post, limit=3):
+    """Other posts, most shared tags first, then newest.
+
+    Ranking by shared-tag count keeps the strip relevant without a
+    hand-maintained "related" list hanging off every post.
+    """
+    others = [p for p in POSTS if p["slug"] != post["slug"]]
+    return sorted(
+        others,
+        key=lambda p: (-len(set(p["tags"]) & set(post["tags"])), p["date"]),
+    )[:limit]
+
+
+# {BASE} is left in place for subst() to fill at write time, which is why this
+# is a plain template rather than an f-string.
+POST_CARD = """
+            <div class="col-lg-4 col-md-6">
+              <article class="post-card">
+                <p class="post-card-meta">
+                  <time datetime="{DATE}">{DATE_PRETTY}</time>
+                  <span aria-hidden="true">&middot;</span> {READ} min read
+                </p>
+                <h3><a href="{BASE}blog/{SLUG}.html">{H1}</a></h3>
+                <p>{EXCERPT}</p>
+                <span class="post-card-more" aria-hidden="true">Read it &rarr;</span>
+              </article>
+            </div>"""
+
+
+def render_post_card(post):
+    return subst(POST_CARD, {
+        "DATE": post["date"], "DATE_PRETTY": pretty_date(post["date"]),
+        "READ": post["read_min"], "SLUG": post["slug"],
+        "H1": post["h1"], "EXCERPT": post["excerpt"],
+    })
+
+
+POST_BODY = """      <div class="page-header">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-12">
+              <div class="page-header-box">
+                <h1>{H1}</h1>
+                <nav aria-label="Breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{BASE}index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{BASE}blog/index.html">Blog</a></li>
+                    <li class="breadcrumb-item" aria-current="page">{CRUMB}</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="section-space blog-post">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <p class="post-meta">
+                Published <time datetime="{DATE}">{DATE_PRETTY}</time>
+                <span aria-hidden="true">&middot;</span> {READ} min read
+                <span aria-hidden="true">&middot;</span> {AUTHOR}
+              </p>
+
+{CONTENT}
+
+              <div class="post-cta">
+                <h3>Want a price for your own pile?</h3>
+                <p>
+                  Text a photo and we will quote it, or call and talk to one of the
+                  people who will actually be doing the work.
+                </p>
+                <div class="btn-row">
+                  <a href="{BASE}quote.html" class="btn-default">Get a free quote</a>
+                  <a href="tel:{PHONE_TEL}" class="btn-default btn-ghost on-light">{PHONE_DISPLAY}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="section-space bg-tint">
+        <div class="container">
+          <div class="section-title text-center">
+            <h3>Keep reading</h3>
+            <h2>More from the blog</h2>
+          </div>
+          <div class="row g-4">{RELATED}
+          </div>
+        </div>
+      </section>
+"""
+
+
+BLOG_INDEX_BODY = """      <div class="page-header">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-12">
+              <div class="page-header-box">
+                <h1>Advice from the people who actually haul it</h1>
+                <nav aria-label="Breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{BASE}index.html">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Blog</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section-space">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-9">
+              <p class="lead-in" style="margin-bottom: 46px">
+                No filler and no keyword soup. These are the questions we get asked on
+                quotes often enough that it was worth writing the answers down &mdash;
+                what things cost, what we can and cannot take, and how the awkward jobs
+                actually go.
+              </p>
+            </div>
+          </div>
+          <div class="row g-4">{CARDS}
+          </div>
+        </div>
+      </section>
+"""
+
+
+def render_blog_index(_base=None):
+    return subst(BLOG_INDEX_BODY, {
+        "CARDS": "".join(render_post_card(p) for p in POSTS),
+    })
+
+
+def make_post_renderer(post):
+    def render(_base=None):
+        frag = PAGES_DIR / "blog" / f"{post['slug']}.html"
+        if not frag.exists():
+            raise SystemExit(f"missing post fragment: {frag}")
+        return subst(POST_BODY, {
+            "H1": post["h1"], "CRUMB": post["crumb"],
+            "DATE": post["date"], "DATE_PRETTY": pretty_date(post["date"]),
+            "READ": post["read_min"], "AUTHOR": BLOG_AUTHOR,
+            "CONTENT": frag.read_text(encoding="utf-8").rstrip("\n"),
+            "RELATED": "".join(render_post_card(p) for p in related_posts(post)),
+        })
+    return render
+
+
+# Blog pages join the same PAGES list, so the page loop, the sitemap and every
+# verification pass treat them exactly like any other page — no parallel
+# code path that could rot separately.
+PAGES.append(P(
+    "blog/index",
+    "Junk Removal Advice for Winnipeg | No BS Junk Removal Blog",
+    "Straight answers on junk removal in Winnipeg: what it costs, how heavy material "
+    "is priced, dumpster rental versus a crew, estate cleanouts, winter hauling and "
+    "where your junk actually ends up.",
+    crumbs=[("Blog", "/blog")],
+    base="../",
+    priority="0.80",
+    lastmod=max(p["updated"] for p in POSTS),
+    render=render_blog_index,
+))
+
+for _post in POSTS:
+    PAGES.append(P(
+        f"blog/{_post['slug']}",
+        _post["title"],
+        _post["description"],
+        og_image=_post["og_image"],
+        crumbs=[("Blog", "/blog"),
+                (strip_tags(_post["h1"]), f"/blog/{_post['slug']}")],
+        schema=[blog_posting_schema(_post)],
+        base="../",
+        og_type="article",
+        body_class="blog-single",
+        lastmod=_post["updated"],
+        priority="0.70",
+        render=make_post_renderer(_post),
+    ))
+
+
+# ---------------------------------------------------------------------------
 def faq_accordion(pairs, slug):
     """Render the visible FAQ accordion from the same data as the FAQPage schema.
 
@@ -959,27 +1361,44 @@ def subst(text, mapping):
     return text
 
 
-def main():
-    nav_html = render_nav()
+def build_chrome(base, common):
+    """Header and footer rendered for one directory depth.
+
+    Called once per distinct `base` ("" for root pages, "../" for /blog/), not
+    once per page — the chrome is identical within a depth.
+    """
+    nav_html = render_nav(base)
     footer_links = "".join(
-        f'<li><a href="{h}">{l}</a></li>' for l, h in FOOTER_LINKS
+        f'<li><a href="{base}{h}">{l}</a></li>' for l, h in FOOTER_LINKS
+    )
+    scoped = dict(common, BASE=base)
+    return (
+        subst(HEADER.replace("{NAV}", nav_html), scoped),
+        subst(FOOTER.replace("{FOOTER_LINKS}", footer_links), scoped),
     )
 
+
+def main():
     common = dict(
         PHONE_TEL=PHONE_TEL, PHONE_DISPLAY=PHONE_DISPLAY, PHONE_E164=PHONE_E164,
         EMAIL=EMAIL, SITE=SITE, GTM_ID=GTM_ID, GA4_ID=GA4_ID,
         JOTFORM_ID=JOTFORM_ID,
     )
-    header = subst(HEADER.replace("{NAV}", nav_html), common)
-    footer = subst(FOOTER.replace("{FOOTER_LINKS}", footer_links), common)
+    chrome = {b: build_chrome(b, common) for b in ("", "../")}
 
     written = 0
     for page in PAGES:
         slug = page["slug"]
-        frag = PAGES_DIR / f"{slug}.html"
-        if not frag.exists():
-            raise SystemExit(f"missing page fragment: {frag}")
-        body = subst(frag.read_text(encoding="utf-8"), common)
+        base = page.get("base", "")
+        header, footer = chrome[base]
+        if page.get("render"):
+            raw = page["render"](base)
+        else:
+            frag = PAGES_DIR / f"{slug}.html"
+            if not frag.exists():
+                raise SystemExit(f"missing page fragment: {frag}")
+            raw = frag.read_text(encoding="utf-8")
+        body = subst(raw, dict(common, BASE=base))
 
         # Fill {FAQ_ACCORDION} from this page's FAQPage block, so the visible
         # questions and the structured data are always the same text.
@@ -990,7 +1409,7 @@ def main():
             pairs = [(q["name"], q["acceptedAnswer"]["text"]) for q in faqs["mainEntity"]]
             body = body.replace("{FAQ_ACCORDION}", faq_accordion(pairs, slug))
 
-        canonical = SITE + ("/" if slug == "index" else f"/{slug}")
+        canonical = SITE + clean_url(slug)
 
         if page["schema"]:
             schema_html = "".join(
@@ -1002,15 +1421,20 @@ def main():
         else:
             schema_html = ""
 
-        html = PAGE.format(
+        # Not named `html`: that shadows the stdlib module the feed uses below.
+        page_html = PAGE.format(
             title=page["title"], description=page["description"],
             canonical=canonical, og_image=page["og_image"],
             robots=page["robots"], body_class=page["body_class"],
+            og_type=page.get("og_type", "website"),
             schema=schema_html, body=body,
-            HEADER=header, FOOTER=footer, SCRIPTS=SCRIPTS,
-            **common,
+            HEADER=header, FOOTER=footer,
+            SCRIPTS=SCRIPTS.replace("{BASE}", base),
+            **dict(common, BASE=base),
         )
-        (ROOT / f"{slug}.html").write_text(html, encoding="utf-8")
+        out = ROOT / f"{slug}.html"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(page_html, encoding="utf-8")
         written += 1
 
     # Sitemap, generated from the same list so it can never drift out of sync.
@@ -1019,12 +1443,14 @@ def main():
         if "noindex" in page["robots"]:
             continue
         slug = page["slug"]
-        loc = SITE + ("/" if slug == "index" else f"/{slug}")
-        priority = "1.00" if slug == "index" else (
-            "0.90" if slug in {"pricing", "commercial-junk-removal-winnipeg",
-                               "what-we-take", "quote"} else "0.80")
+        loc = SITE + clean_url(slug)
+        priority = page["priority"] or (
+            "1.00" if slug == "index" else (
+                "0.90" if slug in {"pricing", "commercial-junk-removal-winnipeg",
+                                   "what-we-take", "quote"} else "0.80"))
+        lastmod = f"    <lastmod>{page['lastmod']}</lastmod>\n" if page["lastmod"] else ""
         urls.append(
-            f"  <url>\n    <loc>{loc}</loc>\n"
+            f"  <url>\n    <loc>{loc}</loc>\n{lastmod}"
             f"    <changefreq>monthly</changefreq>\n"
             f"    <priority>{priority}</priority>\n  </url>"
         )
@@ -1033,7 +1459,36 @@ def main():
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "\n".join(urls) + "\n</urlset>\n", encoding="utf-8")
 
-    print(f"built {written} pages + sitemap.xml")
+    # RSS. Cheap to generate from POSTS and the only thing that lets anyone
+    # follow the blog without an account; readers and aggregators expect
+    # RFC-822 dates, hence the fixed-format conversion rather than a locale one.
+    items = []
+    for post in POSTS:
+        link = f"{SITE}/blog/{post['slug']}"
+        y, m, d = (int(x) for x in post["date"].split("-"))
+        pub = format_datetime(datetime(y, m, d, 9, 0, tzinfo=timezone.utc))
+        items.append(
+            "    <item>\n"
+            f"      <title>{html.escape(strip_tags(post['h1']))}</title>\n"
+            f"      <link>{link}</link>\n"
+            f"      <guid isPermaLink=\"true\">{link}</guid>\n"
+            f"      <pubDate>{pub}</pubDate>\n"
+            f"      <description>{html.escape(strip_tags(post['excerpt']))}</description>\n"
+            "    </item>"
+        )
+    (ROOT / "feed.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
+        "  <channel>\n"
+        "    <title>No BS Junk Removal — Winnipeg</title>\n"
+        f"    <link>{SITE}/blog</link>\n"
+        "    <description>Straight answers on junk removal in Winnipeg.</description>\n"
+        "    <language>en-ca</language>\n"
+        f'    <atom:link href="{SITE}/feed.xml" rel="self" type="application/rss+xml" />\n'
+        + "\n".join(items)
+        + "\n  </channel>\n</rss>\n", encoding="utf-8")
+
+    print(f"built {written} pages + sitemap.xml + feed.xml ({len(POSTS)} posts)")
 
 
 if __name__ == "__main__":

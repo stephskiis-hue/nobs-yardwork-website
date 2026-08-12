@@ -79,10 +79,11 @@ The parent site has its header and footer hand-copied into 47 files, so changing
 one nav item means 47 edits. This site does not repeat that.
 
 ```bash
-python3 _build.py      # regenerates all 23 .html files + sitemap.xml
+python3 _build.py      # 32 .html files + sitemap.xml + feed.xml
 ```
 
 - **Page content** → `_pages/<name>.html` (plain HTML fragments)
+- **Blog posts** → `_pages/blog/<slug>.html` plus an entry in `POSTS`
 - **Header, footer, nav, schema, page titles** → `_build.py`
 - **Styling** → `css/junk.css`
 
@@ -91,6 +92,29 @@ runs the script.
 
 **Prefer no build step?** Run `_build.py` once, delete it along with `_pages/`,
 and hand-edit the `.html` files from then on. Nothing else depends on it.
+
+### The blog
+
+Eight posts live at `/blog`, covering pricing, bin-vs-crew, heavy material, hot
+tubs, estate cleanouts, recycling, winter work and job prep. Each one links back
+into the relevant service pages, which is most of the point of having them.
+
+Adding a post is two files and one command — the full walkthrough is in
+[`DEPLOY.md`](DEPLOY.md#adding-a-blog-post-later). The important part is that a
+post is **defined once**, in the `POSTS` list. The index card, breadcrumb,
+`BlogPosting` structured data, sitemap entry with `lastmod`, RSS item and the
+related-posts strip are all derived from that entry. There is no second place to
+update, so the index and the feed cannot drift away from the posts.
+
+Posts sit in a real `blog/` subdirectory, so they reach shared assets through
+`../`. That prefix comes from the `{BASE}` token — see `render_nav()` for why the
+site stays on relative paths rather than switching to root-relative ones.
+
+**Author attribution** is set to the business (`BLOG_AUTHOR` in `_build.py`)
+rather than to Stephano or Ben by name, because these are company positions and
+putting first-person opinions under a real person's byline is your call to make,
+not the generator's. Change `BLOG_AUTHOR` and the `author` block in
+`blog_posting_schema()` to a `Person` if you would rather they were signed.
 
 ### Previewing it yourself
 
