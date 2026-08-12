@@ -142,6 +142,37 @@ cache headers are applied, build tooling under `_pages/`, `_build.py`, `deploy/`
 and `Dockerfile` returns 403, and the quote form POSTs through to `thanks.html`
 with validation, the honeypot and the header-injection guard all behaving.
 
+### If a deploy crashes on boot
+
+`deploy/entrypoint.sh` validates the Apache config and prints what it did before
+handing off, so **Deploy Logs name the cause** rather than reporting a bare exit
+code. Read them first; the last line before the failure is the reason.
+
+One failure has already been seen and is now handled automatically:
+
+> `AH00534: apache2: Configuration error: More than one MPM loaded.`
+
+Apache refuses to start with two Multi-Processing Modules loaded. A clean
+`php:8.2-apache` ships only `mpm_prefork`, and nothing in this repo asks for a
+second one — Railway's **build cache** served a base image that already had
+`mpm_event` enabled alongside it, so every boot died before Apache came up and
+the URL returned `502 Application failed to respond`.
+
+The repair lives in the entrypoint, not the Dockerfile, and deliberately so: a
+cached build layer is what introduced the problem, so a fix baked into another
+build layer can be cached straight past it. At container start the entrypoint
+removes every MPM symlink and re-links `mpm_prefork` (required by `mod_php`,
+which is not thread-safe). Whatever the image contains, Apache boots with one
+MPM. The startup log records it:
+
+```
+  MPM loaded: mpm_event.load mpm_prefork.load
+    -> corrected to mpm_prefork only
+```
+
+If a deploy still fails after this, the safe first move is **Redeploy without
+cache** in Railway, which discards the poisoned base layer.
+
 ### Sharing the staging link
 
 **The Railway URL is public.** Anyone you send it to can open it — no login, no

@@ -72,7 +72,41 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 3. Validate before starting
+# 3. Force exactly one MPM
+#
+# Apache refuses to start with more than one Multi-Processing Module loaded:
+#
+#     AH00534: apache2: Configuration error: More than one MPM loaded.
+#
+# A clean `php:8.2-apache` ships only mpm_prefork, so this should never happen
+# — but it did, on Railway, on every boot. The base image the build cache
+# handed us had both mpm_prefork and mpm_event enabled. Nothing in this repo
+# asks for that, which is exactly why it has to be corrected here rather than
+# in the Dockerfile: a cached build layer is what introduced it, so a fix baked
+# into another build layer can be cached straight past. This runs at container
+# start, so whatever the image contains, Apache boots with one MPM.
+#
+# a2dismod is not used: it refuses to touch an MPM when it thinks the result
+# would leave Apache without one, which is the very state being repaired.
+# Removing the symlinks directly is unconditional.
+#
+# prefork specifically, because this image serves PHP through mod_php, which
+# is not thread-safe and requires it.
+# ---------------------------------------------------------------------------
+LOADED_MPMS=$(cd /etc/apache2/mods-enabled 2>/dev/null && ls mpm_*.load 2>/dev/null | tr '\n' ' ')
+echo "  MPM loaded: ${LOADED_MPMS:-none}"
+
+rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf
+ln -sf ../mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load
+ln -sf ../mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf
+
+case "$LOADED_MPMS" in
+    "mpm_prefork.load ") : ;;  # already correct, nothing was changed
+    *) echo "    -> corrected to mpm_prefork only" ;;
+esac
+
+# ---------------------------------------------------------------------------
+# 4. Validate before starting
 #
 # Without this, a bad directive makes Apache exit immediately and the platform
 # reports only "crashed". apache2ctl -t names the file and line.
