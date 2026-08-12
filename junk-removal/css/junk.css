@@ -31,7 +31,7 @@
     08. Pricing table
     09. Callout boxes
     10. Before / after pairs
-    11. Photo slots (unshot photography)
+    11. (removed — placeholders no longer used)
     12. Process steps
     13. Testimonials & where-it-goes table
     14. Forms
@@ -77,9 +77,32 @@ body{
 .bg-bone{ background-color: var(--secondary-color); }
 
 .section-title h2{ font-size: 44px; font-weight: 800; text-transform: uppercase; }
-.section-title h3{ color: var(--accent-color); }
-.bg-forest .section-title h3{ color: var(--white-color); }
 .lead-in{ font-size: 19px; max-width: 760px; }
+
+/* The eyebrow above each section heading. custom.css hangs the lawn site's
+   leaf icon (icon-sub-heading.svg) off ::before — right there, off-brand on a
+   hauling site. Replaced with a short accent rule: same rhythm, no
+   landscaping imagery, one less image request. Centred sections drop the rule
+   entirely rather than leaving it floating to the left of the text. */
+.section-title h3{
+	color: var(--accent-color);
+	text-transform: uppercase;
+	letter-spacing: .12em;
+	font-size: 14px;
+	font-weight: 800;
+	padding-left: 42px;
+}
+.section-title h3::before{
+	background-image: none !important;
+	background-color: var(--accent-color);
+	width: 30px !important;
+	height: 3px !important;
+	border-radius: 2px;
+}
+.bg-forest .section-title h3{ color: var(--white-color); }
+.bg-forest .section-title h3::before{ background-color: var(--white-color); }
+.section-title.text-center h3{ padding-left: 0; }
+.section-title.text-center h3::before{ display: none; }
 
 
 /************************************/
@@ -169,36 +192,70 @@ header.main-header .header-sticky{
 
 /* The parent pulls the banner up under a transparent header
    (margin-top:-100px). With a solid sticky header that would clip the H1,
-   so the offset is removed. */
+   so the offset is removed.
+
+   The band is LIGHT on purpose. The parent's banner is dark green and its
+   `background` shorthand also pulls in page-header-bg.jpg. Inherited as-is,
+   the dark green nav sat directly on a dark green banner with zero gap
+   between them — 377px of near-identical colour that read as two stacked
+   headers, which is exactly what it looked like. The grass photo could not
+   rescue it either: it measures 35/255 mean luminance under a 78% overlay,
+   so it was invisible, and grass is the wrong subject for a hauling site.
+
+   Honeydew here gives three unmistakable layers: dark green nav, light band,
+   white content. `background-image: none` is required — without it the
+   shorthand from custom.css keeps loading the lawn photo. */
 .page-header{
 	margin-top: 0;
-	padding: 90px 0 80px;
-	background-color: var(--primary-color);
+	padding: 54px 0 46px;
+	background-color: var(--secondary-color);
+	background-image: none;
+	border-bottom: 4px solid var(--accent-color);
 }
-.page-header::before{
-	background-color: var(--primary-color);
-	opacity: .78;
-}
+/* custom.css puts a tinted scrim here for the photo. No photo, no scrim. */
+.page-header::before{ display: none; }
 .page-header-box h1{
-	font-size: 52px;
+	font-size: 46px;
 	font-weight: 800;
 	text-transform: uppercase;
-	margin-bottom: 14px;
+	color: var(--primary-color);
+	margin-bottom: 12px;
 }
 .page-header-box .breadcrumb{ margin-bottom: 0; }
-/* custom.css sets `.page-header-box ol li.breadcrumb-item a { color: inherit }`,
-   which outranks a plainer selector — this has to match its specificity. */
-.page-header-box ol li.breadcrumb-item a{ color: var(--secondary-color); }
-.page-header-box ol li.breadcrumb-item a:hover{ color: var(--white-color); }
-.page-header-box .breadcrumb li{ color: rgba(255,255,255,.75); }
-.page-header-box .breadcrumb li + li::before{ content: "/"; padding: 0 10px; }
+
+/* The breadcrumb was built for a dark banner, so custom.css colours it white
+   at .page-header-box ol li.breadcrumb-item (0,2,2) and the separator to match.
+   On the light band that is white-on-honeydew — measured 1.04:1, invisible.
+   These selectors mirror that specificity exactly so the colours actually
+   apply; a plainer `.page-header-box .breadcrumb li` (0,2,1) silently loses. */
+.page-header-box ol li.breadcrumb-item{ color: var(--text-color); }
+.page-header-box ol li.breadcrumb-item.active{ color: var(--text-color); }
+.page-header-box ol li.breadcrumb-item a{ color: var(--accent-color); }
+.page-header-box ol li.breadcrumb-item a:hover{ color: var(--primary-color); }
+.page-header-box ol .breadcrumb-item + .breadcrumb-item::before{
+	content: "/";
+	padding: 0 10px;
+	color: var(--text-color);
+}
 
 
-/* ---- Homepage hero ---- */
+/* ---- Homepage hero ----
+   Backed by a real photo of their own skid steer rather than flat colour —
+   the hero was 683px of empty green otherwise. The source is dark (63/255
+   mean luminance), which suits a hero: the headline stays legible through
+   the scrim without fighting the image.
+
+   The gradient is heavy on the left, where the text sits, and thins toward
+   the right so the machine still reads. It also hides the fact that the
+   source is only 1024px wide when stretched across a large display.
+
+   Swap in the real crew-and-trailer shot by changing this one url() to
+   images/junk-hero.webp — see README. */
 .junk-hero{
 	background-color: var(--primary-color);
+	background-image: url('../images/skid_steer.webp');
 	background-size: cover;
-	background-position: center;
+	background-position: center right;
 	position: relative;
 	padding: 110px 0 90px;
 }
@@ -206,7 +263,10 @@ header.main-header .header-sticky{
 	content: '';
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(90deg, rgba(11,61,44,.95) 0%, rgba(11,61,44,.75) 100%);
+	background: linear-gradient(100deg,
+		rgba(11,61,44,.97) 0%,
+		rgba(11,61,44,.93) 42%,
+		rgba(11,61,44,.72) 100%);
 }
 .junk-hero .container{ position: relative; z-index: 2; }
 .junk-hero h1{
@@ -539,46 +599,6 @@ header.main-header .header-sticky{
 	background-color: var(--primary-color);
 }
 .beforeafter figure.is-after figcaption{ background-color: var(--accent-color); }
-
-
-/************************************/
-/***      11. Photo slots         ***/
-/************************************/
-
-/* Deliberately visible. These mark shots that have not been taken yet — the
-   brief is written into the block so nobody has to go looking for it, and
-   no stock photography is ever substituted. Delete the whole <div> and drop
-   in the named file. */
-.photo-slot{
-	border: 3px dashed var(--accent-color);
-	border-radius: var(--jr-radius);
-	background-color: var(--secondary-color);
-	padding: 30px 26px;
-	text-align: center;
-	margin-bottom: 24px;
-}
-.photo-slot .ps-label{
-	display: inline-block;
-	font-size: 12px;
-	font-weight: 800;
-	letter-spacing: .14em;
-	text-transform: uppercase;
-	background-color: var(--accent-color);
-	color: var(--white-color);
-	padding: 5px 10px;
-	border-radius: 6px;
-	margin-bottom: 12px;
-}
-.photo-slot p{ margin: 0 0 6px; font-size: 16px; color: var(--text-color); }
-.photo-slot strong{ color: var(--primary-color); }
-.photo-slot code{
-	font-size: 14px;
-	color: var(--primary-color);
-	background: var(--white-color);
-	border: 1px solid var(--divider-color);
-	padding: 2px 7px;
-	border-radius: 4px;
-}
 
 
 /************************************/
