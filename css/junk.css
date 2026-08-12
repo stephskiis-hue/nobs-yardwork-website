@@ -39,6 +39,7 @@
     16. Reveal animation
     17. Responsive
     18. Accessibility
+    19. Blog
 ==========================================================================*/
 
 
@@ -936,4 +937,115 @@ textarea:focus-visible{
 		transition-duration: .01ms !important;
 		scroll-behavior: auto !important;
 	}
+}
+
+
+/************************************/
+/***         19. Blog             ***/
+/************************************/
+
+/* Post cards — used by both the blog index and the "keep reading" strip, so
+   the two can never drift apart visually. Same shell as .reason-card: white
+   ground, hairline border, accent rule along the top. */
+.post-card{
+	background-color: var(--white-color);
+	border: 1px solid var(--divider-color);
+	border-top: 5px solid var(--accent-color);
+	border-radius: var(--jr-radius);
+	padding: 28px 26px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+.post-card-meta{
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	color: var(--text-color);
+	margin-bottom: 12px;
+}
+.post-card h3{
+	font-size: 21px;
+	line-height: 1.35em;
+	margin-bottom: 12px;
+}
+.post-card h3 a{ color: var(--primary-color); }
+.post-card h3 a:hover,
+.post-card h3 a:focus-visible{ color: var(--accent-color); }
+.post-card p{
+	margin-bottom: 18px;
+	font-size: 16px;
+	line-height: 1.7em;
+}
+/* Pushed to the bottom so the prompt lines up across cards of unequal length.
+   Deliberately a <span>, not a second <a>: the heading link already covers
+   the whole destination, and two links to one URL in a card is noise for
+   anyone tabbing or using a screen reader. */
+.post-card-more{
+	margin-top: auto;
+	color: var(--accent-color);
+	font-weight: 800;
+	font-size: 15px;
+}
+
+/* Article body. Constrained through the col-lg-8 wrapper rather than here, so
+   the measure stays consistent with the rest of the site's content columns. */
+.post-meta{
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: .05em;
+	text-transform: uppercase;
+	color: var(--text-color);
+	padding-bottom: 20px;
+	margin-bottom: 32px;
+	border-bottom: 2px solid var(--divider-color);
+}
+.blog-post h2{
+	font-size: 30px;
+	line-height: 1.3em;
+	margin: 44px 0 16px;
+	color: var(--primary-color);
+}
+.blog-post h3{
+	font-size: 21px;
+	margin: 30px 0 12px;
+	color: var(--primary-color);
+}
+.blog-post p{ margin-bottom: 20px; }
+.blog-post ul,
+.blog-post ol{
+	margin: 0 0 24px;
+	padding-left: 22px;
+	color: var(--text-color);
+}
+.blog-post li{ margin-bottom: 12px; line-height: 1.75em; }
+.blog-post a{ color: var(--accent-color); text-decoration: underline; }
+.blog-post a:hover,
+.blog-post a:focus-visible{ color: var(--primary-color); }
+/* The article's own links are underlined for scannability, but the buttons in
+   the CTA are not links-in-prose and should keep their button treatment. */
+.blog-post .btn-default,
+.blog-post .callout h3 + p a{ text-decoration: none; }
+.blog-post .btn-default{ text-decoration: none; }
+
+.post-cta{
+	background-color: var(--secondary-color);
+	border-radius: var(--jr-radius);
+	padding: 32px 34px;
+	margin-top: 46px;
+}
+.post-cta h3{
+	font-size: 22px;
+	text-transform: uppercase;
+	margin-bottom: 10px;
+	color: var(--primary-color);
+}
+.post-cta p{ margin-bottom: 22px; }
+
+@media only screen and (max-width: 767px){
+	.blog-post h2{ font-size: 25px; margin-top: 34px; }
+	.blog-post h3{ font-size: 19px; }
+	.post-cta{ padding: 26px 22px; }
+	.post-card{ padding: 24px 22px; }
 }

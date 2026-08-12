@@ -48,6 +48,12 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
+# Source fragments and container config are not part of the site. This is
+# FIRST on purpose: the .html-stripping rule below would otherwise 301
+# /_pages/foo.html to /_pages/foo before the deny was ever considered, which
+# ends in the same 403 but advertises the directory layout on the way.
+RewriteRule ^(_pages|deploy)/ - [F,L]
+
 # ......................................................................
 # CANONICAL HOST — LEAVE COMMENTED UNTIL THE DOMAIN IS LIVE
 #
@@ -80,8 +86,20 @@ RewriteRule ^(.*)$ $1.html [NC,L]
 ErrorDocument 404 /404.html
 
 # ----------------------------------------------------------------------
-# Keep build tooling off the public web.
+# Keep build tooling and docs off the public web.
+#
+# DEPLOY.md tells people not to upload any of this, but belt and braces: a
+# File Manager drag-and-drop takes the whole folder more often than not.
+#
+# Wrapped in an IfModule because `Require` is Apache 2.4 syntax. On an older
+# 2.2 server these directives would be a hard 500 rather than a no-op, which
+# would take down the entire site over a hardening rule.
 # ----------------------------------------------------------------------
-<FilesMatch "^(_build\.py|_make-icons\.py)$">
-  Require all denied
-</FilesMatch>
+<IfModule mod_authz_core.c>
+  <FilesMatch "^(_build\.py|_make-icons\.py|Dockerfile|railway\.json|\.dockerignore)$">
+    Require all denied
+  </FilesMatch>
+  <FilesMatch "\.md$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
