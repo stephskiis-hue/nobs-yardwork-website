@@ -1,0 +1,17 @@
+# Only the junk removal folder is ever copied into the image, so everything
+# else is excluded from the build context. Without this, Docker uploads the
+# whole repo — including blog/ (a full WordPress install, ~4200 files) and the
+# 279-file images/ folder — on every build, for no reason.
+*
+!junk-removal
+
+# Build tooling and docs do not belong in a web root.
+junk-removal/_pages
+junk-removal/_build.py
+junk-removal/images/_make-icons.py
+junk-removal/README.md
+junk-removal/MIGRATE.md
+junk-removal/.github
+**/__pycache__
+**/*.pyc
+**/.DS_Store
