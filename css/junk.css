@@ -858,6 +858,31 @@ textarea:focus-visible{
 	border-radius: 4px;
 }
 
+/* Preview banner for container/staging deploys.
+   Nothing on this site emits .jr-staging — the element is injected at serve
+   time by deploy/railway.conf, so this rule is inert in production. It lives
+   here rather than in the container config so it uses the same tokens as
+   everything else and cannot drift from the palette. */
+.jr-staging{
+	background-color: var(--secondary-color);
+	border-bottom: 2px solid var(--accent-color);
+	color: var(--primary-color);
+	font-size: 15px;
+	line-height: 1.5;
+	text-align: center;
+	padding: 12px 20px;
+}
+.jr-staging strong{
+	color: var(--white-color);
+	background-color: var(--accent-color);
+	font-weight: 800;
+	letter-spacing: .08em;
+	padding: 3px 9px;
+	border-radius: 5px;
+	margin-right: 8px;
+	white-space: nowrap;
+}
+
 .skip-link{
 	position: absolute;
 	left: -9999px;

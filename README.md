@@ -139,12 +139,44 @@ cache headers are applied, build tooling under `_pages/`, `_build.py`, `deploy/`
 and `Dockerfile` returns 403, and the quote form POSTs through to `thanks.html`
 with validation, the honeypot and the header-injection guard all behaving.
 
-**The Railway URL is deliberately `noindex`.** `deploy/railway.conf` sets
-`X-Robots-Tag: noindex, nofollow, noarchive` on every response. Without it,
-Google can index a staging copy carrying placeholder prices, which then competes
-with the real no-bs-junkremoval.com later — a duplicate-content mess that is
-tedious to unwind. That header lives in the container config, *not* in
-`.htaccess`, so it can never follow the site to production.
+### Sharing the staging link
+
+**The Railway URL is public.** Anyone you send it to can open it — no login, no
+allowlist. Share it freely with crew, family or a designer.
+
+**`noindex` does not change that.** `deploy/railway.conf` sets
+`X-Robots-Tag: noindex, nofollow, noarchive` on every response, which tells
+*search engines* not to list the page. It has no effect on people with the link.
+It is there because without it Google can index a staging copy carrying
+placeholder prices, which then competes with the real no-bs-junkremoval.com
+later — a duplicate-content mess that is tedious to unwind. The header lives in
+the container config, not in `.htaccess`, so it can never follow the site to
+production. Leave it on until the real domain is live.
+
+**Link previews work.** Every page hard-codes `https://www.no-bs-junkremoval.com`
+in its `canonical`, `og:url` and `og:image` — correct for production, but that
+domain does not resolve yet, so a staging link pasted into Messenger, Slack or a
+text message would show a preview card with no image and a dead click-through.
+`deploy/entrypoint.sh` rewrites that host to the actual staging domain at serve
+time, using Railway's own `RAILWAY_PUBLIC_DOMAIN` variable. Nothing to configure
+— it happens as soon as you generate the domain. Set `PUBLIC_URL` yourself if
+you host it somewhere other than Railway.
+
+The committed HTML is untouched by this; it only changes what the container
+sends.
+
+**Every page carries a preview banner** — a green *PREVIEW SITE* strip under the
+header explaining that the business is not live and the prices are placeholders.
+It is injected at serve time by `railway.conf`, so it exists only on the staging
+container and can never reach production. To remove it, delete the `Substitute`
+line in `deploy/railway.conf`.
+
+Both substitutions are scoped with `<FilesMatch "\.html$">` and
+`SetOutputFilter` rather than `AddOutputFilterByType text/html`. The latter does
+not reliably attach to an `ErrorDocument`, which meant the 404 page was silently
+skipping both the banner and the host rewrite. Scoping to `.html` also keeps the
+filter away from CSS, JS and images — verified byte-identical through the
+container.
 
 Two things to leave alone while you are on Railway:
 
