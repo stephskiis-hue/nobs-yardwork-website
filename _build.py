@@ -52,7 +52,17 @@ PHONE_E164 = "+12049000438"
 EMAIL = "nobsyardwork@gmail.com"
 GTM_ID = "GTM-M3MHCKF5"
 GA4_ID = "G-VN2QZ4KXXH"
-JOTFORM_ID = "260105131967250"
+# The quote form on /quote is a JotForm embed; this is the only place its ID
+# is set. Change it here and re-run the build.
+#
+# "Clone of Request for Quote" in the nobsyardwork JotForm account. Chosen by
+# the owner and confirmed by reading the account rather than copying an ID by
+# hand. Its fields: name (first/last), phone, email, a message field, and a
+# full address — the message field is where the customer describes the pile.
+#
+# Note it is NOT the form on no-bs-yardwork.com/contact (260105131967250), so
+# junk enquiries stay separable from lawn enquiries.
+JOTFORM_ID = "262378273577268"
 
 # ---------------------------------------------------------------------------
 # Nav — single source of truth. (label, href, [children])
@@ -133,7 +143,32 @@ LOCAL_BUSINESS = {
         {"@type": "OpeningHoursSpecification",
          "dayOfWeek": ["Saturday", "Sunday"], "opens": "10:00", "closes": "18:00"},
     ],
-    "areaServed": {"@type": "City", "name": "Winnipeg"},
+    # Explicit neighbourhoods rather than just "Winnipeg". Local search is
+    # largely a proximity game, and naming the areas actually served is the
+    # honest way to appear for "junk removal <neighbourhood>" queries without
+    # spinning up a doorway page per suburb, which Google treats as spam.
+    "areaServed": [
+        {"@type": "City", "name": "Winnipeg", "sameAs": "https://en.wikipedia.org/wiki/Winnipeg"},
+    ] + [
+        {"@type": "Place", "name": n} for n in [
+            "St. Vital", "St. Boniface", "Transcona", "Charleswood", "Fort Garry",
+            "River Heights", "St. James", "East Kildonan", "West Kildonan",
+            "North Kildonan", "Tuxedo", "Windsor Park", "Sage Creek",
+            "Bridgwater", "Southdale", "Headingley", "East St. Paul",
+            "West St. Paul",
+        ]
+    ],
+    # A plain coordinate query URL, not a fabricated Place ID. It resolves for
+    # real; inventing a listing identifier would not.
+    "hasMap": "https://www.google.com/maps/search/?api=1&query=49.8951,-97.1384",
+    "paymentAccepted": "Cash, Cheque, e-Transfer, Credit Card",
+    "currenciesAccepted": "CAD",
+    "knowsAbout": [
+        "Junk removal", "Furniture removal", "Appliance removal",
+        "Mattress disposal", "Electronic waste recycling",
+        "Renovation debris removal", "Hot tub removal", "Concrete removal",
+        "Estate cleanouts", "Scrap metal recycling", "Snow removal",
+    ],
     "parentOrganization": {
         "@type": "Organization",
         "name": "No-BS Yardwork",
@@ -198,6 +233,71 @@ def breadcrumbs(trail):
     }
 
 
+# ---------------------------------------------------------------------------
+# Entity + AI-retrieval schema
+# ---------------------------------------------------------------------------
+# ORGANIZATION establishes the business as a named entity rather than just a
+# page. Search engines and AI assistants resolve "No BS Junk Removal" to this
+# node, which is what lets them answer "who does junk removal in Winnipeg"
+# with a company rather than a blue link.
+ORGANIZATION = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": f"{SITE}/#organization",
+    "name": "No BS Junk Removal",
+    "url": SITE + "/",
+    "logo": {"@type": "ImageObject", "url": f"{SITE}/images/logo.svg"},
+    "telephone": PHONE_E164,
+    "email": EMAIL,
+    "areaServed": {"@type": "City", "name": "Winnipeg"},
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": PHONE_E164,
+        "contactType": "customer service",
+        "areaServed": "CA",
+        "availableLanguage": "English",
+    },
+    "sameAs": [
+        "https://www.facebook.com/No.BS.Yardworks",
+        "https://www.instagram.com/no_bs_yardwork/",
+        "https://www.no-bs-yardwork.com",
+    ],
+}
+
+# WEBSITE ties every page to one site entity.
+# Deliberately NO SearchAction: that declares an on-site search endpoint, and
+# this site has no search. Claiming one that does not exist is a broken promise
+# to a crawler, not a ranking boost.
+WEBSITE = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": f"{SITE}/#website",
+    "url": SITE + "/",
+    "name": "No BS Junk Removal",
+    "inLanguage": "en-CA",
+    "publisher": {"@id": f"{SITE}/#organization"},
+}
+
+
+def speakable_schema(url, selectors=None):
+    """Mark which parts of a page are worth reading aloud.
+
+    Voice assistants and AI answer engines use this to pick the passage that
+    answers a question. Pointing it at the headline and lead paragraph keeps
+    the spoken answer to the part a person actually asked about, instead of a
+    machine reading a nav menu out loud.
+    """
+    return {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "url": url,
+        "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": selectors or ["h1", ".lead-in", ".accordion-body"],
+        },
+    }
+
+
 def faq_schema(pairs):
     return {
         "@context": "https://schema.org",
@@ -248,7 +348,7 @@ HEADER = """    <a class="skip-link" href="#main">Skip to content</a>
         <nav class="navbar navbar-expand-lg">
           <div class="container">
             <a class="navbar-brand brand-lockup" href="{BASE}index.html">
-              <img src="{BASE}images/logo.svg" alt="No-BS Yardwork" width="150" height="50"
+              <img src="{BASE}images/logo.svg" alt="No-Bs Junk Removal" width="141" height="50"
                    style="height: 50px; width: auto" fetchpriority="high" />
               <span class="division-tag">Junk Removal</span>
             </a>
@@ -287,7 +387,7 @@ FOOTER = """    <footer class="main-footer">
             <div class="about-footer">
               <div class="footer-logo">
                 <img src="{BASE}images/footer-logo.svg" alt="No BS Junk Removal Winnipeg"
-                     loading="lazy" width="200" height="90" />
+                     loading="lazy" width="220" height="78" />
               </div>
               <div class="about-footer-content">
                 <p>Embrace hard work, honesty and watch amazing things unfold.</p>
@@ -421,6 +521,22 @@ PAGE = """<!doctype html>
     <meta property="og:image" content="{SITE}/images/{og_image}" />
     <meta property="og:locale" content="en_CA" />
 
+    <!-- Twitter/X card. Without these a shared link renders as a bare title with
+         no image in X, Slack and iMessage, which all read these tags. -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{title}" />
+    <meta name="twitter:description" content="{description}" />
+    <meta name="twitter:image" content="{SITE}/images/{og_image}" />
+    <meta name="twitter:image:alt" content="No BS Junk Removal, Winnipeg" />
+
+    <!-- Geographic signals. Legacy tags, but still read by several local
+         directories and aggregators, and free to carry. The authoritative
+         location data is the LocalBusiness JSON-LD below. -->
+    <meta name="geo.region" content="CA-MB" />
+    <meta name="geo.placename" content="Winnipeg" />
+    <meta name="geo.position" content="49.8951;-97.1384" />
+    <meta name="ICBM" content="49.8951, -97.1384" />
+
     <link rel="shortcut icon" type="image/x-icon" href="{BASE}images/favicon.webp" />
     <link rel="alternate" type="application/rss+xml"
           title="No BS Junk Removal — Winnipeg" href="{BASE}feed.xml" />
@@ -527,7 +643,7 @@ PAGES = [
       "Winnipeg junk removal with upfront pricing and no hidden fees. Furniture, "
       "appliances, reno debris, hot tubs, concrete. Skid steer available. Backed by "
       "No-BS Yardwork. Free quotes — call or text today.",
-      schema=[LOCAL_BUSINESS], body_class="home"),
+      schema=[LOCAL_BUSINESS, ORGANIZATION, WEBSITE], body_class="home"),
 
     P("pricing",
       "Junk Removal Prices Winnipeg | Upfront Rates, No Hidden Fees",
@@ -1411,6 +1527,12 @@ def main():
 
         canonical = SITE + clean_url(slug)
 
+        # Pages carrying an FAQ are the ones an assistant is most likely to be
+        # asked to read out, so they get Speakable. Added here rather than on
+        # each P() so it can never be forgotten on a new FAQ page.
+        if any(b.get("@type") == "FAQPage" for b in page["schema"]):
+            page["schema"].append(speakable_schema(canonical))
+
         if page["schema"]:
             schema_html = "".join(
                 '    <script type="application/ld+json">\n'
@@ -1488,7 +1610,83 @@ def main():
         + "\n".join(items)
         + "\n  </channel>\n</rss>\n", encoding="utf-8")
 
-    print(f"built {written} pages + sitemap.xml + feed.xml ({len(POSTS)} posts)")
+    # -----------------------------------------------------------------
+    # llms.txt — generated, not hand-written.
+    #
+    # The hand-maintained version had already drifted: it listed none of the
+    # eight blog posts. Deriving it from PAGES, POSTS and the FAQ data means it
+    # cannot fall behind the site again.
+    #
+    # The Q&A block matters more than the link list. Assistants quote a passage
+    # that answers the question directly, so the answers are reproduced here in
+    # full rather than being linked to.
+    # -----------------------------------------------------------------
+    def short(title):
+        return title.split(" | ")[0].strip()
+
+    faq_pairs = []
+    seen_q = set()
+    for page in PAGES:
+        for block in page["schema"]:
+            if block.get("@type") != "FAQPage":
+                continue
+            for q in block["mainEntity"]:
+                name = q["name"]
+                if name not in seen_q:
+                    seen_q.add(name)
+                    faq_pairs.append((name, q["acceptedAnswer"]["text"]))
+
+    L = []
+    L.append("# www.no-bs-junkremoval.com llms.txt")
+    L.append("")
+    L.append("> No BS Junk Removal is the junk removal and hauling division of No-BS")
+    L.append("> Yardwork in Winnipeg, Manitoba. Pricing is by volume — the space your")
+    L.append("> junk takes in a 14ft x 7ft x 4ft trailer — and every quote already")
+    L.append("> includes labour, hauling, disposal and dump fees. Heavy material")
+    L.append("> (concrete, brick, shingles, dirt) is priced by weight instead, because")
+    L.append("> the landfill bills by the tonne. Call or text 204.900.0438.")
+    L.append("")
+    L.append("## Services")
+    L.append("")
+    for page in PAGES:
+        if page["slug"].startswith("blog/") or "noindex" in page["robots"]:
+            continue
+        L.append(f"- [{short(page['title'])}]({SITE}{clean_url(page['slug'])}): {page['description']}")
+    L.append("")
+    L.append("## Articles")
+    L.append("")
+    for post in POSTS:
+        L.append(f"- [{strip_tags(post['h1'])}]({SITE}/blog/{post['slug']}): {post['description']}")
+    L.append("")
+    L.append("## Common questions, answered")
+    L.append("")
+    for q, a in faq_pairs:
+        L.append(f"### {q}")
+        L.append("")
+        L.append(a)
+        L.append("")
+    L.append("## Business details")
+    L.append("")
+    L.append("- Trading name: No BS Junk Removal, a division of No-BS Yardwork")
+    L.append(f"- Phone: {PHONE_DISPLAY} (call or text)")
+    L.append(f"- Email: {EMAIL}")
+    L.append("- Address: Lakewood Blvd, Winnipeg, MB R2J 4A9, Canada")
+    L.append("- Service area: Winnipeg and surrounding communities, including "
+             "St. Vital, St. Boniface, Transcona, Charleswood, Fort Garry, "
+             "River Heights, St. James, the Kildonans, Headingley and St. Paul")
+    L.append("- Hours: Mon-Fri 09:00-18:00, Sat-Sun 10:00-18:00")
+    L.append("- Equipment: skid steer and dump trailer (14ft x 7ft x 4ft)")
+    L.append("- Parent company: No-BS Yardwork (https://www.no-bs-yardwork.com)")
+    L.append("")
+    L.append("## What we cannot take")
+    L.append("")
+    L.append("Wet paint, solvents, chemicals, pesticides, asbestos or suspected")
+    L.append("asbestos, propane tanks, fuel, oil, explosives, medical or biohazard")
+    L.append("waste, and ammunition. We will point you to who does handle it.")
+    L.append("")
+    (ROOT / "llms.txt").write_text("\n".join(L), encoding="utf-8")
+
+    print(f"built {written} pages + sitemap.xml + feed.xml + llms.txt ({len(POSTS)} posts, {len(faq_pairs)} FAQs)")
 
 
 if __name__ == "__main__":

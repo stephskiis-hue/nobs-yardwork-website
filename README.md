@@ -6,12 +6,6 @@ Target domain: `no-bs-junkremoval.com`
 Hand-coded static HTML, same stack as no-bs-yardwork.com: no framework, no
 runtime dependencies, deploys by FTP to cPanel/Apache.
 
-This is the standalone repository: the site lives at the root, on `main`, so a
-container host needs no path or branch configuration at all.
-
-It was extracted from `stephskiis-hue/nobs-yardwork-website` with
-`git subtree split`, so the commit history for these files came with it.
-
 ---
 
 ## Before this goes live
@@ -28,9 +22,9 @@ These are the things only you can do. Nothing on this list is code.
 - [ ] **Take the photos.** Every missing shot is marked on-page with a green
       dashed block containing the brief and the filename. See below.
 - [ ] **Add your liability coverage amount** to the box on `_pages/about.html`
-- [ ] **Test the quote form** end to end and check your spam folder — PHP
-      `mail()` on shared hosting is unreliable. If it does not arrive, swap the
-      form for the JotForm embed (snippet below).
+- [ ] **Test the quote form** once, for real. It is a JotForm embed
+      (`262378273577268`, "Clone of Request for Quote"), so submissions land in
+      your JotForm account — there is no server-side mail to fail.
 - [ ] **Create a Google Business Profile** for the junk division. For this kind
       of business it out-earns the website as a lead source; do it before launch.
 - [ ] **Search Console** property + submit `sitemap.xml`
@@ -41,10 +35,14 @@ These are the things only you can do. Nothing on this list is code.
 
 ## Photos still needed
 
-No stock photography is used anywhere on this site, and none should be. Where a
-real photo does not exist yet, the page shows a labelled placeholder with the
-brief rather than a substitute. Drop the file in `images/` and replace the
-`<div class="photo-slot">` block.
+**This changed.** Seven Unsplash-licensed stock photos now sit on the service
+pages — see [`images/CREDITS.md`](images/CREDITS.md) for what each one shows and
+the licence terms. The old labelled placeholder blocks are gone.
+
+Stock is a stopgap, not the goal. Real photos of your own crew and equipment
+beat it on trust and on local SEO, because Google favours original imagery. Drop
+a replacement in at the same filename and it swaps everywhere with no other
+change. The shot list below is still the brief worth shooting to.
 
 | File | Shot |
 |---|---|
@@ -119,12 +117,6 @@ putting first-person opinions under a real person's byline is your call to make,
 not the generator's. Change `BLOG_AUTHOR` and the `author` block in
 `blog_posting_schema()` to a `Person` if you would rather they were signed.
 
-### Hosting it on your own server
-
-[`DEPLOY.md`](DEPLOY.md) covers cPanel and nginx, what not to upload, a
-post-launch checklist and a symptom-to-cause list for when something looks
-wrong.
-
 ### Previewing it yourself
 
 **Quickest — open one file.** Download the repo (GitHub → green **Code** button →
@@ -153,18 +145,23 @@ staging subfolder rather than the document root.
 `Dockerfile` + `deploy/` give you a live URL that redeploys on every push.
 
 It runs **php:apache**, not a static file server, on purpose: production is
-cPanel + Apache + PHP, so this image runs the *same* `.htaccess` and the *same*
-`form-process.php`. Extensionless URLs, the 404 page, gzip, cache headers and
-the quote form all behave exactly as they will on the real host.
+cPanel + Apache, so this image runs the *same* `.htaccess` the real host will.
+Extensionless URLs, the 404 page, gzip and cache headers all behave exactly as
+they will in production.
 
 Setup:
 
 1. Railway → **New Project → Deploy from GitHub repo** → pick this repo.
-2. **Settings → Networking → Generate Domain**.
-
-That is the whole setup. No Root Directory, no branch override, no builder
-override, no build or start command, no environment variables. `railway.json`
-pins the Dockerfile builder and `deploy/entrypoint.sh` handles `$PORT`.
+2. **Settings → Source → Branch** → `claude/no-bs-junk-removal-site-vn1784`
+   (or `main` once this is merged).
+3. Root Directory does not need setting. There is a `Dockerfile` at the repo
+   root that copies `junk-removal/` into the web root, so Railway serves the
+   junk removal site either way. Setting Root Directory to `junk-removal` also
+   works — it just uses `junk-removal/Dockerfile` instead, which builds the
+   same image.
+4. Railway auto-detects the Dockerfile. No build command, no start command, no
+   environment variables needed — `$PORT` is handled in `deploy/entrypoint.sh`.
+5. **Settings → Networking → Generate Domain** for the `*.up.railway.app` URL.
 
 Verified locally with `docker build` + `docker run`: all extensionless URLs
 return 200, `/pricing.html` 301s to `/pricing`, the custom 404 renders, gzip and
@@ -308,7 +305,7 @@ Two class-naming traps worth knowing, both already hit and fixed:
 
 ## Lead capture
 
-The quote form posts to `form-process.php` with a plain POST (no JavaScript
+The quote form is a JotForm embed (no JavaScript
 required) and redirects to `thanks.html`.
 
 To route leads through the JotForm the yardwork site already uses, replace the

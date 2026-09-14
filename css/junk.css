@@ -40,6 +40,10 @@
     17. Responsive
     18. Accessibility
     19. Blog
+    20. Service area
+    21. Footer baseline
+    22. Page photos
+    23. JotForm embed
 ==========================================================================*/
 
 
@@ -859,6 +863,17 @@ header.main-header .header-sticky{
 	.trust-stats{ gap: 24px; }
 	.trust-stats .num{ font-size: 32px; }
 	.btn-default{ margin-right: 0; width: 100%; text-align: center; }
+	/* Buttons go full width on phones for a decent tap target. custom.css pins
+	   the 36px arrow badge to right:0 and then translates it 50% outward, which
+	   at full width parks it hard against the viewport edge — visible on every
+	   CTA, not just the footer. Tuck it inside the pill on small screens and pad
+	   the text so the two never collide. */
+	.btn-default{ padding-right: 58px; }
+	.btn-default::before{
+		right: 7px;
+		transform: translate(0, -50%);
+	}
+	.btn-default:hover::before{ right: 4px; }
 	.btn-row{ flex-direction: column; align-items: stretch; gap: 12px; }
 	.price-table th,
 	.price-table td{ padding: 13px 14px; }
@@ -1048,4 +1063,122 @@ textarea:focus-visible{
 	.blog-post h3{ font-size: 19px; }
 	.post-cta{ padding: 26px 22px; }
 	.post-card{ padding: 24px 22px; }
+}
+
+
+/************************************/
+/***      20. Service area        ***/
+/************************************/
+
+/* Neighbourhood list. Pills rather than a bulleted column: eighteen items in a
+   single list reads as filler, whereas a wrapped row scans as coverage. */
+.area-list{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	justify-content: center;
+}
+.area-list li{
+	background-color: var(--secondary-color);
+	border: 1px solid var(--divider-color);
+	border-radius: 100px;
+	padding: 8px 18px;
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--primary-color);
+}
+
+
+/************************************/
+/***     21. Footer baseline      ***/
+/************************************/
+
+/* The copyright row is col-lg-8 + col-lg-4, which stacks below 768px. When it
+   stacks, the payment strip and the "Visit No-BS Yardwork" button landed flush
+   against each other — a measured 0px gap — because neither carries any
+   vertical margin of its own; on desktop they sit in separate columns so the
+   gap was never needed.
+   Also drops the inline align="right" on the button wrapper: right-aligned is
+   correct beside the copyright text, and wrong once it is the only thing on
+   its own row. */
+@media only screen and (max-width: 767px){
+	.footer-copyright{ text-align: center; }
+	.footer-copyright-text p{ margin-bottom: 0; }
+	.footer-copyright-text img{
+		display: block;
+		margin: 16px auto 0;
+	}
+	.footer-copyright .footer-links{
+		margin-top: 30px;
+		text-align: center;
+	}
+	.footer-copyright .footer-links p.btn-default{
+		text-align: center;
+		/* The 36px arrow badge is translated 50% past the right edge by
+		   design. Centred on a phone that reads as off-centre, so trade the
+		   stock right margin for symmetry. */
+		/* The stock 15px right margin exists to clear the badge from whatever
+		   follows it in a button row. Alone and centred there is nothing to
+		   clear, and keeping it pushed the button past the viewport edge. */
+		margin-right: 0;
+	}
+}
+
+
+/************************************/
+/***      22. Page photos         ***/
+/************************************/
+
+/* Service-page photography. Fixed 3:2 via aspect-ratio as well as the width/
+   height attributes, so the space is reserved before the image loads and the
+   text below does not jump — these are lazy-loaded and would otherwise shift
+   layout on slow connections. */
+.page-photo{
+	margin: 0 0 36px;
+}
+.page-photo img{
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 3 / 2;
+	object-fit: cover;
+	border-radius: var(--jr-radius);
+}
+
+
+/************************************/
+/***     23. JotForm embed        ***/
+/************************************/
+
+/* The quote form is a JotForm iframe. for-form-embed-handler.js sets the real
+   height once the form reports it; min-height covers the gap before that and
+   the case where the script is blocked, so the form is never a squashed strip. */
+.jotform-embed{
+	background-color: var(--white-color);
+	border: 1px solid var(--divider-color);
+	border-radius: var(--jr-radius);
+	overflow: hidden;
+}
+.jotform-embed iframe{
+	display: block;
+	width: 1px;          /* with min-width:100% this is the reliable way to make */
+	min-width: 100%;     /* an iframe fill its container across browsers */
+	min-height: 720px;
+	border: none;
+}
+.form-fallback{
+	margin: 18px 0 0;
+	text-align: center;
+	font-size: 15px;
+	color: var(--text-color);
+}
+.form-fallback a{ color: var(--accent-color); font-weight: 700; }
+
+@media only screen and (max-width: 767px){
+	/* Phones show fewer fields per row, so the form runs taller before the
+	   resize handler reports back. */
+	.jotform-embed iframe{ min-height: 900px; }
 }
