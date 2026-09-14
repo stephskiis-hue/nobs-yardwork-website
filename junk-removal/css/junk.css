@@ -41,6 +41,7 @@
     18. Accessibility
     19. Blog
     20. Service area
+    21. Footer baseline
 ==========================================================================*/
 
 
@@ -860,6 +861,17 @@ header.main-header .header-sticky{
 	.trust-stats{ gap: 24px; }
 	.trust-stats .num{ font-size: 32px; }
 	.btn-default{ margin-right: 0; width: 100%; text-align: center; }
+	/* Buttons go full width on phones for a decent tap target. custom.css pins
+	   the 36px arrow badge to right:0 and then translates it 50% outward, which
+	   at full width parks it hard against the viewport edge — visible on every
+	   CTA, not just the footer. Tuck it inside the pill on small screens and pad
+	   the text so the two never collide. */
+	.btn-default{ padding-right: 58px; }
+	.btn-default::before{
+		right: 7px;
+		transform: translate(0, -50%);
+	}
+	.btn-default:hover::before{ right: 4px; }
 	.btn-row{ flex-direction: column; align-items: stretch; gap: 12px; }
 	.price-table th,
 	.price-table td{ padding: 13px 14px; }
@@ -1075,4 +1087,40 @@ textarea:focus-visible{
 	font-size: 15px;
 	font-weight: 700;
 	color: var(--primary-color);
+}
+
+
+/************************************/
+/***     21. Footer baseline      ***/
+/************************************/
+
+/* The copyright row is col-lg-8 + col-lg-4, which stacks below 768px. When it
+   stacks, the payment strip and the "Visit No-BS Yardwork" button landed flush
+   against each other — a measured 0px gap — because neither carries any
+   vertical margin of its own; on desktop they sit in separate columns so the
+   gap was never needed.
+   Also drops the inline align="right" on the button wrapper: right-aligned is
+   correct beside the copyright text, and wrong once it is the only thing on
+   its own row. */
+@media only screen and (max-width: 767px){
+	.footer-copyright{ text-align: center; }
+	.footer-copyright-text p{ margin-bottom: 0; }
+	.footer-copyright-text img{
+		display: block;
+		margin: 16px auto 0;
+	}
+	.footer-copyright .footer-links{
+		margin-top: 30px;
+		text-align: center;
+	}
+	.footer-copyright .footer-links p.btn-default{
+		text-align: center;
+		/* The 36px arrow badge is translated 50% past the right edge by
+		   design. Centred on a phone that reads as off-centre, so trade the
+		   stock right margin for symmetry. */
+		/* The stock 15px right margin exists to clear the badge from whatever
+		   follows it in a button row. Alone and centred there is nothing to
+		   clear, and keeping it pushed the button past the viewport edge. */
+		margin-right: 0;
+	}
 }
