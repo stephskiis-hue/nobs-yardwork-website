@@ -51,7 +51,19 @@
       "Bash(wc -l)",
       "Bash(python3 -)",
       "Bash(python3 dl.py)",
-      "Bash(python3 make_preview.py)"
+      "Bash(python3 make_preview.py)",
+      "Bash(node -e \"const p=require\\('playwright'\\); console.log\\('ok', require\\('playwright/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\(require.resolve\\('playwright'\\)\\)\")",
+      "Read(//opt/node22/lib/node_modules/**)",
+      "Bash(find / -maxdepth 6 -name \"playwright\" -type d -not -path \"*/proc/*\")",
+      "Bash(npm root *)",
+      "Bash(NODE_PATH=/opt/node22/lib/node_modules node -e \"const p=require\\('playwright'\\); console.log\\('ok', require\\('/opt/node22/lib/node_modules/playwright/package.json'\\).version\\)\")",
+      "Bash(awk '{printf \" %8.2f KB %s\\\\n\", $5/1024, $9}')",
+      "Bash(cp /tmp/claude-0/-home-user-nobs-yardwork-website/f8faaae6-5f4d-5220-863d-b2e46bf2fad5/scratchpad/no-bs-junk-removal-preview.html /tmp/claude-0/-home-user-nobs-yardwork-website/f8faaae6-5f4d-5220-863d-b2e46bf2fad5/scratchpad/pv-check.html)",
+      "Bash(NODE_PATH=/opt/node22/lib/node_modules node test_preview.js)",
+      "Bash(python3 conv.py)",
+      "Bash(NODE_PATH=/opt/node22/lib/node_modules node debug.js)",
+      "Bash(python3 conv2.py)"
     ]
   }
 }
