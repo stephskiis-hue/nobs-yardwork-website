@@ -46,7 +46,12 @@
       "Bash(node rebook-failed.js)",
       "WebFetch(domain:gt-pro-enterprises.com)",
       "Bash(node build-schedule-v3.js)",
-      "Bash(node build-schedule-v4.js)"
+      "Bash(node build-schedule-v4.js)",
+      "Bash(cat)",
+      "Bash(wc -l)",
+      "Bash(python3 -)",
+      "Bash(python3 dl.py)",
+      "Bash(python3 make_preview.py)"
     ]
   }
 }
