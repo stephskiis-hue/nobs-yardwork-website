@@ -40,6 +40,7 @@
     17. Responsive
     18. Accessibility
     19. Blog
+    20. Service area
 ==========================================================================*/
 
 
@@ -1048,4 +1049,30 @@ textarea:focus-visible{
 	.blog-post h3{ font-size: 19px; }
 	.post-cta{ padding: 26px 22px; }
 	.post-card{ padding: 24px 22px; }
+}
+
+
+/************************************/
+/***      20. Service area        ***/
+/************************************/
+
+/* Neighbourhood list. Pills rather than a bulleted column: eighteen items in a
+   single list reads as filler, whereas a wrapped row scans as coverage. */
+.area-list{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	justify-content: center;
+}
+.area-list li{
+	background-color: var(--secondary-color);
+	border: 1px solid var(--divider-color);
+	border-radius: 100px;
+	padding: 8px 18px;
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--primary-color);
 }
