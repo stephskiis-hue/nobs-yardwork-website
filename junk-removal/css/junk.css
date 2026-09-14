@@ -42,6 +42,7 @@
     19. Blog
     20. Service area
     21. Footer baseline
+    22. Page photos
 ==========================================================================*/
 
 
@@ -1123,4 +1124,25 @@ textarea:focus-visible{
 		   clear, and keeping it pushed the button past the viewport edge. */
 		margin-right: 0;
 	}
+}
+
+
+/************************************/
+/***      22. Page photos         ***/
+/************************************/
+
+/* Service-page photography. Fixed 3:2 via aspect-ratio as well as the width/
+   height attributes, so the space is reserved before the image loads and the
+   text below does not jump — these are lazy-loaded and would otherwise shift
+   layout on slow connections. */
+.page-photo{
+	margin: 0 0 36px;
+}
+.page-photo img{
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 3 / 2;
+	object-fit: cover;
+	border-radius: var(--jr-radius);
 }
