@@ -5,8 +5,10 @@ server, no Node, no framework. You copy the files up and it works.
 
 The only moving part is **`form-process.php`**, which handles the quote form. If
 your host has PHP (essentially all shared hosting does), it works with no setup.
-If it does not, the form falls back to the JotForm embed and the phone number,
-and you can simply not upload that one file.
+**If your host has no PHP, the quote form will not work.** There is no
+JavaScript fallback on the page — I said otherwise earlier and that was wrong.
+Visitors could still call or text the number, but the form itself would be
+dead, so PHP is effectively a requirement.
 
 ---
 
@@ -217,8 +219,16 @@ and reach assets through `../`. That means `blog/` must sit *beside* `css/`, not
 inside it.
 
 **Form does not send** — PHP is not enabled, or the host blocks `mail()`. Many
-shared hosts do. The JotForm embed on `/quote` works regardless and needs no
-server support at all.
+shared hosts do, and `mail()` on shared hosting frequently lands in spam even
+when it "works".
+
+The form redirects to `/thanks` either way, so a failure is invisible to the
+customer. It is no longer invisible to you: a failed send is appended to
+`quote-leads.log` in the site root (denied to the web by `.htaccess`) and
+written to the PHP error log. **Check that file after go-live.** If it has
+entries, mail is broken and you are losing jobs.
+
+The durable fix is to stop using `mail()` — see "If the form matters" below.
 
 **Everything redirects to a dead domain** — the canonical-host block in
 `.htaccess` was uncommented before DNS resolved. Comment it out again.

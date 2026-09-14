@@ -39,9 +39,9 @@
 # SECURITY HEADERS
 #
 # Cheap, standards-based, and they cost nothing to serve. No CSP here on
-# purpose: this site loads Google Tag Manager, GA4, Google Fonts and a JotForm
-# embed, and a CSP written without testing against all four is the fastest way
-# to silently break the quote form.
+# purpose: this site loads Google Tag Manager, GA4 and Google Fonts, and a CSP
+# written without testing against all three is a quick way to silently break
+# analytics or the quote form.
 # ----------------------------------------------------------------------
 <IfModule mod_headers.c>
   # Stop browsers guessing a MIME type and executing something as script.
@@ -119,6 +119,14 @@ ErrorDocument 404 /404.html
     Require all denied
   </FilesMatch>
   <FilesMatch "\.md$">
+    Require all denied
+  </FilesMatch>
+  # quote-leads.log holds customer names, phone numbers and addresses whenever
+  # mail() fails. It must never be fetchable over the web.
+  <FilesMatch "\.(log|bak|sql|env)$">
+    Require all denied
+  </FilesMatch>
+  <FilesMatch "^\.">
     Require all denied
   </FilesMatch>
 </IfModule>

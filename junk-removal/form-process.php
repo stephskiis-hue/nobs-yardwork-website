@@ -67,9 +67,23 @@ $headers  = "From: No BS Junk Removal <" . $to . ">\r\n";
 $headers .= "Reply-To: " . $safe_name . " <" . $safe_email . ">\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
-@mail($to, $subject, $body, $headers);
+$sent = @mail($to, $subject, $body, $headers);
 
-// Redirect either way — a mail() failure is ours to chase in the logs, not
-// something to show a customer who has already given us their number.
+if (!$sent) {
+    // mail() returned false. On shared hosting this happens for real reasons:
+    // no MTA, the host throttling outbound mail, or the sender domain failing
+    // SPF. The customer has already typed their number and is about to be shown
+    // a thank-you page, so the one unacceptable outcome is losing the lead
+    // silently — which is exactly what this used to do.
+    //
+    // Write it to disk so it is recoverable, and log it so it is noticeable.
+    // .htaccess denies *.log, so this file is not readable over the web.
+    $line = "=== " . date('c') . " === mail() FAILED\n" . $body . "\n";
+    @file_put_contents(__DIR__ . '/quote-leads.log', $line, FILE_APPEND | LOCK_EX);
+    error_log('No BS quote form: mail() failed, lead saved to quote-leads.log');
+}
+
+// Redirect either way. A send failure is ours to chase, not something to show
+// someone who has already given us their details — but it is now recorded.
 header('Location: thanks.html');
 exit;
