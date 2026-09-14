@@ -63,7 +63,10 @@
       "Bash(NODE_PATH=/opt/node22/lib/node_modules node test_preview.js)",
       "Bash(python3 conv.py)",
       "Bash(NODE_PATH=/opt/node22/lib/node_modules node debug.js)",
-      "Bash(python3 conv2.py)"
+      "Bash(python3 conv2.py)",
+      "Bash(xargs -n1 basename)",
+      "Bash(find /tmp /home/user -type f \\\\\\( -name \"*.png\" -o -name \"*.jpg\" -o -name \"*.jpeg\" -o -name \"*.webp\" -o -name \"*.svg\" \\\\\\) -newermt '-30 minutes' 2>/dev/null | grep -v node_modules | head -20 *)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }

@@ -338,7 +338,7 @@ HEADER = """    <a class="skip-link" href="#main">Skip to content</a>
         <nav class="navbar navbar-expand-lg">
           <div class="container">
             <a class="navbar-brand brand-lockup" href="{BASE}index.html">
-              <img src="{BASE}images/logo.svg" alt="No-BS Yardwork" width="150" height="50"
+              <img src="{BASE}images/logo.svg" alt="No-Bs Junk Removal" width="141" height="50"
                    style="height: 50px; width: auto" fetchpriority="high" />
               <span class="division-tag">Junk Removal</span>
             </a>
@@ -377,7 +377,7 @@ FOOTER = """    <footer class="main-footer">
             <div class="about-footer">
               <div class="footer-logo">
                 <img src="{BASE}images/footer-logo.svg" alt="No BS Junk Removal Winnipeg"
-                     loading="lazy" width="200" height="90" />
+                     loading="lazy" width="220" height="78" />
               </div>
               <div class="about-footer-content">
                 <p>Embrace hard work, honesty and watch amazing things unfold.</p>
