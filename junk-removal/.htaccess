@@ -121,8 +121,9 @@ ErrorDocument 404 /404.html
   <FilesMatch "\.md$">
     Require all denied
   </FilesMatch>
-  # quote-leads.log holds customer names, phone numbers and addresses whenever
-  # mail() fails. It must never be fetchable over the web.
+  # Nothing writes a lead log any more (the PHP handler is gone), but these
+  # stay: a stray .env, .sql dump or editor .bak in a web root is a real way
+  # to leak credentials, and denying them costs nothing.
   <FilesMatch "\.(log|bak|sql|env)$">
     Require all denied
   </FilesMatch>

@@ -52,7 +52,17 @@ PHONE_E164 = "+12049000438"
 EMAIL = "nobsyardwork@gmail.com"
 GTM_ID = "GTM-M3MHCKF5"
 GA4_ID = "G-VN2QZ4KXXH"
-JOTFORM_ID = "260105131967250"
+# The quote form on /quote is a JotForm embed; this is the only place its ID
+# is set. Change it here and re-run the build.
+#
+# "Clone of Request for Quote" in the nobsyardwork JotForm account. Chosen by
+# the owner and confirmed by reading the account rather than copying an ID by
+# hand. Its fields: name (first/last), phone, email, a message field, and a
+# full address — the message field is where the customer describes the pile.
+#
+# Note it is NOT the form on no-bs-yardwork.com/contact (260105131967250), so
+# junk enquiries stay separable from lawn enquiries.
+JOTFORM_ID = "262378273577268"
 
 # ---------------------------------------------------------------------------
 # Nav — single source of truth. (label, href, [children])

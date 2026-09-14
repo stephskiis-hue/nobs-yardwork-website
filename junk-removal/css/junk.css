@@ -43,6 +43,7 @@
     20. Service area
     21. Footer baseline
     22. Page photos
+    23. JotForm embed
 ==========================================================================*/
 
 
@@ -1145,4 +1146,39 @@ textarea:focus-visible{
 	aspect-ratio: 3 / 2;
 	object-fit: cover;
 	border-radius: var(--jr-radius);
+}
+
+
+/************************************/
+/***     23. JotForm embed        ***/
+/************************************/
+
+/* The quote form is a JotForm iframe. for-form-embed-handler.js sets the real
+   height once the form reports it; min-height covers the gap before that and
+   the case where the script is blocked, so the form is never a squashed strip. */
+.jotform-embed{
+	background-color: var(--white-color);
+	border: 1px solid var(--divider-color);
+	border-radius: var(--jr-radius);
+	overflow: hidden;
+}
+.jotform-embed iframe{
+	display: block;
+	width: 1px;          /* with min-width:100% this is the reliable way to make */
+	min-width: 100%;     /* an iframe fill its container across browsers */
+	min-height: 720px;
+	border: none;
+}
+.form-fallback{
+	margin: 18px 0 0;
+	text-align: center;
+	font-size: 15px;
+	color: var(--text-color);
+}
+.form-fallback a{ color: var(--accent-color); font-weight: 700; }
+
+@media only screen and (max-width: 767px){
+	/* Phones show fewer fields per row, so the form runs taller before the
+	   resize handler reports back. */
+	.jotform-embed iframe{ min-height: 900px; }
 }

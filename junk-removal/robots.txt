@@ -4,7 +4,6 @@ User-agent: *
 Allow: /
 Disallow: /_pages/
 Disallow: /deploy/
-Disallow: /form-process.php
 
 # ---------------------------------------------------------------------------
 # AI / answer-engine crawlers — EXPLICITLY ALLOWED, ON PURPOSE.

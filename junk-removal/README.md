@@ -25,9 +25,9 @@ These are the things only you can do. Nothing on this list is code.
 - [ ] **Take the photos.** Every missing shot is marked on-page with a green
       dashed block containing the brief and the filename. See below.
 - [ ] **Add your liability coverage amount** to the box on `_pages/about.html`
-- [ ] **Test the quote form** end to end and check your spam folder — PHP
-      `mail()` on shared hosting is unreliable. If it does not arrive, swap the
-      form for the JotForm embed (snippet below).
+- [ ] **Test the quote form** once, for real. It is a JotForm embed
+      (`262378273577268`, "Clone of Request for Quote"), so submissions land in
+      your JotForm account — there is no server-side mail to fail.
 - [ ] **Create a Google Business Profile** for the junk division. For this kind
       of business it out-earns the website as a lead source; do it before launch.
 - [ ] **Search Console** property + submit `sitemap.xml`
@@ -38,10 +38,14 @@ These are the things only you can do. Nothing on this list is code.
 
 ## Photos still needed
 
-No stock photography is used anywhere on this site, and none should be. Where a
-real photo does not exist yet, the page shows a labelled placeholder with the
-brief rather than a substitute. Drop the file in `images/` and replace the
-`<div class="photo-slot">` block.
+**This changed.** Seven Unsplash-licensed stock photos now sit on the service
+pages — see [`images/CREDITS.md`](images/CREDITS.md) for what each one shows and
+the licence terms. The old labelled placeholder blocks are gone.
+
+Stock is a stopgap, not the goal. Real photos of your own crew and equipment
+beat it on trust and on local SEO, because Google favours original imagery. Drop
+a replacement in at the same filename and it swaps everywhere with no other
+change. The shot list below is still the brief worth shooting to.
 
 | File | Shot |
 |---|---|
@@ -144,9 +148,9 @@ staging subfolder rather than the document root.
 `Dockerfile` + `deploy/` give you a live URL that redeploys on every push.
 
 It runs **php:apache**, not a static file server, on purpose: production is
-cPanel + Apache + PHP, so this image runs the *same* `.htaccess` and the *same*
-`form-process.php`. Extensionless URLs, the 404 page, gzip, cache headers and
-the quote form all behave exactly as they will on the real host.
+cPanel + Apache, so this image runs the *same* `.htaccess` the real host will.
+Extensionless URLs, the 404 page, gzip and cache headers all behave exactly as
+they will in production.
 
 Setup:
 
@@ -304,7 +308,7 @@ Two class-naming traps worth knowing, both already hit and fixed:
 
 ## Lead capture
 
-The quote form posts to `form-process.php` with a plain POST (no JavaScript
+The quote form is a JotForm embed (no JavaScript
 required) and redirects to `thanks.html`.
 
 To route leads through the JotForm the yardwork site already uses, replace the

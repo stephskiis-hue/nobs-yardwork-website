@@ -68,79 +68,55 @@
               </div>
 
               <!--
-                Posts to form-process.php (plain POST, no JavaScript required, so it
-                still works if scripts fail). On success the visitor lands on
-                thanks.html.
+                JOTFORM EMBED — this is the whole quote form.
+                ==========================================================
+                The form ID is set once in _build.py (JOTFORM_ID). To point
+                this at a different form, change it there and re-run the
+                build; do not edit the ID here.
 
-                Prefer to route leads through the JotForm your yardwork site already
-                uses? Replace this whole <form> with the JotForm embed — the README
-                has the snippet and the form ID.
+                Why an iframe and not a hand-built <form>: the previous PHP
+                handler mailed submissions with mail(), which returns false
+                on plenty of shared hosts and silently lost the lead while
+                still showing the customer a thank-you page. JotForm stores
+                every submission on their side, so a delivery failure is
+                recoverable instead of invisible.
+
+                The handler script below auto-resizes the iframe to the
+                form's real height. Without it the form gets a fixed height
+                and scrolls inside itself, which is horrible on a phone.
+
+                No-JS behaviour: the iframe still renders and is fully
+                usable — only the auto-resize needs JavaScript. The
+                <noscript> note below gives the height a sensible floor.
               -->
-              <form class="junk-form" action="form-process.php" method="post">
-                <div class="row">
-                  <div class="col-md-6">
-                    <label for="name">Your name</label>
-                    <input type="text" id="name" name="name" required autocomplete="name" />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" name="phone" required autocomplete="tel" />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required autocomplete="email" />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="postal">Postal code</label>
-                    <input type="text" id="postal" name="postal" autocomplete="postal-code"
-                           placeholder="R2J 4A9" />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="preferred">Preferred date</label>
-                    <input type="date" id="preferred" name="preferred" />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="jobtype">What kind of job?</label>
-                    <select id="jobtype" name="jobtype">
-                      <option value="">Choose one</option>
-                      <option>Single item or small load</option>
-                      <option>Furniture / mattress</option>
-                      <option>Appliances</option>
-                      <option>Hot tub</option>
-                      <option>Renovation debris</option>
-                      <option>Concrete or heavy material</option>
-                      <option>Shed, deck or fence</option>
-                      <option>Garage, basement or estate cleanout</option>
-                      <option>Commercial / job site</option>
-                      <option>Snow removal or hauling</option>
-                      <option>Something else</option>
-                    </select>
-                  </div>
-                  <div class="col-12">
-                    <label for="details">What are you getting rid of?</label>
-                    <textarea id="details" name="details" required
-                              placeholder="A couch, two chairs and about ten bags of reno debris in the back lane."></textarea>
-                  </div>
-                </div>
+              <div class="jotform-embed">
+                <iframe
+                  id="JotFormIFrame-{JOTFORM_ID}"
+                  title="Junk removal quote request"
+                  onload="window.parent.scrollTo(0,0)"
+                  allow="geolocation; microphone; camera; fullscreen"
+                  src="https://form.jotform.com/{JOTFORM_ID}"
+                  frameborder="0"
+                  scrolling="no"
+                ></iframe>
+              </div>
+              <script src="https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js" defer></script>
+              <script>
+                window.addEventListener("load", function () {
+                  if (window.jotformEmbedHandler) {
+                    window.jotformEmbedHandler(
+                      "iframe[id='JotFormIFrame-{JOTFORM_ID}']",
+                      "https://form.jotform.com/"
+                    );
+                  }
+                });
+              </script>
 
-                <!-- Simple honeypot: real people leave this empty, most bots do not. -->
-                <p style="position: absolute; left: -9999px" aria-hidden="true">
-                  <label for="website">Leave this field empty</label>
-                  <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
-                </p>
-
-                <button type="submit" class="btn-default">Send my request</button>
-
-                <p class="form-note" style="margin-top: 20px">
-                  Got a photo? <a href="sms:{PHONE_E164}">Text it to {PHONE_DISPLAY}</a> &mdash;
-                  it's the fastest way to get an accurate price, and it beats describing a pile in
-                  words.
-                </p>
-                <p class="form-note">
-                  No obligation. No pressure. No sales script. If we're not the right fit, we'll
-                  say so.
-                </p>
-              </form>
+              <p class="form-fallback">
+                Form not loading? Call or text
+                <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a> &mdash; a photo of
+                the pile is all we need to quote it.
+              </p>
             </div>
           </div>
         </div>

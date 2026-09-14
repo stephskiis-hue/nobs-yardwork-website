@@ -3,12 +3,14 @@
 The whole site is plain static HTML. There is no database, no build step on the
 server, no Node, no framework. You copy the files up and it works.
 
-The only moving part is **`form-process.php`**, which handles the quote form. If
-your host has PHP (essentially all shared hosting does), it works with no setup.
-**If your host has no PHP, the quote form will not work.** There is no
-JavaScript fallback on the page — I said otherwise earlier and that was wrong.
-Visitors could still call or text the number, but the form itself would be
-dead, so PHP is effectively a requirement.
+**There are no moving parts at all.** The quote form is a JotForm embed, so
+submissions go to JotForm rather than through the server. That means:
+
+- **No PHP required.** Any host that serves files will do — your cPanel, but
+  equally Cloudflare Pages or Netlify, both free.
+- **No mail() to fail.** The previous PHP handler mailed submissions and, when
+  that failed, showed the customer a thank-you page while the lead vanished.
+  JotForm stores every submission on their side, so nothing is lost silently.
 
 ---
 
@@ -151,8 +153,9 @@ Open the site and confirm each of these. They are the things that actually break
       opens the post with styling intact.
 - [ ] **404**: visit `/does-not-exist` and confirm you get the branded page, not
       the host's default error.
-- [ ] **The form**: send yourself a test through `/quote` and confirm it arrives
-      and lands on `/thanks`.
+- [ ] **The form**: send yourself a test through `/quote` and confirm it lands
+      in your JotForm inbox. Do this once, for real — it is the only thing on
+      the site that earns money.
 - [ ] **Mobile**: open it on a phone. Check the hamburger menu opens and the
       call bar at the bottom works.
 - [ ] `/sitemap.xml` and `/feed.xml` both load.
@@ -170,8 +173,10 @@ Open the site and confirm each of these. They are the things that actually break
 - Replace the `$XXX` placeholder prices in `_pages/pricing.html` with real
   numbers and re-run the build.
 - Swap in real photos where the README's shot list calls for them.
-- Decide whether this division gets its own GA4 property and JotForm, or keeps
-  sharing the yardwork ones. The IDs are at the top of `_build.py`.
+- Decide whether this division gets its own GA4 property, or keeps sharing the
+  yardwork one. The IDs are at the top of `_build.py`. The JotForm is already
+  separate — `/quote` uses "Clone of Request for Quote"
+  (`262378273577268`), not the lawn site's form.
 
 ---
 
@@ -218,17 +223,11 @@ up as loose files instead of a folder. The structure has to be preserved.
 and reach assets through `../`. That means `blog/` must sit *beside* `css/`, not
 inside it.
 
-**Form does not send** — PHP is not enabled, or the host blocks `mail()`. Many
-shared hosts do, and `mail()` on shared hosting frequently lands in spam even
-when it "works".
-
-The form redirects to `/thanks` either way, so a failure is invisible to the
-customer. It is no longer invisible to you: a failed send is appended to
-`quote-leads.log` in the site root (denied to the web by `.htaccess`) and
-written to the PHP error log. **Check that file after go-live.** If it has
-entries, mail is broken and you are losing jobs.
-
-The durable fix is to stop using `mail()` — see "If the form matters" below.
+**Quote form is blank or very short** — the JotForm iframe did not load.
+Check the browser console for a blocked request. The page falls back to a
+"call or text us" line beneath the form, so the visitor is never stranded.
+Submissions live in your JotForm account, not on the server, so there is
+nothing to check on the host.
 
 **Everything redirects to a dead domain** — the canonical-host block in
 `.htaccess` was uncommented before DNS resolved. Comment it out again.
