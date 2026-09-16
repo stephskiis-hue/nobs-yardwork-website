@@ -7,3 +7,7 @@ MIGRATE.md
 __pycache__
 *.pyc
 .DS_Store
+
+# Stray output of a script that wrote to a path which stringified as
+# "undefined". Removed; excluded so it can never ship if it reappears.
+undefined/

@@ -50,7 +50,7 @@ no other change.
 ## Original assets (not stock)
 
 `logo.svg`, `footer-logo.svg`, `favicon.webp`, the `icon-take-*.svg` set,
-`payments.webp`, crew headshots (`steph-headshot.webp`, `ben-headshot-min.webp`)
+`payments.webp`, crew headshots (`steph-headshot.jpg`, `ben-headshot-min.webp`)
 and the job photos carried over from the landscaping side (`skid_steer.webp`,
 `snow_removal.webp`, `plow_truck.webp`, `shoveling_snow.webp`, `before.webp`,
 `after.webp`, `patios.webp`) are No-BS's own property.

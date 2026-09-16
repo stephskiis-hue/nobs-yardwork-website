@@ -52,8 +52,14 @@
 /************************************/
 
 :root{
-	/* The only genuinely new value in this file — a corner radius, not a colour. */
 	--jr-radius: 14px;
+	/* Accent green for TEXT on the dark primary background — the one colour
+	   this file adds. The brand accent #2A7D2E is fine on white (5.16:1) but
+	   measures 2.37:1 on #0B3D2C, which fails WCAG even for large text. This
+	   is the same hue lifted: 6.34:1 on #0B3D2C, AAA for large text. Use it
+	   only for accent text on dark grounds; on light grounds keep
+	   --accent-color, where it is the one that passes. */
+	--accent-on-dark: #6FCF7C;
 }
 
 body{
@@ -304,7 +310,9 @@ header.main-header .header-sticky{
 	text-transform: uppercase;
 	margin-bottom: 22px;
 }
-.junk-hero h1 .accent{ color: var(--accent-color); }
+/* "No runaround." — the most prominent words on the site. 2.37:1 with
+   --accent-color on this scrim; 6.34:1 with --accent-on-dark. */
+.junk-hero h1 .accent{ color: var(--accent-on-dark); }
 .junk-hero .hero-sub{
 	font-size: 20px;
 	color: rgba(255,255,255,.9);

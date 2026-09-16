@@ -1067,7 +1067,9 @@ PAGES = [
       "About No BS Junk Removal | Winnipeg Hauling Crew",
       "We are new. We are not new at this. No BS Junk Removal is the hauling arm of "
       "No-BS Yardwork — same owners, same crews, same standards, bigger trailer.",
-      og_image="steph-headshot.webp",
+      # Not the headshot: that file is now sized for its 140px circle, and a
+      # 280px square is far below the 1200x630 a share preview needs.
+      og_image="skid_steer.webp",
       crumbs=[("About", "/about")]),
 
     P("where-your-junk-goes",
