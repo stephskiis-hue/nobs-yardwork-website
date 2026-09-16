@@ -17,10 +17,10 @@ no use for. This gets you a few MB instead.
 
 **Python 3. That is the entire list.**
 
-`_build.py` imports only `html`, `json`, `re`, `datetime`, `email.utils` and
-`pathlib` — all standard library. No `pip install`, no virtualenv, no Node, no
-build tools. Python 3 already ships on macOS and Linux; on Windows get it from
-python.org and tick "Add Python to PATH".
+`_build.py`, `_categories.py` and `_serve.py` use only the Python standard
+library. No `pip install`, no virtualenv, no Node, no build tools. Python 3
+already ships on macOS and Linux; on Windows get it from python.org and tick
+"Add Python to PATH".
 
 Check it works:
 
@@ -31,14 +31,17 @@ python3 --version     # Windows: python --version
 ## See the site
 
 ```bash
-python3 -m http.server 8000
+python3 _serve.py
 ```
 
 Then open <http://localhost:8000>. Stop it with Ctrl-C.
 
-You can also just double-click `index.html`. Everything works except the clean
-URLs — links go to `/pricing.html` instead of `/pricing`. That is cosmetic; the
-real server rewrites them.
+**Do not double-click `index.html`, and do not use `python3 -m http.server`.**
+Both show the first page fine, then every link 404s. The site's links are
+extensionless — `/pricing`, not `/pricing.html` — because that is the real
+address, and the live server's `.htaccess` maps one to the other. Opening files
+directly has no such rule, and neither does Python's plain server. `_serve.py`
+is that plain server plus the one rule.
 
 ---
 
@@ -46,7 +49,7 @@ real server rewrites them.
 
 **Do not edit the `.html` files in the top level of the folder.**
 
-`index.html`, `pricing.html`, `about.html` and the other 29 are **generated**.
+`index.html`, `pricing.html`, `about.html` and the other 31 are **generated**.
 They are the *output* of `_build.py`. Edit one, run the build, and your change
 is gone — no warning, no error, just gone.
 
@@ -59,10 +62,11 @@ Edit the **sources** instead:
 | To change | Edit | Then |
 |---|---|---|
 | Words on a page | `_pages/<page>.html` | `python3 _build.py` |
+| What we take: any category or item | `_categories.py` | `python3 _build.py` |
 | A blog post | `_pages/blog/<slug>.html` | `python3 _build.py` |
 | Nav menu, footer links | `NAV` / `FOOTER_LINKS` in `_build.py` | `python3 _build.py` |
 | Page titles, meta descriptions | the `PAGES` list in `_build.py` | `python3 _build.py` |
-| Phone, email, form ID | the constants at the top of `_build.py` | `python3 _build.py` |
+| Phone, email, form ID, domain | the constants at the top of `_build.py` | `python3 _build.py` |
 | Colours, spacing, layout | `css/junk.css` | nothing — CSS is not generated |
 | A photo | drop the new file in `images/` at the same filename | nothing |
 
@@ -73,26 +77,52 @@ python3 _build.py
 ```
 
 ```
-built 32 pages + sitemap.xml + feed.xml + llms.txt (8 posts, 52 FAQs)
+built 34 pages + sitemap.xml + feed.xml + llms.txt (8 posts, 52 FAQs)
 ```
 
-If it prints an error instead, it is telling you something real — a missing
-fragment, or an FAQ block that does not match its schema. It refuses to build a
-broken site rather than writing one out.
+If it prints an error instead, it is telling you something real, and it names
+the page. It refuses to write out a broken site. The things it checks:
+
+- a page whose fragment is missing
+- an FAQ block that does not match its structured data
+- a title over 60 characters, or a description outside 120–158 characters —
+  past those, Google cuts them off in search results
+- an item listed twice in `_categories.py`, or a category with too few items
 
 ---
 
 ## Common jobs
 
-### Set the real prices
+### Add something you take
 
-Every price is a `$XXX` placeholder that renders as a dashed green box, so none
-can go live by accident. They are all in one commented block at the top of
-`_pages/pricing.html`, plus three teasers in `_pages/index.html`.
+Open `_categories.py`, find the right category, and add a line:
 
-Replace each `$XXX` with your number **and delete the surrounding
-`<span class="price-tbd">` and `</span>`**, then rebuild. This is the last real
-blocker before launch.
+```python
+I("Air hockey table",
+  "Long, flat and heavier than it looks, with a blower motor inside. The legs "
+  "come off before it moves.",
+  aka=["Foosball table"]),
+```
+
+The **note** should be something true and specific: what makes it awkward, what
+it weighs, where it goes in Winnipeg. `aka` is any other word people search for
+the same thing. Rebuild, and it appears on its category page, in the A–Z, on the
+homepage list and in the structured data, all at once.
+
+The top of `_categories.py` explains the rules in full, including where the
+things you *cannot* take go.
+
+### Change a price
+
+A price appears in **three places**, and they have to match, or the pricing
+page, the homepage and the structured data Google reads will disagree:
+
+1. the rate table in `_pages/pricing.html`
+2. the three teaser rows in `_pages/index.html`
+3. `priceRange` in `_build.py`
+
+The comment at the top of `_pages/pricing.html` lists them. Change all three,
+then rebuild.
 
 ### Change the quote form
 
@@ -128,7 +158,7 @@ To keep your history and push back to GitHub:
 
 ```bash
 git add -A
-git commit -m "Set real prices"
+git commit -m "Add air hockey tables to what we take"
 git push
 ```
 
@@ -138,18 +168,21 @@ shallow history, run `git fetch --unshallow` once.
 ## Putting it live
 
 See [`DEPLOY.md`](DEPLOY.md). Short version: upload everything except
-`_pages/`, `_build.py`, `deploy/`, `.github/` and the `.md` files to your
-document root, and make sure the hidden `.htaccess` goes up with it.
+`_pages/`, the three `.py` files, `deploy/`, `.github/` and the `.md` files to
+your document root, and make sure the hidden `.htaccess` goes up with it.
+
+If a `.py` file does get uploaded by accident, `.htaccess` refuses to serve it.
 
 ## If you would rather not have a build step
 
 Run the build one final time, then:
 
 ```bash
-rm -rf _pages _build.py
+rm -rf _pages _build.py _categories.py
 ```
 
-From then on you hand-edit the 32 `.html` files directly and there is no tooling
-at all. The cost is permanent: every future nav or footer change means editing
-all 32 files by hand. Worth it only if you are certain you will never touch the
-shared parts again.
+From then on you hand-edit the 34 `.html` files directly and there is no tooling
+at all. The cost is permanent: every nav or footer change means editing all 34
+files by hand, and adding one item you take means updating the hub, the A–Z,
+its category page and the homepage separately. Worth it only if you are certain
+you will never touch any of that again.

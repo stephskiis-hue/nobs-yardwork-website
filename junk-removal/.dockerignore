@@ -11,3 +11,5 @@ __pycache__
 # Stray output of a script that wrote to a path which stringified as
 # "undefined". Removed; excluded so it can never ship if it reappears.
 undefined/
+_categories.py
+_serve.py

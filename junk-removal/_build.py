@@ -27,9 +27,17 @@ else depends on this script.
 import html
 import json
 import re
+import sys
 from datetime import datetime, timezone
 from email.utils import format_datetime
 from pathlib import Path
+
+# Everything the business takes lives in _categories.py and is rendered below.
+# Importing a local module normally leaves a __pycache__ folder in the site
+# root, which would then be uploaded along with everything else. Nothing here
+# is slow enough to need that cache, so it is never written.
+sys.dont_write_bytecode = True
+from _categories import CATEGORIES, MIN_ITEMS, NOT_TAKEN, SERVICE_TERMS  # noqa: E402
 
 
 def strip_tags(s):
@@ -69,15 +77,17 @@ JOTFORM_ID = "262378273577268"
 # ---------------------------------------------------------------------------
 NAV = [
     ("What We Take", "what-we-take.html", [
-        # All twelve categories have their own page; the dropdown carries the
-        # six most-searched and the hub page carries the full set, because a
-        # thirteen-item dropdown is unusable on a laptop.
+        # Three ways in (all categories, every item, what we can't take) plus
+        # the five most-searched categories. Kept at eight: the hub carries all
+        # twelve, the A-Z carries everything, and a longer dropdown is unusable
+        # on a laptop. Renovation Debris is reachable from both.
         ("All 12 Categories", "what-we-take.html"),
+        ("Everything, A to Z", "what-we-take-a-z.html"),
+        ("What We Can&rsquo;t Take", "what-we-dont-take.html"),
         ("Furniture Removal", "furniture-removal-winnipeg.html"),
         ("Appliance Removal", "appliance-removal-winnipeg.html"),
         ("Mattress Disposal", "mattress-disposal-winnipeg.html"),
         ("Hot Tub Removal", "hot-tub-removal-winnipeg.html"),
-        ("Renovation Debris", "renovation-debris-removal-winnipeg.html"),
         ("Concrete &amp; Heavy Material", "concrete-removal-winnipeg.html"),
     ]),
     ("Pricing", "pricing.html", []),
@@ -95,6 +105,7 @@ NAV = [
 FOOTER_LINKS = [
     ("Home", "index.html"),
     ("What We Take", "what-we-take.html"),
+    ("Everything, A to Z", "what-we-take-a-z.html"),
     ("Pricing", "pricing.html"),
     ("Commercial", "commercial-junk-removal-winnipeg.html"),
     ("Winter Services", "winter-services-winnipeg.html"),
@@ -170,12 +181,10 @@ LOCAL_BUSINESS = {
     "hasMap": "https://www.google.com/maps/search/?api=1&query=49.8951,-97.1384",
     "paymentAccepted": "Cash, Cheque, e-Transfer, Credit Card",
     "currenciesAccepted": "CAD",
-    "knowsAbout": [
-        "Junk removal", "Furniture removal", "Appliance removal",
-        "Mattress disposal", "Electronic waste recycling",
-        "Renovation debris removal", "Hot tub removal", "Concrete removal",
-        "Estate cleanouts", "Scrap metal recycling", "Snow removal",
-    ],
+    # Generated from _categories.py, so the expertise this entity declares is
+    # exactly the set of categories the site has pages for.
+    "knowsAbout": (["Junk removal"] + [c["name"] for c in CATEGORIES]
+                   + ["Commercial junk removal", "Snow removal"]),
     "parentOrganization": {
         "@type": "Organization",
         "name": "No-BS Yardwork",
@@ -188,19 +197,17 @@ LOCAL_BUSINESS = {
     "hasOfferCatalog": {
         "@type": "OfferCatalog",
         "name": "Junk Removal Services",
+        # One Offer per real category page plus the two service pages, each
+        # with its URL. The hand-kept list named nine services for a site with
+        # fourteen pages and gave none of them an address.
         "itemListElement": [
-            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": n}}
-            for n in [
-                "Furniture & Mattress Removal Winnipeg",
-                "Appliance Removal Winnipeg",
-                "E-Waste & Electronics Removal Winnipeg",
-                "Renovation & Construction Debris Removal Winnipeg",
-                "Hot Tub Removal Winnipeg",
-                "Concrete & Heavy Material Removal Winnipeg",
-                "Estate & Hoarding Cleanouts Winnipeg",
-                "Commercial Junk Removal & Skid Steer Services Winnipeg",
-                "Snow Removal & Hauling Winnipeg",
-            ]
+            {"@type": "Offer",
+             "itemOffered": {"@type": "Service", "name": name, "url": f"{SITE}/{slug}"}}
+            for name, slug in (
+                [(c["name"], c["slug"]) for c in CATEGORIES]
+                + [("Commercial Junk Removal", "commercial-junk-removal-winnipeg"),
+                   ("Snow Removal & Hauling", "winter-services-winnipeg")]
+            )
         ],
     },
 }
@@ -657,6 +664,504 @@ def P(slug, title, description, og_image="skid_steer.webp", crumbs=None,
     }
 
 
+# ---------------------------------------------------------------------------
+# What we take — generated from _categories.py
+# ---------------------------------------------------------------------------
+# Every place that lists what the business takes is built from one list, so the
+# hub grid, the A-Z, each category page, the homepage and the structured data
+# cannot drift apart. That drift had already happened once: the hand-written
+# hub described ten categories on a twelve-category site. To add an item, edit
+# _categories.py, not this.
+#
+# The category tokens are expanded by plain string replacement, exactly like
+# the FAQ accordion. Never write a token's literal name inside a comment in a
+# fragment: the comment gets expanded too, and the block renders twice.
+
+def _e(s):
+    """Escape data-file text for HTML. _categories.py is written as plain text."""
+    return html.escape(s, quote=True)
+
+
+def _anchor(name):
+    """Anchor id for an item: "Kids' toys" -> "kids-toys"."""
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
+def _category(slug):
+    return next((c for c in CATEGORIES if c["slug"] == slug), None)
+
+
+def check_categories():
+    """Refuse to build on inconsistent category data. The rules are documented
+    at the top of _categories.py, where the person editing it will see them."""
+    seen = {}
+
+    def claim(term, owner):
+        key = term.strip().lower()
+        if key in seen:
+            where = owner if seen[key] == owner else f"{seen[key]} and {owner}"
+            raise SystemExit(f'_categories.py: "{term}" is listed more than once ({where})')
+        seen[key] = owner
+
+    icons = set(re.findall(r"\.ti-([a-z-]+)\s*\{",
+                           (ROOT / "css" / "junk.css").read_text(encoding="utf-8")))
+    for c in CATEGORIES:
+        frag = PAGES_DIR / f"{c['slug']}.html"
+        if not frag.exists():
+            raise SystemExit(f"_categories.py: no page fragment for {c['slug']}")
+        if "{CATEGORY_ITEMS}" not in frag.read_text(encoding="utf-8"):
+            raise SystemExit(f"{c['slug']}: category page never renders its item list")
+        if c["icon"] not in icons:
+            raise SystemExit(f"_categories.py: {c['slug']} uses icon '{c['icon']}' "
+                             f"but junk.css has no .ti-{c['icon']} rule")
+        if len(c["items"]) < MIN_ITEMS:
+            raise SystemExit(f"_categories.py: {c['name']} has {len(c['items'])} "
+                             f"items (minimum {MIN_ITEMS})")
+        for it in c["items"]:
+            claim(it["name"], c["name"])
+            for a in it["aka"]:
+                claim(a, c["name"])
+    for group, label in ((SERVICE_TERMS, "SERVICE_TERMS"), (NOT_TAKEN, "NOT_TAKEN")):
+        for t in group:
+            claim(t["name"], label)
+            for a in t["aka"]:
+                claim(a, label)
+
+
+# Runs at import, before PAGES is built — the same moment the title guards in
+# P() run — so bad data fails on a clear message rather than deep in a render.
+check_categories()
+
+
+def render_take_grid():
+    """The twelve category tiles, used on the homepage and the hub."""
+    tiles = "".join(
+        f'\n            <li><a href="{{BASE}}{c["slug"]}.html">'
+        f'<span class="ti ti-{c["icon"]}"></span>{_e(c["short"])}</a></li>'
+        for c in CATEGORIES
+    )
+    return f'<ul class="take-grid">{tiles}\n          </ul>'
+
+
+def render_take_list():
+    """The homepage wall of item names: every real item, in category order."""
+    names = " ".join(f"{_e(it['name'])}." for c in CATEGORIES for it in c["items"])
+    return (f'<div class="take-list">{names} '
+            f'<a href="{{BASE}}what-we-take-a-z.html">The whole list, A to Z &rarr;</a></div>')
+
+
+def render_category_items(c):
+    """The full item list on one category page."""
+    rows = []
+    for it in c["items"]:
+        aka = (f'<span class="ci-aka">Also: {_e(", ".join(it["aka"]))}</span>'
+               if it["aka"] else "")
+        rows.append(
+            f'\n                <div class="ci-item" id="{_anchor(it["name"])}">'
+            f'\n                  <dt>{_e(it["name"])}</dt>'
+            f'\n                  <dd>{_e(it["note"])}{aka}</dd>'
+            f'\n                </div>'
+        )
+    return (
+        '\n              <h3 class="ci-heading">Everything we take in this category</h3>'
+        '\n              <dl class="ci-list">' + "".join(rows) + '\n              </dl>'
+        '\n              <p class="ci-more">Not on the list? Check '
+        '<a href="{BASE}what-we-take-a-z.html">everything we take, A to Z</a>, or '
+        '<a href="sms:{PHONE_E164}">text us a photo</a> and we will tell you straight.</p>\n'
+    )
+
+
+def expand_take_tokens(text, slug):
+    """Fill the category tokens in one page. Runs before {BASE} substitution,
+    so the {BASE} tokens inside the rendered blocks get filled in too."""
+    if "{TAKE_GRID}" in text:
+        text = text.replace("{TAKE_GRID}", render_take_grid())
+    if "{TAKE_LIST}" in text:
+        text = text.replace("{TAKE_LIST}", render_take_list())
+    if "{CATEGORY_ITEMS}" in text:
+        c = _category(slug)
+        if c is None:
+            raise SystemExit(f"{slug}: renders a category item list but is not a "
+                             f"category in _categories.py")
+        text = text.replace("{CATEGORY_ITEMS}", render_category_items(c))
+    return text
+
+
+def _az_entries():
+    """Every searchable term, sorted, as (name, dd_html, search_text, css_class)."""
+    rows = []
+
+    def add(name, dd_html, search_text, cls=""):
+        rows.append((name, dd_html, search_text.lower(), cls))
+
+    def see(alias, target):
+        add(alias, f'See <a href="#{_anchor(target)}">{_e(target)}</a>.',
+            f"{alias} {target}", "az-see")
+
+    for c in CATEGORIES:
+        link = f'<a href="{{BASE}}{c["slug"]}.html">{_e(c["name"])}</a>'
+        for it in c["items"]:
+            add(it["name"], f'{_e(it["note"])} {link}', f'{it["name"]} {it["note"]}')
+            for a in it["aka"]:
+                see(a, it["name"])
+    for t in SERVICE_TERMS:
+        add(t["name"],
+            f'<span class="az-tag az-tag-service">Service</span> {_e(t["note"])} '
+            f'<a href="{{BASE}}{t["slug"]}.html">More about this service</a>',
+            f'{t["name"]} {t["note"]}')
+        for a in t["aka"]:
+            see(a, t["name"])
+    for t in NOT_TAKEN:
+        add(t["name"],
+            f'<span class="az-tag az-tag-no">We can&rsquo;t take this</span> '
+            f'{_e(t["why"])} {_e(t["where"])} '
+            f'<a href="{{BASE}}what-we-dont-take.html">Where it goes</a>',
+            f'{t["name"]} {t["why"]} {t["where"]}', "az-no")
+        for a in t["aka"]:
+            see(a, t["name"])
+
+    rows.sort(key=lambda r: r[0].lower())
+    ids = {}
+    for name, *_ in rows:
+        k = _anchor(name)
+        if k in ids:
+            raise SystemExit(f'A-Z: "{name}" and "{ids[k]}" produce the same anchor #{k}')
+        ids[k] = name
+    return rows
+
+
+def render_az(_base=None):
+    rows = _az_entries()
+    groups = {}
+    for name, dd, search, cls in rows:
+        first = name[0].upper()
+        groups.setdefault(first if first.isalpha() else "#", []).append((name, dd, search, cls))
+    order = sorted(groups, key=lambda L: (L != "#", L))
+
+    def gid(L):
+        return "letter-num" if L == "#" else f"letter-{L.lower()}"
+
+    jump = "".join(f'<li><a href="#{gid(L)}">{L}</a></li>' for L in order)
+    blocks = []
+    for L in order:
+        entries = []
+        for name, dd, search, cls in groups[L]:
+            klass = f"az-entry {cls}" if cls else "az-entry"
+            entries.append(
+                f'\n                <div class="{klass}" data-term="{_e(search)}">'
+                f'\n                  <dt id="{_anchor(name)}">{_e(name)}</dt>'
+                f'\n                  <dd>{dd}</dd>'
+                f'\n                </div>'
+            )
+        blocks.append(
+            f'\n              <div class="az-group" id="{gid(L)}">'
+            f'\n                <h2 class="az-letter">{L}</h2>'
+            f'\n                <dl class="az-list">{"".join(entries)}'
+            f'\n                </dl>'
+            f'\n              </div>'
+        )
+
+    return f'''      <div class="page-header">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-12">
+              <div class="page-header-box">
+                <h1>Everything we take, A to Z</h1>
+                <nav aria-label="Breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{BASE}}index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{BASE}}what-we-take.html">What We Take</a></li>
+                    <li class="breadcrumb-item" aria-current="page">A to Z</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section-space">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-9">
+              <p class="lead-in">
+                {len(rows)} things people ask us to haul, and what is worth knowing about
+                each one: what makes it awkward, roughly what it weighs, and where it
+                actually goes in Winnipeg. If it is legal for us to haul, it is on here. If
+                it is not, it is on here too, with where to take it instead.
+              </p>
+
+              <div class="az-tools" id="az-tools" hidden>
+                <label for="az-filter" class="az-filter-label">Find something</label>
+                <input type="search" id="az-filter" class="az-filter"
+                       placeholder="Try &ldquo;treadmill&rdquo; or &ldquo;fridge&rdquo;"
+                       autocomplete="off" />
+              </div>
+              <nav aria-label="Jump to a letter">
+                <ul class="az-jump">{jump}</ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-space bg-tint az-body">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-9">{"".join(blocks)}
+              <p class="az-empty" id="az-empty" hidden>
+                Nothing on the list matches that. <a href="sms:{{PHONE_E164}}">Text us a
+                photo</a> and we will tell you straight whether we take it.
+              </p>
+
+              <div class="callout">
+                <h3>Still not sure?</h3>
+                <p>
+                  Send a photo and we will tell you whether we take it and roughly what it
+                  costs, usually within the hour.
+                </p>
+                <div class="btn-row">
+                  <a href="sms:{{PHONE_E164}}" class="btn-default">Text a photo</a>
+                  <a href="{{BASE}}what-we-dont-take.html" class="btn-default btn-ghost on-light">What we can&rsquo;t take</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <script>
+        /* A-Z filter. Progressive enhancement: the search box ships hidden and
+           only appears once this runs, so nobody without JavaScript is shown a
+           box that does nothing. The full list is always there regardless. */
+        (function () {{
+          var tools = document.getElementById("az-tools");
+          var input = document.getElementById("az-filter");
+          if (!tools || !input) return;
+          tools.hidden = false;
+          var entries = [].slice.call(document.querySelectorAll(".az-entry"));
+          var groups = [].slice.call(document.querySelectorAll(".az-group"));
+          var empty = document.getElementById("az-empty");
+          input.addEventListener("input", function () {{
+            var q = input.value.trim().toLowerCase();
+            var shown = 0;
+            entries.forEach(function (e) {{
+              var hit = !q || e.getAttribute("data-term").indexOf(q) !== -1;
+              e.hidden = !hit;
+              if (hit) shown++;
+            }});
+            groups.forEach(function (g) {{
+              g.hidden = !g.querySelector(".az-entry:not([hidden])");
+            }});
+            if (empty) empty.hidden = shown !== 0;
+          }});
+        }})();
+      </script>
+'''
+
+
+def az_itemlist_schema():
+    """ItemList of every real item, each pointing at its own A-Z anchor."""
+    names = sorted((it["name"] for c in CATEGORIES for it in c["items"]), key=str.lower)
+    return {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Everything No BS Junk Removal takes",
+        "numberOfItems": len(names),
+        "itemListElement": [
+            {"@type": "ListItem", "position": i, "name": n,
+             "url": f"{SITE}{clean_url('what-we-take-a-z')}#{_anchor(n)}"}
+            for i, n in enumerate(names, start=1)
+        ],
+    }
+
+
+def render_what_we_take(_base=None):
+    n_items = sum(len(c["items"]) for c in CATEGORIES)
+    cards = []
+    for c in CATEGORIES:
+        sample = ", ".join(it["name"] for it in c["items"][:6])
+        more = len(c["items"]) - 6
+        tail = f", and {more} more" if more > 0 else ""
+        cards.append(f'''
+            <div class="col-lg-6 mb-4" id="{c["icon"]}">
+              <div class="reason-card">
+                <h3><a href="{{BASE}}{c["slug"]}.html">{_e(c["name"])}</a></h3>
+                <p>{_e(c["blurb"])}</p>
+                <p class="cat-card-items">{_e(sample)}{tail}.</p>
+                <a href="{{BASE}}{c["slug"]}.html" class="cat-card-link">Everything in {_e(c["short"])} &rarr;</a>
+              </div>
+            </div>''')
+
+    return f'''      <div class="page-header">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-12">
+              <div class="page-header-box">
+                <h1>What we take</h1>
+                <nav aria-label="Breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{BASE}}index.html">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page">What We Take</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section-space">
+        <div class="container">
+          <div class="section-title text-center">
+            <p class="eyebrow wow fadeInUp">categories</p>
+            <h2>If it&rsquo;s legal for us to haul, we take it</h2>
+          </div>
+          <p class="lead-in text-center" style="margin: 0 auto 40px">
+            Twelve categories, one trailer, one price. Between them they cover {n_items}
+            kinds of thing, and each category has its own page with what we take, what it
+            costs and the questions people actually ask. Looking for one particular item?
+            <a href="{{BASE}}what-we-take-a-z.html">Search everything, A to Z</a>.
+          </p>
+          {render_take_grid()}
+        </div>
+      </section>
+
+      <section class="section-space bg-tint">
+        <div class="container">
+          <div class="row">{"".join(cards)}
+          </div>
+
+          <div class="text-center" style="margin-top: 20px">
+            <p class="lead-in" style="margin: 0 auto 20px">
+              <strong>Not sure if we take it? Send us a photo. We&rsquo;ll tell you straight.</strong>
+            </p>
+            <div class="btn-row justify-content-center">
+              <a href="sms:{{PHONE_E164}}" class="btn-default">Text us a photo</a>
+              <a href="{{BASE}}what-we-take-a-z.html" class="btn-default btn-ghost on-light">Everything, A to Z</a>
+              <a href="{{BASE}}what-we-dont-take.html" class="btn-default btn-ghost on-light">What we can&rsquo;t take</a>
+            </div>
+          </div>
+        </div>
+      </section>
+'''
+
+
+def render_not_taken(_base=None):
+    cards = "".join(f'''
+                <div class="nt-card" id="{_anchor(t["name"])}">
+                  <h3>{_e(t["name"])}</h3>
+                  <p><span class="nt-label">Why we can&rsquo;t:</span> {_e(t["why"])}</p>
+                  <p><span class="nt-label">Where it goes:</span> {_e(t["where"])}</p>
+                  <p class="nt-aka">Also covers: {_e(", ".join(t["aka"]))}</p>
+                </div>''' for t in NOT_TAKEN)
+
+    return f'''      <div class="page-header">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-12">
+              <div class="page-header-box">
+                <h1>What we can&rsquo;t take, and who can</h1>
+                <nav aria-label="Breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{BASE}}index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{BASE}}what-we-take.html">What We Take</a></li>
+                    <li class="breadcrumb-item" aria-current="page">What We Can&rsquo;t Take</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section-space">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-9">
+              <div class="section-title">
+                <p class="eyebrow">the short list</p>
+                <h2>If it&rsquo;s legal for us to haul, we take it</h2>
+              </div>
+              <p class="lead-in">
+                Almost everything a house, a yard or a job site produces goes in our trailer.
+                The few things below do not, because hauling them without the right licence
+                is illegal, dangerous or both, and we are not going to pretend otherwise to
+                win a job.
+              </p>
+              <p>
+                What we will do is tell you exactly where each one should go instead. That
+                call is free, and several of these are free to drop off if you live in
+                Winnipeg.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-space bg-tint">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-10">
+              <div class="nt-grid">{cards}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-space">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-9">
+              <div class="section-title">
+                <h2>The 4R Winnipeg Depots</h2>
+              </div>
+              <p>
+                The City runs three 4R Winnipeg Depots for residents. What each one accepts
+                differs, and hours change with the season:
+              </p>
+              <ul class="price-includes">
+                <li><strong>Brady</strong> &mdash; 1825 Brady Road</li>
+                <li><strong>Pacific</strong> &mdash; 1120 Pacific Avenue <em>(closed Wednesdays)</em></li>
+                <li><strong>Panet</strong> &mdash; 429 Panet Road <em>(closed Wednesdays)</em></li>
+              </ul>
+              <p>
+                Check
+                <a href="https://www.winnipeg.ca/services-programs/recycling-garbage/4r-winnipeg-depots"
+                   target="_blank" rel="noopener">the City&rsquo;s 4R Depot page</a>
+                for what each depot takes and its current hours before you drive over.
+              </p>
+
+              <div class="callout">
+                <h3>Working fridge or freezer? Don&rsquo;t pay us to take it.</h3>
+                <p>
+                  If it still runs, Efficiency Manitoba will pick it up from your home for free
+                  and pay you a $30 rebate. We can&rsquo;t beat that, so take it. If it has
+                  stopped working, that is where we come in.
+                </p>
+                <a href="https://efficiencymb.ca/articles/how-should-i-get-rid-of-my-old-fridge-or-freezer/"
+                   class="btn-default" target="_blank" rel="noopener">Efficiency Manitoba pickup</a>
+              </div>
+
+              <div class="callout">
+                <h3>Not sure which side of the line it&rsquo;s on?</h3>
+                <p>
+                  Send us a photo. We will tell you straight whether we can take it, and if we
+                  can&rsquo;t, where it should go.
+                </p>
+                <div class="btn-row">
+                  <a href="sms:{{PHONE_E164}}" class="btn-default">Text a photo</a>
+                  <a href="{{BASE}}what-we-take-a-z.html" class="btn-default btn-ghost on-light">Everything we do take</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+'''
+
+
 PAGES = [
     P("index",
       "Junk Removal Winnipeg | Upfront Pricing, No Hidden Fees",
@@ -694,7 +1199,25 @@ PAGES = [
       "What We Take | Junk Removal Winnipeg | No BS Junk Removal",
       "Furniture, appliances, mattresses, e-waste, reno debris, hot tubs, sheds, "
       "concrete, yard waste, estate cleanouts, scrap metal and pianos across Winnipeg.",
-      crumbs=[("What We Take", "/what-we-take")]),
+      crumbs=[("What We Take", "/what-we-take")],
+      render=render_what_we_take),
+
+    P("what-we-take-a-z",
+      "Everything We Take, A to Z | Junk Removal Winnipeg",
+      "Every item we haul in Winnipeg, from couches and fridges to hot tubs and concrete, "
+      "with what it weighs, why it's awkward and where it actually goes.",
+      crumbs=[("What We Take", "/what-we-take"), ("A to Z", "/what-we-take-a-z")],
+      schema=[az_itemlist_schema()],
+      priority="0.90",
+      render=render_az),
+
+    P("what-we-dont-take",
+      "What We Can't Take, and Who Can | No BS Junk Removal",
+      "Paint, propane, asbestos and chemicals can't go in a junk trailer. Here is where "
+      "each one goes instead in Winnipeg, much of it free for residents.",
+      crumbs=[("What We Take", "/what-we-take"),
+              ("What We Can't Take", "/what-we-dont-take")],
+      render=render_not_taken),
 
     P("hot-tub-removal-winnipeg",
       "Hot Tub Removal Winnipeg | Disconnect, Breakdown &amp; Haul-Away",
@@ -1559,7 +2082,7 @@ def main():
             if not frag.exists():
                 raise SystemExit(f"missing page fragment: {frag}")
             raw = frag.read_text(encoding="utf-8")
-        body = strip_html_ext(subst(raw, dict(common, BASE=base)))
+        body = strip_html_ext(subst(expand_take_tokens(raw, slug), dict(common, BASE=base)))
 
         # Fill {FAQ_ACCORDION} from this page's FAQPage block, so the visible
         # questions and the structured data are always the same text.
@@ -1621,9 +2144,13 @@ def main():
         stamp = page["lastmod"]
         if not stamp:
             frag = PAGES_DIR / f"{slug}.html"
-            if frag.exists():
-                stamp = datetime.fromtimestamp(
-                    frag.stat().st_mtime, timezone.utc).strftime("%Y-%m-%d")
+            # Generated pages (the hub, the A-Z, what we can't take) have no
+            # fragment. Their content comes from the renderers in this file
+            # and the data in _categories.py, so they are as fresh as the
+            # newer of those two.
+            sources = [frag] if frag.exists() else [ROOT / "_build.py", ROOT / "_categories.py"]
+            newest = max(p.stat().st_mtime for p in sources if p.exists())
+            stamp = datetime.fromtimestamp(newest, timezone.utc).strftime("%Y-%m-%d")
         lastmod = f"    <lastmod>{stamp}</lastmod>\n" if stamp else ""
         urls.append(
             f"  <url>\n    <loc>{loc}</loc>\n{lastmod}"
@@ -1732,11 +2259,19 @@ def main():
     L.append("- Equipment: skid steer and dump trailer (14ft x 7ft x 4ft)")
     L.append("- Parent company: No-BS Yardwork (https://www.no-bs-yardwork.com)")
     L.append("")
-    L.append("## What we cannot take")
+    # Both lists come from _categories.py, so an assistant quoting this file
+    # gets the same answer a visitor gets from the site.
+    L.append("## What we take")
     L.append("")
-    L.append("Wet paint, solvents, chemicals, pesticides, asbestos or suspected")
-    L.append("asbestos, propane tanks, fuel, oil, explosives, medical or biohazard")
-    L.append("waste, and ammunition. We will point you to who does handle it.")
+    for c in CATEGORIES:
+        L.append(f"- {c['name']} ({SITE}{clean_url(c['slug'])}): "
+                 + ", ".join(it["name"] for it in c["items"]))
+    L.append(f"- Every item, A to Z: {SITE}{clean_url('what-we-take-a-z')}")
+    L.append("")
+    L.append("## What we cannot take, and where it goes instead")
+    L.append("")
+    for t in NOT_TAKEN:
+        L.append(f"- {t['name']}: {t['why']} {t['where']}")
     L.append("")
     (ROOT / "llms.txt").write_text("\n".join(L), encoding="utf-8")
 

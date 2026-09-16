@@ -1,7 +1,8 @@
 # No BS Junk Removal — Winnipeg
 
 Static site for the junk removal division of **No-BS Yardwork**.
-Target domain: `no-bs-junkremoval.com`
+Target domain: `nobs-junk.com` — chosen, not yet registered. Until `SITE` in
+`_build.py` is changed, the build still generates against `no-bs-junkremoval.com`.
 
 Hand-coded static HTML, same stack as no-bs-yardwork.com: no framework, no
 runtime dependencies, deploys by FTP to cPanel/Apache.
@@ -15,24 +16,33 @@ runtime dependencies, deploys by FTP to cPanel/Apache.
 
 These are the things only you can do. Nothing on this list is code.
 
-- [ ] **Register `no-bs-junkremoval.com`** (and `.ca`, redirected to it)
+- [ ] **Register `nobs-junk.com`** (it was available in September 2026), then
+      change `SITE` at the top of `_build.py` and rebuild. Every canonical,
+      sitemap entry and share link is generated from that one line.
 - [ ] **Add the addon domain** in cPanel and note its document root
-- [ ] **Set the prices.** Every price is a `$XXX` placeholder rendered as a
-      dashed green box. They are all in one commented block at the top of
-      `_pages/pricing.html`, plus three teasers in `_pages/index.html`.
+- [x] **Set the prices.** Done: $139 minimum up to $689 for a full trailer, plus
+      per-tonne rates for heavy material. A price appears in three places; the
+      comment at the top of `_pages/pricing.html` lists them.
 - [ ] **Uncomment the canonical-host rule** in `.htaccess` — *only after* DNS
       resolves. Doing it early makes the site unreachable.
-- [ ] **Take the photos.** Every missing shot is marked on-page with a green
-      dashed block containing the brief and the filename. See below.
+- [ ] **Replace the stock photos** with real job photos. Seven service pages use
+      Unsplash stock today; the shot list is below.
 - [ ] **Add your liability coverage amount** to the box on `_pages/about.html`
 - [ ] **Test the quote form** once, for real. It is a JotForm embed
       (`262378273577268`, "Clone of Request for Quote"), so submissions land in
       your JotForm account — there is no server-side mail to fail.
-- [ ] **Create a Google Business Profile** for the junk division. For this kind
-      of business it out-earns the website as a lead source; do it before launch.
+- [ ] **Finish verifying the Google Business Profile.** It exists but is not
+      verified, and an unverified listing does not appear in the map pack, which
+      is where most of these customers click. Then make the site's street address
+      match it exactly — `_build.py` currently has "Lakewood Blvd" with no number.
 - [ ] **Search Console** property + submit `sitemap.xml`
-- [ ] Decide whether you want a **separate GA4 property** (currently reusing the
-      yardwork one, `G-VN2QZ4KXXH`, and GTM container `GTM-M3MHCKF5`)
+- [ ] **Check the Tag Manager container** (`GTM-M3MHCKF5`). The site loads Tag
+      Manager *and* Google Analytics (`G-VN2QZ4KXXH`) separately, which likely
+      counts every visit twice. If the container holds only Analytics, remove Tag
+      Manager; if it holds an Ads tag or a Meta pixel, keep it and remove the
+      separate Analytics tag instead.
+- [ ] **Create a separate GA4 property** for the junk division. The current ID
+      belongs to the yardwork site, so the two businesses' leads are mixed.
 
 ---
 
@@ -83,10 +93,14 @@ The parent site has its header and footer hand-copied into 47 files, so changing
 one nav item means 47 edits. This site does not repeat that.
 
 ```bash
-python3 _build.py      # 32 .html files + sitemap.xml + feed.xml
+python3 _build.py      # 34 .html files + sitemap.xml + feed.xml + llms.txt
+python3 _serve.py      # preview at http://localhost:8000
 ```
 
 - **Page content** → `_pages/<name>.html` (plain HTML fragments)
+- **What we take** → `_categories.py`: every category, every item, and the
+  things we can't take. The hub, the A–Z index, each category page's item list,
+  the homepage list and the structured data are all generated from it.
 - **Blog posts** → `_pages/blog/<slug>.html` plus an entry in `POSTS`
 - **Header, footer, nav, schema, page titles** → `_build.py`
 - **Styling** → `css/junk.css`
@@ -122,22 +136,22 @@ not the generator's. Change `BLOG_AUTHOR` and the `author` block in
 
 ### Previewing it yourself
 
-**Quickest — open one file.** Download the repo (GitHub → green **Code** button →
-**Download ZIP**), unzip, and double-click `index.html`. It opens in your browser
-and every link works. Nothing to install.
-
-The only thing that misbehaves this way is the extensionless URLs — clicking
-around uses the `.html` filenames, which is exactly what happens on the real
-server before `.htaccess` rewrites them. Cosmetic only.
-
-**Closer to the real thing — run a local server.** From inside the folder:
+From inside the folder:
 
 ```bash
-python3 -m http.server 8000
+python3 _serve.py
 ```
 
-Then open <http://localhost:8000> . Python is already on macOS and most Linux;
-on Windows install it from python.org, or use `npx serve` if you have Node.
+Then open <http://localhost:8000>. Python is already on macOS and most Linux; on
+Windows install it from python.org.
+
+**Double-clicking `index.html` no longer works, and neither does
+`python3 -m http.server`.** Internal links are extensionless (`/pricing`, not
+`/pricing.html`) because that is the canonical address, and linking to the
+`.html` form cost a 301 redirect on every click. On the real server `.htaccess`
+maps `/pricing` to `pricing.html`. Opening the files directly, or using Python's
+plain server, has no such rule, so every link 404s. `_serve.py` is Python's
+built-in server plus that one rule, and nothing more.
 
 **On the live server**, once the addon domain is pointed at this folder, it is
 just the domain in a browser. To check a change before it is public, upload to a
@@ -263,9 +277,9 @@ docker run --rm -p 8080:8080 nobs-junk    # then open http://localhost:8080
 re-synced from the parent later. Do not edit it — every junk-specific rule belongs
 in `css/junk.css`, which loads after it.
 
-**`junk.css` defines no colours of its own.** Every value comes from the tokens
-`custom.css` already declares, so this site and the lawn site stay in step and
-re-syncing the parent's palette updates this one for free:
+The brand palette comes from the tokens `custom.css` declares, so this site and
+the lawn site stay in step and re-syncing the parent's palette updates this one
+for free:
 
 | Token | Value | Used for |
 |---|---|---|
@@ -276,9 +290,22 @@ re-syncing the parent's palette updates this one for free:
 | `--text-color` | `#555555` | body copy |
 | `--white-color` | `#FFFFFF` | page ground |
 
+`junk.css` adds three tokens of its own, each for a job the palette above cannot
+do legibly. The ratios are measured:
+
+| Token | Value | Used for |
+|---|---|---|
+| `--accent-on-dark` | `#6FCF7C` | green **text** on the dark green. The brand accent measures 2.37:1 there and fails WCAG; this is 6.34:1 |
+| `--warning-color` | `#9B2C2C` | "we can't take this" — 7.53:1 on white |
+| `--warning-tint` | `#FDECEC` | behind the warning label — the red is 6.59:1 on it |
+
 White page, green furniture — the same arrangement as no-bs-yardwork.com. If you
 need a new colour, add it as a token first; don't hard-code a hex in a component
 rule. The green button on white measures 5.16:1, which passes WCAG AA.
+
+**Use `--accent-color` for green on light backgrounds and `--accent-on-dark` for
+green text on dark ones.** Using the first on the second is exactly how the
+homepage headline came to fail contrast.
 
 Two class-naming traps worth knowing, both already hit and fixed:
 
@@ -333,12 +360,12 @@ To route leads through the JotForm the yardwork site already uses, replace the
 
 ## Not built yet
 
-The blueprint specifies ~45 pages. 23 are built: all 12 "What We Take"
-categories now have their own page, plus commercial, winter, about, where-your-
-junk-goes, reviews, quote, pricing, the hub, 404 and thanks. Still to come:
+34 pages are built: the 12 category pages, the What We Take hub, the A–Z index
+of every item, the what-we-can't-take page, commercial, winter, about,
+where-your-junk-goes, reviews, quote, pricing, 404, thanks, and the blog index
+with eight posts. Still to come:
 
-- Service-area pages. Worth doing properly or not at all: the blueprint's own
-  warning is that 25 near-identical pages with the place name swapped is thin
-  content that Google ignores and customers see through. Each needs a real local
-  job, a real photo and a real local detail.
-- Blog
+- **Neighbourhood pages.** Worth doing properly or not at all: 25 near-identical
+  pages with the place name swapped is thin content that Google ignores and
+  customers see through. Each needs a real local job, a real photo and a real
+  local detail, so these wait on job photos.

@@ -115,7 +115,15 @@ ErrorDocument 404 /404.html
 # would take down the entire site over a hardening rule.
 # ----------------------------------------------------------------------
 <IfModule mod_authz_core.c>
-  <FilesMatch "^(_build\.py|_make-icons\.py|Dockerfile|railway\.json|\.dockerignore)$">
+  # Every Python file, matched by extension rather than by name. This used to
+  # list _build.py and _make-icons.py individually, so _categories.py was
+  # downloadable the moment it was added. Whatever .py file comes next is
+  # covered without anyone having to remember this rule exists. The [cod] also
+  # covers compiled .pyc files, in case a __pycache__ folder ever gets uploaded.
+  <FilesMatch "\.py[cod]?$">
+    Require all denied
+  </FilesMatch>
+  <FilesMatch "^(Dockerfile|railway\.json|\.dockerignore)$">
     Require all denied
   </FilesMatch>
   <FilesMatch "\.md$">

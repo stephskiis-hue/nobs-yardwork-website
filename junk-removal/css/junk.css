@@ -53,13 +53,19 @@
 
 :root{
 	--jr-radius: 14px;
-	/* Accent green for TEXT on the dark primary background — the one colour
-	   this file adds. The brand accent #2A7D2E is fine on white (5.16:1) but
-	   measures 2.37:1 on #0B3D2C, which fails WCAG even for large text. This
-	   is the same hue lifted: 6.34:1 on #0B3D2C, AAA for large text. Use it
-	   only for accent text on dark grounds; on light grounds keep
+	/* The three colours this file adds, each for a job the brand palette in
+	   custom.css cannot do legibly. The contrast ratios are measured.
+
+	   --accent-on-dark: green TEXT on the dark primary background. The brand
+	   accent #2A7D2E is fine on white (5.16:1) but measures 2.37:1 on
+	   #0B3D2C, which fails WCAG even for large text. This is the same hue
+	   lifted: 6.34:1 on #0B3D2C, AAA for large text. On light grounds keep
 	   --accent-color, where it is the one that passes. */
 	--accent-on-dark: #6FCF7C;
+	/* "We can't take this", on the A-Z and the can't-take page.
+	   The red is 7.53:1 on white and 6.59:1 on its tint. */
+	--warning-color: #9B2C2C;
+	--warning-tint: #FDECEC;
 }
 
 body{
@@ -487,6 +493,114 @@ header.main-header .header-sticky{
 	font-size: 16px;
 	line-height: 2em;
 	color: var(--text-color);
+}
+.take-list a{ color: var(--accent-color); font-weight: 700; white-space: nowrap; }
+
+/* ---- Hub page category cards ---- */
+.cat-card-items{ font-size: 15px; color: var(--text-color); margin: 0 0 14px; }
+.cat-card-link{ color: var(--accent-color); font-weight: 800; text-decoration: none; }
+.cat-card-link:hover{ text-decoration: underline; }
+
+/* ---- Item list on each category page ----
+   Generated from _categories.py. A definition list, because that is what it
+   is: a thing, and what is worth knowing about it. */
+.ci-heading{ margin: 34px 0 16px; text-transform: uppercase; }
+.ci-list{ margin: 0 0 18px; }
+.ci-item{ padding: 14px 0; border-top: 1px solid var(--divider-color); scroll-margin-top: 110px; }
+.ci-item:last-child{ border-bottom: 1px solid var(--divider-color); }
+.ci-item dt{ color: var(--primary-color); font-weight: 800; font-size: 17px; margin: 0 0 4px; }
+.ci-item dd{ margin: 0; line-height: 1.65em; }
+.ci-aka{ display: block; margin-top: 6px; font-size: 14px; color: var(--text-color); }
+.ci-more{ margin: 0 0 24px; font-size: 16px; }
+.ci-more a{ color: var(--accent-color); font-weight: 700; }
+
+/* ---- A to Z index ---- */
+.az-tools{ margin: 0 0 22px; }
+.az-filter-label{ display: block; font-weight: 800; color: var(--primary-color); margin: 0 0 8px; }
+.az-filter{
+	width: 100%;
+	max-width: 520px;
+	padding: 14px 18px;
+	font-size: 17px;
+	border: 2px solid var(--divider-color);
+	border-radius: var(--jr-radius);
+	background-color: var(--white-color);
+	color: var(--primary-color);
+}
+.az-filter:focus{ outline: none; border-color: var(--accent-color); }
+/* Only letters with entries are rendered, so there is never a dead, low-
+   contrast "disabled" letter. Each target is 44px, the minimum for a thumb. */
+.az-jump{ display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.az-jump a{
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 44px;
+	min-height: 44px;
+	border-radius: 8px;
+	background-color: var(--secondary-color);
+	color: var(--primary-color);
+	font-weight: 800;
+	font-size: 16px;
+	text-decoration: none;
+}
+.az-jump a:hover, .az-jump a:focus-visible{ background-color: var(--accent-color); color: var(--white-color); }
+.az-body{ padding-top: 60px; }
+.az-group{ margin: 0 0 34px; scroll-margin-top: 110px; }
+.az-letter{
+	font-size: 34px;
+	font-weight: 800;
+	color: var(--primary-color);
+	border-bottom: 3px solid var(--accent-color);
+	padding-bottom: 6px;
+	margin: 0 0 8px;
+}
+.az-list{ margin: 0; }
+.az-entry{ padding: 14px 0; border-bottom: 1px solid var(--divider-color); scroll-margin-top: 110px; }
+.az-entry dt{ font-weight: 800; font-size: 17px; color: var(--primary-color); margin: 0 0 4px; }
+.az-entry dd{ margin: 0; line-height: 1.65em; }
+.az-entry dd a{ color: var(--accent-color); font-weight: 700; }
+.az-see dd{ color: var(--text-color); }
+.az-no dt{ color: var(--warning-color); }
+.az-tag{
+	display: inline-block;
+	margin-right: 6px;
+	padding: 2px 8px;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	vertical-align: 1px;
+}
+.az-tag-no{ background-color: var(--warning-tint); color: var(--warning-color); }
+.az-tag-service{ background-color: var(--secondary-color); color: var(--primary-color); }
+.az-empty{
+	padding: 22px 24px;
+	margin: 0 0 30px;
+	background-color: var(--white-color);
+	border: 1px solid var(--divider-color);
+	border-radius: var(--jr-radius);
+}
+/* Author display rules would otherwise beat the [hidden] attribute. */
+.az-entry[hidden], .az-group[hidden], .az-tools[hidden], .az-empty[hidden]{ display: none !important; }
+
+/* ---- What we can't take ---- */
+.nt-grid{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.nt-card{
+	background-color: var(--white-color);
+	border: 1px solid var(--divider-color);
+	border-left: 5px solid var(--warning-color);
+	border-radius: var(--jr-radius);
+	padding: 24px 26px;
+}
+.nt-card h3{ font-size: 21px; margin: 0 0 10px; }
+.nt-card p{ margin: 0 0 8px; }
+.nt-label{ font-weight: 800; color: var(--primary-color); }
+.nt-card .nt-aka{ font-size: 14px; color: var(--text-color); margin: 10px 0 0; }
+@media (max-width: 767px){
+	.nt-grid{ grid-template-columns: 1fr; }
+	.az-letter{ font-size: 28px; }
 }
 
 
