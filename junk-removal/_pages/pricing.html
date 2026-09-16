@@ -2,20 +2,23 @@
         ==========================================================================
         PRICES — EDIT HERE, NOWHERE ELSE
         ==========================================================================
-        Every price on this site is a placeholder until you replace it. They are
-        all in the one table below, each wrapped in <span class="price-tbd">, so
-        they render as dashed orange boxes and cannot be published by accident.
+        The rate card is live. It appears in exactly three places:
+          1. The volume table below.
+          2. The three teaser rows in _pages/index.html.
+          3. priceRange in _build.py's LOCAL_BUSINESS block.
+        Change a number here and change it in all three, or the page, the
+        homepage and the structured data will disagree with each other.
 
-        To set your rates:
-          1. Replace each $XXX below with your number.
-          2. Delete the surrounding <span class="price-tbd"> and </span>.
-          3. Do the same for the three teaser prices in _pages/index.html.
+        Market context, captured September 2026 from competitors' own public
+        pricing pages: minimum charge $110–145, half trailer $275–400, full
+        trailer $550–720. We sit just under Hagemeister (the only other local
+        publishing a full table) and above Super Junk. RE-VERIFY THESE RANGES
+        BEFORE PUBLISHING and annually after — the comparison table below
+        quotes them, and a stale claim about competitors is worse than none.
 
-        Market context (from the blueprint's competitor scan, for reference only —
-        these are competitors' numbers, not yours): Winnipeg currently runs roughly
-        $135–145 at the minimum charge up to $709–719 for a full XL trailer. The
-        blueprint's advice was to price AT market and win on capability and trust
-        rather than race to the bottom.
+        Heavy material is by the tonne, not by volume. Those rates are set
+        against Brady Road's 2026 commercial tipping fees: clean concrete
+        $11.30/t, clean fill $9/t, mixed solid waste $99/t, $25 minimum load.
         ==========================================================================
       -->
       <div class="page-header">
@@ -60,12 +63,13 @@
             </div>
             <div class="col-lg-5">
               <div class="callout" style="margin-top: 0">
-                <h3>Prices not set yet</h3>
+                <h3>The number we say is the number you pay</h3>
                 <p>
-                  The rates below are placeholders. Ask us for a free on-site estimate and
-                  we'll give you a firm number before any work starts.
+                  You get a firm price before anything moves &mdash; not an estimate that
+                  grows once the trailer is half full. If we find something that changes
+                  the job, we stop and talk to you first.
                 </p>
-                <a href="quote.html" class="btn-default">Get my exact price</a>
+                <a href="quote.html" class="btn-default">Get a free quote</a>
               </div>
             </div>
           </div>
@@ -83,24 +87,79 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><th scope="row">Single item or 1/2 truck load <span class="note">(minimum charge)</span></th>
-                    <td class="price"><span class="price-tbd">$XXX</span></td></tr>
+                <tr><th scope="row">Single item or 1/2 pickup load <span class="note">(minimum charge)</span></th>
+                    <td class="price">$139</td></tr>
                 <tr><th scope="row">Full pickup truck load</th>
-                    <td class="price"><span class="price-tbd">$XXX</span></td></tr>
+                    <td class="price">$189</td></tr>
                 <tr><th scope="row">1/4 trailer</th>
-                    <td class="price"><span class="price-tbd">$XXX</span></td></tr>
+                    <td class="price">$209</td></tr>
                 <tr><th scope="row">1/3 trailer</th>
-                    <td class="price"><span class="price-tbd">$XXX</span></td></tr>
+                    <td class="price">$269</td></tr>
                 <tr><th scope="row">1/2 trailer</th>
-                    <td class="price"><span class="price-tbd">$XXX</span></td></tr>
+                    <td class="price">$379</td></tr>
                 <tr><th scope="row">2/3 trailer</th>
-                    <td class="price"><span class="price-tbd">$XXX</span></td></tr>
+                    <td class="price">$489</td></tr>
                 <tr><th scope="row">3/4 trailer</th>
-                    <td class="price"><span class="price-tbd">$XXX</span></td></tr>
+                    <td class="price">$569</td></tr>
                 <tr><th scope="row">Full XL trailer load</th>
-                    <td class="price"><span class="price-tbd">$XXX</span></td></tr>
+                    <td class="price">$689</td></tr>
               </tbody>
             </table>
+          </div>
+
+          <div class="row" style="margin-top: 46px">
+            <div class="col-lg-7">
+              <div class="section-title">
+                <h2>How that compares</h2>
+              </div>
+              <p>
+                These are the ranges Winnipeg junk removal companies published on their
+                own pricing pages in September 2026. Most companies in this city publish
+                no prices at all, so this is what could actually be checked. Several of
+                the ones that do publish add dump fees on top of the number shown
+                &mdash; read the fine print, not just the table.
+              </p>
+              <div class="table-scroll">
+                <table class="price-table">
+                  <caption>Winnipeg published rates, September 2026.</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Load</th>
+                      <th scope="col" style="text-align: right">Winnipeg range</th>
+                      <th scope="col" style="text-align: right">No BS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row">Minimum charge</th>
+                        <td class="price">$110&ndash;145</td><td class="price">$139</td></tr>
+                    <tr><th scope="row">1/2 trailer</th>
+                        <td class="price">$275&ndash;400</td><td class="price">$379</td></tr>
+                    <tr><th scope="row">Full trailer</th>
+                        <td class="price">$550&ndash;720</td><td class="price">$689</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="callout">
+                <h3>Why we're not the cheapest</h3>
+                <p>
+                  We could be. We'd rather show you the arithmetic instead.
+                </p>
+                <p>
+                  A full trailer holds about 14.5 cubic yards. Mixed household waste runs
+                  roughly 200 lbs a cubic yard, so that load weighs about 1.45 tonnes, and
+                  Brady Road charges us $99 a tonne to tip it &mdash; around $144 in dump
+                  fees before anyone has lifted anything.
+                </p>
+                <p>
+                  The rest covers two people for two to three hours, the truck, the
+                  trailer, the fuel and the insurance. Price much below that and something
+                  has to give: usually it's the crew, the insurance, or an invoice that
+                  grows on the day.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -129,6 +188,45 @@
               <p>
                 So for heavy material we quote by weight, we tell you the rate upfront, and we
                 show you the scale ticket if you want to see it. <strong>No BS.</strong>
+              </p>
+
+              <div class="table-scroll" style="margin: 30px 0">
+                <table class="price-table">
+                  <caption>
+                    Heavy material, priced by the tonne. Taxes not included.
+                    Minimum heavy-material charge $139.
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Material</th>
+                      <th scope="col" style="text-align: right">Per tonne</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row">Clean concrete, brick, patio stone
+                        <span class="note">(no rebar, no wood, no dirt through it)</span></th>
+                        <td class="price">$149</td></tr>
+                    <tr><th scope="row">Clean fill, dirt, sod</th>
+                        <td class="price">$129</td></tr>
+                    <tr><th scope="row">Mixed heavy
+                        <span class="note">(plaster, shingles, tile, or concrete with rebar or wood in it)</span></th>
+                        <td class="price">$179</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p>
+                <strong>Here's the part that can actually save you money, and the reason
+                those three rows are different numbers.</strong> Brady Road charges us
+                $11.30 a tonne to tip clean concrete, and $99 a tonne for mixed waste.
+                That is a nine-fold difference for the exact same weight.
+              </p>
+              <p>
+                So if you keep a concrete load clean &mdash; no rebar mesh, no wood, no
+                dirt mixed through it &mdash; it is genuinely the cheapest thing per pound
+                we can put in the trailer. Mix it, and we pay landfill rates on all of it
+                and so do you. If you're breaking up a driveway and you can keep the pile
+                separate from everything else, it's worth doing.
               </p>
               <a href="concrete-removal-winnipeg.html" class="btn-default">Concrete &amp; heavy material</a>
             </div>
@@ -163,15 +261,46 @@
               <div class="section-title">
                 <h2>Can I get a discount?</h2>
               </div>
-              <p>Yes, in three situations:</p>
+              <p>Yes, in six situations:</p>
               <ul class="price-includes">
+                <li><strong>Seniors &mdash; 10% off.</strong> Downsizing and clearing a
+                  family home is a good part of what we do, so this is the one we apply
+                  most often.</li>
+                <li><strong>Military and first responders &mdash; 10% off.</strong> Serving
+                  or retired. Mention it when you book.</li>
+                <li><strong>First-time customers &mdash; 10% off</strong> your first job.</li>
                 <li><strong>Repeat and contractor accounts</strong> &mdash; ask about volume rates</li>
                 <li><strong>Existing No-BS Yardwork customers</strong> &mdash; you already know us,
                   so we take care of you</li>
                 <li><strong>Full-load scrap metal jobs</strong> &mdash; if it's all metal, we may be
                   able to reduce the price or do it free, because we recover value on it. Ask.</li>
               </ul>
+              <p>
+                <em>One discount per job &mdash; they don't stack. We'll apply whichever
+                one saves you the most.</em>
+              </p>
               <a href="quote.html" class="btn-default">Get my exact price</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- The FAQ schema for this page lives in _build.py; the accordion token
+           below renders those same questions and answers visibly. Google
+           requires FAQ structured data to match what a visitor can actually
+           see, and this page shipped the markup without the visible copy.
+           Do not write the token's literal name in a comment: the build does a
+           plain string replace over the whole fragment, so a mention in prose
+           gets substituted too and the accordion renders twice. -->
+      <section class="section-space bg-tint">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-9">
+              <div class="section-title text-center">
+                <p class="eyebrow">questions</p>
+                <h2>Pricing questions people actually ask</h2>
+              </div>
+              {FAQ_ACCORDION}
             </div>
           </div>
         </div>

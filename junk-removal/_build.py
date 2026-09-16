@@ -125,7 +125,9 @@ LOCAL_BUSINESS = {
     "url": SITE + "/",
     "telephone": PHONE_E164,
     "email": EMAIL,
-    "priceRange": "$$",
+    # A real range now that the rate card is published. "$$" told a search
+    # engine nothing; the actual span of the volume card is a fact it can use.
+    "priceRange": "$139-$689",
     "description": (
         "Junk removal in Winnipeg with upfront pricing and no hidden fees. "
         "Furniture, appliances, mattresses, e-waste, renovation debris, hot tubs, "
@@ -672,7 +674,8 @@ PAGES = [
           ("How is junk removal priced in Winnipeg?",
            "You pay for the space your junk takes up in our trailer. Our trailer is 14 feet "
            "long by 7 feet wide by 4 feet high, and every price includes labour, hauling, "
-           "disposal and dump fees, and a basic sweep-up when we are done."),
+           "disposal and dump fees, and a basic sweep-up when we are done. Rates run from "
+           "$139 for a single item or half a pickup load up to $689 for a full trailer."),
           ("Why is concrete priced differently from furniture?",
            "Concrete, brick, patio stone, asphalt, gravel, dirt, plaster and shingles are "
            "priced by weight rather than volume, because the landfill charges us by the tonne. "

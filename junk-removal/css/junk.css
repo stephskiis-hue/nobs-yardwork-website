@@ -310,6 +310,17 @@ header.main-header .header-sticky{
 	color: rgba(255,255,255,.9);
 	max-width: 640px;
 }
+/* The price anchor. No competitor in this market puts a number above the
+   fold — most publish none at all — so it is set in full white rather than
+   the dimmed rgba the sub-head uses, because it is the differentiator. */
+.junk-hero .hero-price{
+	margin: 18px 0 0;
+	font-size: 19px;
+	line-height: 1.5;
+	color: var(--white-color);
+	max-width: 640px;
+}
+.junk-hero .hero-price strong{ color: var(--white-color); font-weight: 800; }
 .micro-trust{
 	color: rgba(255,255,255,.72);
 	font-size: 15px;
