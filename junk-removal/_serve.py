@@ -64,11 +64,22 @@ class CleanURLHandler(http.server.SimpleHTTPRequestHandler):
         super().send_error(code, message, explain)
 
 
+class PreviewServer(http.server.ThreadingHTTPServer):
+    def handle_error(self, request, client_address):
+        # Click a link while a page is still loading and the browser drops the
+        # old connection while we are mid-write. That is normal browsing, not a
+        # fault, but the standard library prints a full traceback for it, which
+        # looks alarming in the terminal. Anything else still gets reported.
+        if isinstance(sys.exc_info()[1], (BrokenPipeError, ConnectionResetError)):
+            return
+        super().handle_error(request, client_address)
+
+
 def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
     handler = partial(CleanURLHandler, directory=str(ROOT))
     # 127.0.0.1, not 0.0.0.0: a preview should not be reachable from the network.
-    with http.server.ThreadingHTTPServer(("127.0.0.1", port), handler) as httpd:
+    with PreviewServer(("127.0.0.1", port), handler) as httpd:
         print(f"Previewing at http://localhost:{port}   (Ctrl-C to stop)")
         try:
             httpd.serve_forever()
