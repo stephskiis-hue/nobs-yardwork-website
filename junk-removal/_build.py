@@ -47,7 +47,7 @@ PAGES_DIR = ROOT / "_pages"
 
 SITE = "https://www.no-bs-junkremoval.com"
 PHONE_DISPLAY = "204.900.0438"
-PHONE_TEL = "2049000438"
+PHONE_TEL = "+12049000438"
 PHONE_E164 = "+12049000438"
 EMAIL = "nobsyardwork@gmail.com"
 GTM_ID = "GTM-M3MHCKF5"
@@ -114,6 +114,11 @@ FOOTER_LINKS = [
 LOCAL_BUSINESS = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
+    # One @id for the business, referenced by every Service page's provider
+    # rather than re-inlining this object. Without it each service page
+    # declares a separate, unlinked LocalBusiness — thirteen businesses in the
+    # graph instead of one with thirteen services.
+    "@id": f"{SITE}/#localbusiness",
     "name": "No BS Junk Removal",
     "alternateName": "No-BS Yardwork Junk Removal",
     "image": f"{SITE}/images/logo.svg",
@@ -208,15 +213,8 @@ def service_schema(name, description, url, service_type):
         "serviceType": service_type,
         "areaServed": {"@type": "City", "name": "Winnipeg"},
         "url": url,
-        "provider": {
-            "@type": "LocalBusiness",
-            "name": "No BS Junk Removal",
-            "telephone": PHONE_E164,
-            "email": EMAIL,
-            "url": SITE + "/",
-            "address": LOCAL_BUSINESS["address"],
-            "areaServed": {"@type": "City", "name": "Winnipeg"},
-        },
+        # A reference, not a copy — see the @id note on LOCAL_BUSINESS.
+        "provider": {"@id": f"{SITE}/#localbusiness"},
     }
 
 
@@ -368,7 +366,7 @@ HEADER = """    <a class="skip-link" href="#main">Skip to content</a>
                 </div>
                 <div class="contact-now-box-content">
                   <p>Call or text any time</p>
-                  <h3><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></h3>
+                  <p class="header-phone"><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></p>
                 </div>
               </div>
             </div>
@@ -626,6 +624,26 @@ def P(slug, title, description, og_image="skid_steer.webp", crumbs=None,
     which the page loop substitutes exactly as it does for a hand-written
     fragment, so generated and authored pages go through one code path.
     """
+    # Length guards. Google truncates titles past roughly 60 characters and
+    # descriptions past roughly 160, and both had drifted well past that on
+    # two thirds of the site before anyone noticed — because nothing checked.
+    # Failing the build is the only version of this that stays true: a note in
+    # a README gets skimmed, a SystemExit does not. Blog posts route through
+    # P() too, so this covers them without a second copy in BP().
+    #
+    # Titles and descriptions carry entities (&amp;) because they are written
+    # for the page, so both are measured as the characters a reader actually
+    # sees. noindex pages (404, thanks) are exempt from the description floor:
+    # they are never a search result, so there is nothing to pad out.
+    if len(strip_tags(title)) > 60:
+        raise SystemExit(
+            f"{slug}: title is {len(strip_tags(title))} chars (max 60)\n  {strip_tags(title)}")
+    if "noindex" not in robots:
+        n = len(strip_tags(description))
+        if not 120 <= n <= 158:
+            raise SystemExit(
+                f"{slug}: description is {n} chars (want 120-158)\n  {strip_tags(description)}")
+
     blocks = list(schema or [])
     if crumbs is not None:
         blocks.append(breadcrumbs(crumbs))
@@ -639,17 +657,16 @@ def P(slug, title, description, og_image="skid_steer.webp", crumbs=None,
 
 PAGES = [
     P("index",
-      "Junk Removal Winnipeg | No BS Junk Removal | Same-Day Service",
+      "Junk Removal Winnipeg | Upfront Pricing, No Hidden Fees",
       "Winnipeg junk removal with upfront pricing and no hidden fees. Furniture, "
-      "appliances, reno debris, hot tubs, concrete. Skid steer available. Backed by "
-      "No-BS Yardwork. Free quotes — call or text today.",
+      "appliances, reno debris, hot tubs and concrete. Skid steer available. "
+      "Free quotes.",
       schema=[LOCAL_BUSINESS, ORGANIZATION, WEBSITE], body_class="home"),
 
     P("pricing",
       "Junk Removal Prices Winnipeg | Upfront Rates, No Hidden Fees",
       "See exactly what junk removal costs in Winnipeg. Labour, hauling and dump fees "
-      "all included. Free on-site estimates. We even explain why heavy material is "
-      "priced differently.",
+      "all included, and we explain why heavy material is priced by weight.",
       crumbs=[("Pricing", "/pricing")],
       schema=[faq_schema([
           ("How is junk removal priced in Winnipeg?",
@@ -672,16 +689,14 @@ PAGES = [
 
     P("what-we-take",
       "What We Take | Junk Removal Winnipeg | No BS Junk Removal",
-      "If it is not hazardous, we will take it. Furniture, appliances, mattresses, "
-      "e-waste, renovation debris, hot tubs, sheds, concrete, yard waste, estate "
-      "cleanouts, scrap metal and pianos across Winnipeg.",
+      "Furniture, appliances, mattresses, e-waste, reno debris, hot tubs, sheds, "
+      "concrete, yard waste, estate cleanouts, scrap metal and pianos across Winnipeg.",
       crumbs=[("What We Take", "/what-we-take")]),
 
     P("hot-tub-removal-winnipeg",
       "Hot Tub Removal Winnipeg | Disconnect, Breakdown &amp; Haul-Away",
       "Hot tub removal in Winnipeg. We disconnect, break it down on site and haul every "
-      "piece away in one visit — without wrecking your deck, fence or lawn. Free "
-      "on-site estimate.",
+      "piece away in one visit, without wrecking your deck, fence or lawn.",
       crumbs=[("What We Take", "/what-we-take"), ("Hot Tub Removal", "/hot-tub-removal-winnipeg")],
       schema=[
           service_schema("Hot Tub Removal Winnipeg",
@@ -705,10 +720,9 @@ PAGES = [
       ]),
 
     P("appliance-removal-winnipeg",
-      "Appliance Removal Winnipeg | Fridges, Freezers, Washers &amp; Furnaces",
-      "Appliance removal in Winnipeg. Fridges, freezers, washers, dryers, stoves and "
-      "furnaces hauled away and taken to a certified recycler — refrigerant recovered "
-      "properly, as the law requires.",
+      "Appliance Removal Winnipeg | Fridges, Washers &amp; Furnaces",
+      "Fridges, freezers, washers, dryers, stoves and furnaces hauled away in Winnipeg "
+      "and taken to a certified recycler, with refrigerant recovered properly.",
       crumbs=[("What We Take", "/what-we-take"), ("Appliance Removal", "/appliance-removal-winnipeg")],
       schema=[
           service_schema("Appliance Removal Winnipeg",
@@ -733,9 +747,9 @@ PAGES = [
       ]),
 
     P("concrete-removal-winnipeg",
-      "Concrete Removal Winnipeg | Brick, Patio Stone &amp; Heavy Material",
-      "Concrete, brick, patio stone, asphalt and aggregate removal in Winnipeg. Weight-rated "
-      "dump trailer and skid steer, priced by the tonne with scale tickets available.",
+      "Concrete Removal Winnipeg | Brick &amp; Heavy Material",
+      "Concrete, brick, patio stone and asphalt removal in Winnipeg. Dump trailer and "
+      "skid steer, priced by the tonne with scale tickets available.",
       crumbs=[("What We Take", "/what-we-take"), ("Concrete Removal", "/concrete-removal-winnipeg")],
       schema=[
           service_schema("Concrete Removal Winnipeg",
@@ -762,9 +776,8 @@ PAGES = [
     # ---- The nine remaining What We Take categories -----------------------
     P("furniture-removal-winnipeg",
       "Furniture Removal Winnipeg | Couches, Sectionals &amp; Sofa Beds",
-      "Furniture removal in Winnipeg. Couches, sectionals, sofa beds, dressers, tables and "
-      "carpet carried out and hauled away. Anything still usable is offered to local charities "
-      "first. Free quotes.",
+      "Couches, sectionals, sofa beds, dressers, tables and carpet carried out and hauled "
+      "away in Winnipeg. Anything still usable goes to local charities first.",
       crumbs=[("What We Take", "/what-we-take"), ("Furniture Removal", "/furniture-removal-winnipeg")],
       schema=[
           service_schema("Furniture Removal Winnipeg",
@@ -792,9 +805,8 @@ PAGES = [
 
     P("mattress-disposal-winnipeg",
       "Mattress Disposal Winnipeg | Mattress &amp; Box Spring Removal",
-      "Mattress disposal in Winnipeg. Curbside pickup will not take them and they do not fit in a "
-      "car. We bag them on site and take them to a facility that strips the metal and foam for "
-      "recycling.",
+      "Curbside will not take mattresses and they do not fit in a car. We bag them on site "
+      "and take them to a Winnipeg facility that recycles the metal and foam.",
       crumbs=[("What We Take", "/what-we-take"), ("Mattress Disposal", "/mattress-disposal-winnipeg")],
       schema=[
           service_schema("Mattress Disposal Winnipeg",
@@ -820,9 +832,9 @@ PAGES = [
       ]),
 
     P("e-waste-removal-winnipeg",
-      "E-Waste Removal Winnipeg | TVs, Computers &amp; Electronics Recycling",
-      "E-waste removal in Winnipeg. TVs, monitors, computers, printers and satellite dishes taken "
-      "to a certified EPRA Manitoba recycler — not the dump, where most of it is illegal anyway.",
+      "E-Waste &amp; TV Removal Winnipeg | Certified Recycling",
+      "TVs, monitors, computers, printers and satellite dishes collected in Winnipeg and "
+      "taken to a certified EPRA Manitoba recycler, not the dump.",
       crumbs=[("What We Take", "/what-we-take"), ("E-Waste Removal", "/e-waste-removal-winnipeg")],
       schema=[
           service_schema("E-Waste and Electronics Removal Winnipeg",
@@ -847,9 +859,9 @@ PAGES = [
       ]),
 
     P("renovation-debris-removal-winnipeg",
-      "Renovation Debris Removal Winnipeg | Construction Waste Haul-Away",
-      "Renovation and construction debris removal in Winnipeg. Drywall, lumber, shingles, plaster, "
-      "lathe and tile hauled away on a schedule that fits your build. Repeat pickups available.",
+      "Renovation Debris Removal Winnipeg | Reno Waste Hauling",
+      "Drywall, lumber, shingles, plaster, lathe and tile hauled away in Winnipeg on a "
+      "schedule that fits your build. Repeat pickups available.",
       crumbs=[("What We Take", "/what-we-take"),
               ("Renovation Debris", "/renovation-debris-removal-winnipeg")],
       schema=[
@@ -878,8 +890,8 @@ PAGES = [
 
     P("shed-deck-removal-winnipeg",
       "Shed, Deck &amp; Fence Removal Winnipeg | Teardown and Haul-Away",
-      "Shed, deck and fence removal in Winnipeg. We tear it down and take it away in one visit — "
-      "one contractor, one invoice. Winter teardowns cause less lawn damage.",
+      "Shed, deck and fence removal in Winnipeg. We tear it down and take it away in one "
+      "visit — one contractor, one invoice. Winter teardowns spare your lawn.",
       crumbs=[("What We Take", "/what-we-take"), ("Shed &amp; Deck Removal", "/shed-deck-removal-winnipeg")],
       schema=[
           service_schema("Shed, Deck and Fence Removal Winnipeg",
@@ -906,9 +918,9 @@ PAGES = [
       ]),
 
     P("yard-waste-removal-winnipeg",
-      "Yard Waste Removal Winnipeg | Branches, Brush &amp; Storm Cleanup",
-      "Yard waste and brush removal in Winnipeg. Branches, brush, sod, leaves and storm damage "
-      "hauled to composting and organics facilities. The crossover with our landscaping side.",
+      "Yard Waste Removal Winnipeg | Brush &amp; Storm Cleanup",
+      "Branches, brush, sod, leaves and storm damage hauled to composting and organics "
+      "facilities. The crossover with our Winnipeg landscaping side.",
       crumbs=[("What We Take", "/what-we-take"), ("Yard Waste", "/yard-waste-removal-winnipeg")],
       schema=[
           service_schema("Yard Waste and Brush Removal Winnipeg",
@@ -932,9 +944,9 @@ PAGES = [
       ]),
 
     P("estate-cleanout-winnipeg",
-      "Estate Cleanout Winnipeg | Hoarding &amp; Full Property Cleanouts",
-      "Estate and hoarding cleanouts in Winnipeg. Whole houses, garages and storage units cleared "
-      "at your pace, with anything you want kept set aside and photos on completion.",
+      "Estate &amp; Hoarding Cleanouts Winnipeg | No BS",
+      "Estate and hoarding cleanouts in Winnipeg. Whole houses, garages and storage units "
+      "cleared at your pace, with anything you want kept set aside.",
       crumbs=[("What We Take", "/what-we-take"), ("Estate Cleanouts", "/estate-cleanout-winnipeg")],
       schema=[
           service_schema("Estate and Hoarding Cleanout Winnipeg",
@@ -963,9 +975,9 @@ PAGES = [
       ]),
 
     P("scrap-metal-removal-winnipeg",
-      "Scrap Metal Removal Winnipeg | Free Pickup on Full Metal Loads",
-      "Scrap metal removal in Winnipeg. Appliances, lawnmowers, fencing, bed frames, pipe and rims. "
-      "Full metal loads may be reduced or free, because we recover value at the yard.",
+      "Scrap Metal Removal Winnipeg | Free on Full Loads",
+      "Appliances, lawnmowers, fencing, bed frames, pipe and rims collected in Winnipeg. "
+      "Full metal loads may be reduced or free, because we recover value.",
       crumbs=[("What We Take", "/what-we-take"), ("Scrap Metal", "/scrap-metal-removal-winnipeg")],
       schema=[
           service_schema("Scrap Metal and Tire Removal Winnipeg",
@@ -993,8 +1005,8 @@ PAGES = [
 
     P("piano-removal-winnipeg",
       "Piano Removal Winnipeg | Pianos, Safes &amp; Awkward Heavy Items",
-      "Piano removal in Winnipeg. An upright is 400-800 lbs of cast iron in a wooden box and it is "
-      "not a two-person job. Neither is a safe, a pool table or a cast iron tub.",
+      "An upright piano is 400-800 lbs of cast iron in a wooden box and it is not a "
+      "two-person job. Neither is a safe, a pool table or a cast iron tub.",
       crumbs=[("What We Take", "/what-we-take"), ("Piano Removal", "/piano-removal-winnipeg")],
       schema=[
           service_schema("Piano and Odd-Item Removal Winnipeg",
@@ -1023,8 +1035,8 @@ PAGES = [
 
     P("commercial-junk-removal-winnipeg",
       "Commercial Junk Removal &amp; Skid Steer Services Winnipeg",
-      "Skid steer and dump trailer for commercial lot cleanups, construction debris, concrete "
-      "and full demolition in Winnipeg. Contractor accounts with net terms and priority scheduling.",
+      "Skid steer and dump trailer for commercial lot cleanups, construction debris, "
+      "concrete and demolition in Winnipeg. Contractor accounts available.",
       crumbs=[("Commercial", "/commercial-junk-removal-winnipeg")],
       schema=[
           service_schema("Commercial Junk Removal and Skid Steer Services Winnipeg",
@@ -1036,9 +1048,9 @@ PAGES = [
       ]),
 
     P("winter-services-winnipeg",
-      "Winter Junk Removal &amp; Snow Hauling Winnipeg | No BS Junk Removal",
+      "Winter Junk Removal &amp; Snow Hauling Winnipeg",
       "We do not disappear in November. Snow removal and off-site snow hauling, winter "
-      "basement and garage cleanouts, off-season demolition and job site debris across Winnipeg.",
+      "basement and garage cleanouts, and off-season demolition in Winnipeg.",
       og_image="plow_truck.webp",
       crumbs=[("Winter Services", "/winter-services-winnipeg")],
       schema=[
@@ -1049,7 +1061,7 @@ PAGES = [
       ]),
 
     P("about",
-      "About No BS Junk Removal Winnipeg | The No-BS Yardwork Connection",
+      "About No BS Junk Removal | Winnipeg Hauling Crew",
       "We are new. We are not new at this. No BS Junk Removal is the hauling arm of "
       "No-BS Yardwork — same owners, same crews, same standards, bigger trailer.",
       og_image="steph-headshot.webp",
@@ -1058,7 +1070,7 @@ PAGES = [
     P("where-your-junk-goes",
       "Where Your Junk Actually Goes | No BS Junk Removal Winnipeg",
       "Every junk removal company says they recycle. Almost none say what that means. "
-      "Here is exactly where your furniture, metal, e-waste, appliances and concrete end up.",
+      "Here is where your furniture, metal, e-waste and appliances end up.",
       crumbs=[("About", "/about"), ("Where Your Junk Goes", "/where-your-junk-goes")]),
 
     P("reviews",
@@ -1068,7 +1080,7 @@ PAGES = [
       crumbs=[("Reviews", "/reviews")]),
 
     P("quote",
-      "Get a Free Junk Removal Quote in Winnipeg | No BS Junk Removal",
+      "Get a Free Junk Removal Quote | Winnipeg | No BS",
       "Three ways to get a price: text us a photo, call a real person seven days a week, "
       "or fill out the form. No obligation, no pressure, no sales script.",
       crumbs=[("Get a Quote", "/quote")]),
@@ -1130,12 +1142,12 @@ def BP(slug, title, h1, crumb, description, date, excerpt, read_min, tags,
 
 POSTS = [
     BP("junk-removal-cost-winnipeg",
-       "What Junk Removal Actually Costs in Winnipeg | No BS Junk Removal",
+       "What Junk Removal Actually Costs in Winnipeg | No BS",
        "What junk removal actually costs in Winnipeg",
        "What It Costs",
-       "A straight explanation of how junk removal is priced in Winnipeg — volume "
-       "versus weight, what a real quote includes, and the add-ons some companies "
-       "only mention once the truck is loaded.",
+       "How junk removal is priced in Winnipeg: volume versus weight, what a real "
+       "quote includes, and the add-ons some companies mention once the truck "
+       "is loaded.",
        "2026-08-10",
        "Most jobs in this city are quoted one way and billed another. Here is how "
        "volume pricing actually works, and the five add-ons worth asking about before "
@@ -1143,7 +1155,7 @@ POSTS = [
        7, ["pricing"]),
 
     BP("dumpster-rental-vs-junk-removal-winnipeg",
-       "Dumpster Rental vs Junk Removal in Winnipeg | No BS Junk Removal",
+       "Dumpster Rental vs Junk Removal in Winnipeg | No BS",
        "Dumpster rental vs junk removal: which do you actually need?",
        "Bin or Crew",
        "An honest comparison of bin rental and junk removal for Winnipeg homeowners, "
@@ -1154,7 +1166,7 @@ POSTS = [
        8, ["pricing", "renovation"]),
 
     BP("why-concrete-costs-more-than-couches",
-       "Why Concrete Costs More to Remove Than a Couch | No BS Junk Removal",
+       "Why Concrete Costs More to Remove Than a Couch | No BS",
        "Why a half-load of concrete costs more than a full load of couches",
        "Weight vs Volume",
        "Heavy material is priced by weight rather than volume because the landfill "
@@ -1165,7 +1177,7 @@ POSTS = [
        5, ["pricing", "renovation"]),
 
     BP("hot-tub-removal-what-to-expect",
-       "Hot Tub Removal in Winnipeg: What Actually Happens | No BS Junk Removal",
+       "Hot Tub Removal in Winnipeg: What Actually Happens | No BS",
        "Hot tub removal: what actually happens on the day",
        "Hot Tub Day",
        "A step-by-step account of how a hot tub gets drained, disconnected, cut down "
@@ -1176,7 +1188,7 @@ POSTS = [
        6, ["how-it-works"]),
 
     BP("estate-cleanout-checklist-winnipeg",
-       "Estate Cleanout in Winnipeg: A Timeline That Works | No BS Junk Removal",
+       "Estate Cleanout in Winnipeg: A Timeline That Works | No BS",
        "Clearing a parent's house: a timeline that actually works",
        "Estate Cleanouts",
        "A practical, unhurried order of operations for an estate cleanout in Winnipeg — "
@@ -1187,7 +1199,7 @@ POSTS = [
        9, ["estate", "how-it-works"]),
 
     BP("what-happens-to-your-junk-winnipeg",
-       "Where Your Junk Actually Goes After We Load It | No BS Junk Removal",
+       "Where Your Junk Actually Goes After We Load It | No BS",
        "Where your junk actually goes after we drive away",
        "Where It Goes",
        "Every hauler in Winnipeg says they recycle. Here is what that means at our "
@@ -1198,7 +1210,7 @@ POSTS = [
        6, ["recycling"]),
 
     BP("winter-junk-removal-winnipeg",
-       "Winter Junk Removal in Winnipeg: What Changes | No BS Junk Removal",
+       "Winter Junk Removal in Winnipeg: What Changes | No BS",
        "What changes when you haul junk at &minus;30",
        "Winter Hauling",
        "Frozen piles, ice-locked sheds and snow-buried yards change how junk removal "
@@ -1209,11 +1221,11 @@ POSTS = [
        6, ["winter"]),
 
     BP("prepare-for-junk-removal-day",
-       "How to Prep for Junk Removal Day and Pay Less | No BS Junk Removal",
+       "How to Prep for Junk Removal Day and Pay Less | No BS",
        "Ten minutes of prep that can cut your bill",
        "Prep Day",
-       "Simple things you can do before the trailer arrives that genuinely reduce what "
-       "a Winnipeg junk removal job costs — and the ones that make no difference at all.",
+       "Simple things you can do before the trailer arrives that reduce what a Winnipeg "
+       "junk removal job costs — and the ones that make no difference at all.",
        "2026-04-28",
        "You are paying for space and for time. Here is what actually moves the needle "
        "on both, and which bits of helpful prep are a waste of your Saturday.",
@@ -1267,18 +1279,25 @@ POST_CARD = """
                   <time datetime="{DATE}">{DATE_PRETTY}</time>
                   <span aria-hidden="true">&middot;</span> {READ} min read
                 </p>
-                <h3><a href="{BASE}blog/{SLUG}.html">{H1}</a></h3>
+                <{LEVEL}><a href="{BASE}blog/{SLUG}.html">{H1}</a></{LEVEL}>
                 <p>{EXCERPT}</p>
                 <span class="post-card-more" aria-hidden="true">Read it &rarr;</span>
               </article>
             </div>"""
 
 
-def render_post_card(post):
+def render_post_card(post, level="h3"):
+    """One post card. `level` is the heading level its title takes.
+
+    The same card appears in two places at different depths: on the blog index
+    the cards ARE the page content, so they sit directly under the h1 and must
+    be h2. In the "More from the blog" strip at the foot of a post they sit
+    under an h2, so there they are h3. One template, correct outline in both.
+    """
     return subst(POST_CARD, {
         "DATE": post["date"], "DATE_PRETTY": pretty_date(post["date"]),
         "READ": post["read_min"], "SLUG": post["slug"],
-        "H1": post["h1"], "EXCERPT": post["excerpt"],
+        "H1": post["h1"], "EXCERPT": post["excerpt"], "LEVEL": level,
     })
 
 
@@ -1332,7 +1351,7 @@ POST_BODY = """      <div class="page-header">
       <section class="section-space bg-tint">
         <div class="container">
           <div class="section-title text-center">
-            <h3>Keep reading</h3>
+            <p class="eyebrow">Keep reading</p>
             <h2>More from the blog</h2>
           </div>
           <div class="row g-4">{RELATED}
@@ -1381,7 +1400,7 @@ BLOG_INDEX_BODY = """      <div class="page-header">
 
 def render_blog_index(_base=None):
     return subst(BLOG_INDEX_BODY, {
-        "CARDS": "".join(render_post_card(p) for p in POSTS),
+        "CARDS": "".join(render_post_card(p, "h2") for p in POSTS),
     })
 
 
@@ -1407,8 +1426,7 @@ PAGES.append(P(
     "blog/index",
     "Junk Removal Advice for Winnipeg | No BS Junk Removal Blog",
     "Straight answers on junk removal in Winnipeg: what it costs, how heavy material "
-    "is priced, dumpster rental versus a crew, estate cleanouts, winter hauling and "
-    "where your junk actually ends up.",
+    "is priced, bin rental versus a crew, estate cleanouts and winter hauling.",
     crumbs=[("Blog", "/blog")],
     base="../",
     priority="0.80",
@@ -1477,6 +1495,28 @@ def subst(text, mapping):
     return text
 
 
+def strip_html_ext(text):
+    """Rewrite internal .html hrefs to the canonical extensionless form.
+
+    Every canonical, breadcrumb and sitemap entry is extensionless (clean_url),
+    while fragments and NAV are written with .html so they stay readable and
+    greppable as plain files. Without this rewrite every internal link costs a
+    301 through the .htaccess strip rule, on every click and every crawl hop.
+
+    Directory indexes need the care: "index.html" has to become "./" and not
+    "", which would point at the current page instead of the site root.
+    """
+    def sub(m):
+        path, suffix = m.group(1), m.group(2) or ""
+        if path.startswith(("http://", "https://", "mailto:", "tel:", "sms:")):
+            return m.group(0)
+        trimmed = (path[: -len("index.html")] if path.endswith("index.html")
+                   else path[: -len(".html")])
+        return f'href="{trimmed or "./"}{suffix}"'
+
+    return re.sub(r'href="([^"#?]+\.html)([#?][^"]*)?"', sub, text)
+
+
 def build_chrome(base, common):
     """Header and footer rendered for one directory depth.
 
@@ -1489,8 +1529,8 @@ def build_chrome(base, common):
     )
     scoped = dict(common, BASE=base)
     return (
-        subst(HEADER.replace("{NAV}", nav_html), scoped),
-        subst(FOOTER.replace("{FOOTER_LINKS}", footer_links), scoped),
+        strip_html_ext(subst(HEADER.replace("{NAV}", nav_html), scoped)),
+        strip_html_ext(subst(FOOTER.replace("{FOOTER_LINKS}", footer_links), scoped)),
     )
 
 
@@ -1514,7 +1554,7 @@ def main():
             if not frag.exists():
                 raise SystemExit(f"missing page fragment: {frag}")
             raw = frag.read_text(encoding="utf-8")
-        body = subst(raw, dict(common, BASE=base))
+        body = strip_html_ext(subst(raw, dict(common, BASE=base)))
 
         # Fill {FAQ_ACCORDION} from this page's FAQPage block, so the visible
         # questions and the structured data are always the same text.
@@ -1570,7 +1610,16 @@ def main():
             "1.00" if slug == "index" else (
                 "0.90" if slug in {"pricing", "commercial-junk-removal-winnipeg",
                                    "what-we-take", "quote"} else "0.80"))
-        lastmod = f"    <lastmod>{page['lastmod']}</lastmod>\n" if page["lastmod"] else ""
+        # Posts set lastmod explicitly. Everything else falls back to the mtime
+        # of its source fragment, so all 30 entries carry a date that is
+        # actually true without anyone having to remember to bump it.
+        stamp = page["lastmod"]
+        if not stamp:
+            frag = PAGES_DIR / f"{slug}.html"
+            if frag.exists():
+                stamp = datetime.fromtimestamp(
+                    frag.stat().st_mtime, timezone.utc).strftime("%Y-%m-%d")
+        lastmod = f"    <lastmod>{stamp}</lastmod>\n" if stamp else ""
         urls.append(
             f"  <url>\n    <loc>{loc}</loc>\n{lastmod}"
             f"    <changefreq>monthly</changefreq>\n"

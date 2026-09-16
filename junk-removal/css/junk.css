@@ -89,25 +89,37 @@ body{
    hauling site. Replaced with a short accent rule: same rhythm, no
    landscaping imagery, one less image request. Centred sections drop the rule
    entirely rather than leaving it floating to the left of the text. */
-.section-title h3{
+/* The eyebrow is a <p class="eyebrow">, not a heading. It used to be an <h3>
+   sitting above the <h2> it labels, which read as h1 -> h3 -> h2 to a screen
+   reader and to Google on every page. It is decoration, so it is a paragraph
+   now; margin and display are set explicitly because custom.css's heading
+   defaults no longer apply to it. */
+.section-title .eyebrow{
+	display: block;
+	margin: 0 0 12px;
 	color: var(--accent-color);
 	text-transform: uppercase;
 	letter-spacing: .12em;
 	font-size: 14px;
 	font-weight: 800;
 	padding-left: 42px;
+	position: relative;
 }
-.section-title h3::before{
-	background-image: none !important;
+.section-title .eyebrow::before{
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translateY(-50%);
 	background-color: var(--accent-color);
-	width: 30px !important;
-	height: 3px !important;
+	width: 30px;
+	height: 3px;
 	border-radius: 2px;
 }
-.bg-forest .section-title h3{ color: var(--white-color); }
-.bg-forest .section-title h3::before{ background-color: var(--white-color); }
-.section-title.text-center h3{ padding-left: 0; }
-.section-title.text-center h3::before{ display: none; }
+.bg-forest .section-title .eyebrow{ color: var(--white-color); }
+.bg-forest .section-title .eyebrow::before{ background-color: var(--white-color); }
+.section-title.text-center .eyebrow{ padding-left: 0; }
+.section-title.text-center .eyebrow::before{ display: none; }
 
 
 /************************************/
@@ -146,10 +158,20 @@ header.main-header .header-sticky{
 .main-menu ul ul{ background-color: var(--accent-color); }
 .contact-now-box .icon-box{ background-color: var(--accent-color); }
 .contact-now-box:hover .icon-box{ background-color: var(--white-color); }
-.contact-now-box-content h3{ font-size: 20px; font-weight: 800; }
+/* The header phone number. It used to be an <h3>, which sat above <main> and
+   so opened the document outline at h3 on every page, before the h1. It is a
+   paragraph now. custom.css only ever styled the h3, so these rules carry over
+   what the heading was giving it — size, weight and the white on dark green. */
+.contact-now-box-content .header-phone{
+	font-size: 20px;
+	font-weight: 800;
+	line-height: 1.2;
+	margin: 0;
+	color: var(--white-color);
+}
 /* The number is a tel: link, so without this it renders as default link blue. */
-.contact-now-box-content h3 a{ color: var(--white-color); text-decoration: none; }
-.contact-now-box-content h3 a:hover{ color: var(--secondary-color); }
+.contact-now-box-content .header-phone a{ color: var(--white-color); text-decoration: none; }
+.contact-now-box-content .header-phone a:hover{ color: var(--secondary-color); }
 
 
 /************************************/
@@ -660,7 +682,10 @@ header.main-header .header-sticky{
 .review-card blockquote{ margin: 0 0 20px; font-size: 17px; line-height: 1.7em; color: var(--text-color); }
 .review-card .reviewer{ display: flex; align-items: center; gap: 14px; }
 .review-card .reviewer img{ width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
-.review-card .reviewer h4{ font-size: 17px; margin: 0; }
+/* The reviewer name. An h4 here skipped a level under the section h2, so it
+   is an h3 — the card is a subsection of the reviews block, not of a heading
+   that does not exist. */
+.review-card .reviewer h3{ font-size: 17px; margin: 0; }
 .review-card .reviewer span{ font-size: 14px; color: var(--text-color); }
 
 /* Reviews carried over from the landscaping side are always visually
@@ -980,14 +1005,14 @@ textarea:focus-visible{
 	color: var(--text-color);
 	margin-bottom: 12px;
 }
-.post-card h3{
+.post-card :is(h2, h3){
 	font-size: 21px;
 	line-height: 1.35em;
 	margin-bottom: 12px;
 }
-.post-card h3 a{ color: var(--primary-color); }
-.post-card h3 a:hover,
-.post-card h3 a:focus-visible{ color: var(--accent-color); }
+.post-card :is(h2, h3) a{ color: var(--primary-color); }
+.post-card :is(h2, h3) a:hover,
+.post-card :is(h2, h3) a:focus-visible{ color: var(--accent-color); }
 .post-card p{
 	margin-bottom: 18px;
 	font-size: 16px;
