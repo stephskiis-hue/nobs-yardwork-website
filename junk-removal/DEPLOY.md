@@ -30,7 +30,7 @@ root is not the place for it:
 | `README.md`, `DEPLOY.md`, `MIGRATE.md` | Documentation. |
 
 Everything else goes up **as-is, keeping the folder structure** — in particular
-`blog/`, `css/`, `js/`, `images/` and `webfonts/` must stay as folders. The site
+`blog/`, `css/`, `js/` and `images/` must stay as folders. The site
 uses relative paths throughout, which is deliberate: it means the whole thing
 works unchanged whether it sits at a domain root or in a subfolder.
 

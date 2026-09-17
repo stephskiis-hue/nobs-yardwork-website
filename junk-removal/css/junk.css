@@ -2,159 +2,216 @@
   junk.css — No BS Junk Removal
   ==========================================================================
 
-  Loaded AFTER css/custom.css. custom.css is kept byte-identical to the copy
-  on no-bs-yardwork.com so it can be re-synced from the parent site later —
-  every junk-removal-specific rule lives in this file and nowhere else.
+  The ONLY stylesheet the site loads. It used to sit on top of Bootstrap
+  (228 KB), Font Awesome (96 KB + webfonts), SlickNav and the lawn site's
+  120 KB template CSS; this file replaces all four. Nothing here depends on
+  any of them.
 
-  COLOUR POLICY: this file defines no colours of its own. Every value comes
-  from the tokens custom.css already declares, so the two sites stay in step
-  and re-syncing the parent's palette updates this one for free:
+  Same family as no-bs-yardwork.com — forest green, brand green, honeydew
+  bands, Plus Jakarta Sans, heavy uppercase headings, green pill buttons —
+  without being a copy of it.
 
-      --primary-color    #0B3D2C   dark green — headers, footers, dark bands
-      --accent-color     #2A7D2E   brand green — buttons, icons, highlights
-      --secondary-color  #F0FFF0   honeydew — alternating section bands
-      --divider-color    #E7ECEA   card borders, table rules
-      --text-color       #555555   body copy
-      --white-color      #FFFFFF   page ground
-
-  White page, green furniture. If you need a new colour, add it to the list
-  above as a token first — do not hard-code a hex in a component rule.
+  COLOUR POLICY: every colour is a token below. Add a token before adding a
+  hex to a component rule. Contrast ratios are measured, not guessed.
 
   Contents
-    01. Tokens & section utilities
-    02. Header / nav
-    03. Buttons
-    04. Page header banner & hero
-    05. Trust bar
-    06. Reason cards
-    07. What We Take grid
-    08. Pricing table
-    09. Callout boxes
-    10. Before / after pairs
-    11. (removed — placeholders no longer used)
-    12. Process steps
-    13. Testimonials & where-it-goes table
-    14. Forms
-    15. Mobile call bar
-    16. Reveal animation
-    17. Responsive
-    18. Accessibility
-    19. Blog
-    20. Service area
-    21. Footer baseline
-    22. Page photos
-    23. JotForm embed
+    01. Tokens
+    02. Base & typography
+    03. Layout: container, grid, utilities
+    04. Header & nav
+    05. Buttons
+    06. Page header & breadcrumb
+    07. Homepage hero & trust bar
+    08. Section titles & bands
+    09. Cards: reason, quote, review, post
+    10. What We Take: grid, list, category items, A-Z, can't take
+    11. Pricing & tables
+    12. Callouts, steps, lists, area pills
+    13. FAQ
+    14. Photos & before/after
+    15. Blog article
+    16. Forms & JotForm
+    17. Footer
+    18. Mobile call bar
+    19. Motion
+    20. Accessibility & staging banner
 ==========================================================================*/
 
 
-/************************************/
-/***  01. Tokens & section utils  ***/
-/************************************/
+/*------------------------------ 01. Tokens ------------------------------*/
 
 :root{
-	--jr-radius: 14px;
-	/* The three colours this file adds, each for a job the brand palette in
-	   custom.css cannot do legibly. The contrast ratios are measured.
+	/* Brand (shared with the lawn site) */
+	--primary-color:   #0B3D2C;  /* forest — header, footer, dark bands        */
+	--primary-deep:    #072A1E;  /* forest, one step down — hovers, hero base  */
+	--accent-color:    #2A7D2E;  /* brand green — buttons, icons. 5.16:1 on white */
+	--accent-hover:    #236A27;  /* darker brand green for hover, 6.6:1 on white */
+	--accent-on-dark:  #6FCF7C;  /* green TEXT on forest — 6.34:1               */
+	--secondary-color: #F0F7EF;  /* honeydew band                               */
+	--white-color:     #FFFFFF;
 
-	   --accent-on-dark: green TEXT on the dark primary background. The brand
-	   accent #2A7D2E is fine on white (5.16:1) but measures 2.37:1 on
-	   #0B3D2C, which fails WCAG even for large text. This is the same hue
-	   lifted: 6.34:1 on #0B3D2C, AAA for large text. On light grounds keep
-	   --accent-color, where it is the one that passes. */
-	--accent-on-dark: #6FCF7C;
-	/* "We can't take this", on the A-Z and the can't-take page.
-	   The red is 7.53:1 on white and 6.59:1 on its tint. */
-	--warning-color: #9B2C2C;
-	--warning-tint: #FDECEC;
+	/* Neutrals */
+	--ink:             #0B3D2C;  /* headings                                    */
+	--text-color:      #46514C;  /* body copy — 8.3:1 on white, 7.7:1 on band   */
+	--muted:           #5F6B66;  /* captions, meta — 5.6:1 on white             */
+	--divider-color:   #DFE8E3;
+	--on-dark-muted:   rgba(255,255,255,.78);
+	--dark-divider:    rgba(255,255,255,.16);
+
+	/* Signals */
+	--highlight:       #F5C542;  /* safety yellow — focus ring, price marker    */
+	--warning-color:   #9B2C2C;  /* "we can't take this" — 7.53:1 on white      */
+	--warning-tint:    #FDECEC;
+	--error-color:     #C24141;
+
+	/* Shape & type */
+	--radius:    16px;
+	--radius-sm: 10px;
+	--shadow-sm: 0 1px 2px rgba(7,42,30,.06), 0 2px 8px rgba(7,42,30,.05);
+	--shadow-md: 0 2px 4px rgba(7,42,30,.06), 0 12px 32px rgba(7,42,30,.10);
+	--font: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+	--header-h: 76px;
+}
+
+
+/*------------------------- 02. Base & typography ------------------------*/
+
+*,
+*::before,
+*::after{ box-sizing: border-box; }
+
+html{
+	-webkit-text-size-adjust: 100%;
+	scroll-padding-top: calc(var(--header-h) + 16px);
 }
 
 body{
-	font-size: 17px;   /* blueprint: 17-18px minimum, read on a phone */
+	margin: 0;
+	font-family: var(--font);
+	font-size: 17px;
+	line-height: 1.65;
+	color: var(--text-color);
 	background-color: var(--white-color);
+	overflow-x: clip;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
-.section-space{ padding: 90px 0; }
-.section-space-sm{ padding: 60px 0; }
-
-/* Alternating bands. .bg-tint is the honeydew the parent uses between white
-   sections; .bg-forest is the parent's dark green, same value as the footer. */
-.bg-tint{ background-color: var(--secondary-color); }
-/* Named .bg-forest, not .bg-dark: Bootstrap already defines .bg-dark with
-   !important (#212529) and would win, painting these bands charcoal. */
-.bg-forest{ background-color: var(--primary-color); }
-.bg-forest h2,
-.bg-forest h3,
-.bg-forest h4,
-.bg-forest p,
-.bg-forest li,
-.bg-forest strong{ color: var(--white-color); }
-.bg-forest a{ color: var(--white-color); }
-
-/* Kept so older markup using .bg-bone still lands on the tint band. */
-.bg-bone{ background-color: var(--secondary-color); }
-
-.section-title h2{ font-size: 44px; font-weight: 800; text-transform: uppercase; }
-.lead-in{ font-size: 19px; max-width: 760px; }
-
-/* The eyebrow above each section heading. custom.css hangs the lawn site's
-   leaf icon (icon-sub-heading.svg) off ::before — right there, off-brand on a
-   hauling site. Replaced with a short accent rule: same rhythm, no
-   landscaping imagery, one less image request. Centred sections drop the rule
-   entirely rather than leaving it floating to the left of the text. */
-/* The eyebrow is a <p class="eyebrow">, not a heading. It used to be an <h3>
-   sitting above the <h2> it labels, which read as h1 -> h3 -> h2 to a screen
-   reader and to Google on every page. It is decoration, so it is a paragraph
-   now; margin and display are set explicitly because custom.css's heading
-   defaults no longer apply to it. */
-.section-title .eyebrow{
-	display: block;
-	margin: 0 0 12px;
-	color: var(--accent-color);
-	text-transform: uppercase;
-	letter-spacing: .12em;
-	font-size: 14px;
+h1, h2, h3, h4, h5, h6{
+	margin: 0 0 .5em;
 	font-weight: 800;
-	padding-left: 42px;
-	position: relative;
+	line-height: 1.15;
+	letter-spacing: -.01em;
+	color: var(--ink);
 }
-.section-title .eyebrow::before{
-	content: "";
-	position: absolute;
-	left: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: var(--accent-color);
-	width: 30px;
-	height: 3px;
-	border-radius: 2px;
+h1{ font-size: clamp(2rem, 1.2rem + 3.2vw, 3.25rem); }
+h2{ font-size: clamp(1.7rem, 1.1rem + 2.3vw, 2.75rem); }
+h3{ font-size: 1.25rem; }
+
+p{ margin: 0 0 1.2em; }
+ul, ol{ margin: 0 0 1.2em; }
+figure{ margin: 0; }
+img, svg, video{ max-width: 100%; }
+img{ height: auto; }
+table{ border-collapse: collapse; }
+blockquote{ margin: 0; }
+
+a{
+	color: var(--accent-color);
+	text-decoration: none;
+	transition: color .2s ease;
 }
-.bg-forest .section-title .eyebrow{ color: var(--white-color); }
-.bg-forest .section-title .eyebrow::before{ background-color: var(--white-color); }
-.section-title.text-center .eyebrow{ padding-left: 0; }
-.section-title.text-center .eyebrow::before{ display: none; }
+a:hover{ color: var(--accent-hover); }
+
+strong{ font-weight: 800; }
+
+.lead-in{ font-size: 1.15rem; max-width: 760px; }
 
 
-/************************************/
-/***      02. Header / nav        ***/
-/************************************/
+/*--------------- 03. Layout: container, grid, utilities -----------------*/
 
-/* The parent leaves the header transparent so it floats over a dark hero,
-   turning dark green only once scrolled. This site runs that dark green
-   permanently: it stays legible with an empty hero photo slot and on every
-   inner page, and `position: sticky` keeps the phone number on screen with
-   no JavaScript involved. Same colour as the parent's scrolled header and
-   its footer, so the family resemblance is exact. */
-header.main-header .header-sticky{
+.container{
+	width: 100%;
+	max-width: 1240px;
+	margin-inline: auto;
+	padding-inline: 20px;
+}
+
+/* A deliberately small grid: only the column classes the pages use. Mobile
+   first — every column is full width until its breakpoint. */
+.row{
+	--gx: 28px;
+	display: flex;
+	flex-wrap: wrap;
+	margin-inline: calc(var(--gx) / -2);
+}
+.row > *{
+	width: 100%;
+	max-width: 100%;
+	padding-inline: calc(var(--gx) / 2);
+}
+.row.g-4{ row-gap: 24px; }
+
+.col-6{ width: 50%; }
+
+@media (min-width: 768px){
+	.col-md-4{ width: 33.3333%; }
+	.col-md-6{ width: 50%; }
+	.col-md-12{ width: 100%; }
+}
+@media (min-width: 992px){
+	.col-lg-3{ width: 25%; }
+	.col-lg-4{ width: 33.3333%; }
+	.col-lg-5{ width: 41.6667%; }
+	.col-lg-6{ width: 50%; }
+	.col-lg-7{ width: 58.3333%; }
+	.col-lg-8{ width: 66.6667%; }
+	.col-lg-9{ width: 75%; }
+	.col-lg-10{ width: 83.3333%; }
+	.col-lg-12{ width: 100%; }
+}
+
+.align-items-center{ align-items: center; }
+.justify-content-center{ justify-content: center; }
+.d-inline-flex{ display: inline-flex; }
+.text-center{ text-align: center; }
+.text-start{ text-align: left; }
+.mb-4{ margin-bottom: 24px; }
+
+.section-space{ padding-block: clamp(56px, 7vw, 96px); }
+.section-space-sm{ padding-block: clamp(40px, 5vw, 64px); }
+
+.table-scroll{ overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+
+/*--------------------------- 04. Header & nav ---------------------------*/
+
+.site-header{
 	position: sticky;
 	top: 0;
+	z-index: 900;
 	background-color: var(--primary-color);
 	border-bottom: 3px solid var(--accent-color);
-	backdrop-filter: none;
+	transition: box-shadow .25s ease;
+}
+.site-header.is-scrolled{ box-shadow: 0 6px 24px rgba(0,0,0,.22); }
+
+.header-bar{
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	min-height: var(--header-h);
 }
 
-.brand-lockup{ display: flex; align-items: center; gap: 12px; }
-.brand-lockup .division-tag{
-	font-size: 12px;
+.brand-lockup{
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-shrink: 0;
+}
+.brand-lockup img{ height: 46px; width: auto; display: block; }
+.division-tag{
+	font-size: 11px;
 	font-weight: 800;
 	letter-spacing: .14em;
 	text-transform: uppercase;
@@ -166,298 +223,617 @@ header.main-header .header-sticky{
 	white-space: nowrap;
 }
 
-.main-menu ul li a:hover{ color: var(--secondary-color); }
-.main-menu ul ul{ background-color: var(--accent-color); }
-.contact-now-box .icon-box{ background-color: var(--accent-color); }
-.contact-now-box:hover .icon-box{ background-color: var(--white-color); }
-/* The header phone number. It used to be an <h3>, which sat above <main> and
-   so opened the document outline at h3 on every page, before the h1. It is a
-   paragraph now. custom.css only ever styled the h3, so these rules carry over
-   what the heading was giving it — size, weight and the white on dark green. */
-.contact-now-box-content .header-phone{
-	font-size: 20px;
-	font-weight: 800;
-	line-height: 1.2;
+.main-menu{ margin-left: auto; }
+.nav-list,
+.sub-menu{
+	list-style: none;
 	margin: 0;
+	padding: 0;
+}
+.nav-list > li{ position: relative; }
+.nav-list a{
+	display: block;
 	color: var(--white-color);
+	font-weight: 600;
+	font-size: 15px;
+	white-space: nowrap;
 }
-/* The number is a tel: link, so without this it renders as default link blue. */
-.contact-now-box-content .header-phone a{ color: var(--white-color); text-decoration: none; }
-.contact-now-box-content .header-phone a:hover{ color: var(--secondary-color); }
+.nav-list a:hover{ color: var(--accent-on-dark); }
+
+/* The last nav item is "Get a Quote" — the one action every page wants. */
+.nav-list > li:last-child > a{
+	background-color: var(--accent-color);
+	border-radius: 100px;
+}
+.nav-list > li:last-child > a:hover{
+	background-color: var(--white-color);
+	color: var(--primary-color);
+}
+
+.header-call{
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: var(--white-color);
+	flex-shrink: 0;
+}
+.header-call:hover{ color: var(--white-color); }
+.hc-icon{
+	width: 44px;
+	height: 44px;
+	border-radius: 12px;
+	background-color: var(--accent-color);
+	display: grid;
+	place-items: center;
+	transition: background-color .2s ease, color .2s ease;
+}
+.hc-icon svg{ width: 22px; height: 22px; }
+.header-call:hover .hc-icon{ background-color: var(--white-color); color: var(--primary-color); }
+.hc-text{ display: flex; flex-direction: column; line-height: 1.2; }
+.hc-label{ font-size: 13px; color: var(--on-dark-muted); }
+.header-phone{ font-size: 19px; font-weight: 800; }
+
+.nav-toggle{
+	display: none;
+	width: 46px;
+	height: 46px;
+	margin-left: 4px;
+	border: 0;
+	border-radius: 12px;
+	background-color: var(--accent-color);
+	color: var(--white-color);
+	cursor: pointer;
+	place-items: center;
+}
+.nav-toggle-bars,
+.nav-toggle-bars::before,
+.nav-toggle-bars::after{
+	display: block;
+	width: 20px;
+	height: 2px;
+	border-radius: 2px;
+	background-color: currentColor;
+	transition: transform .25s ease, background-color .25s ease;
+}
+.nav-toggle-bars{ position: relative; }
+.nav-toggle-bars::before,
+.nav-toggle-bars::after{ content: ""; position: absolute; left: 0; }
+.nav-toggle-bars::before{ top: -6px; }
+.nav-toggle-bars::after{ top: 6px; }
+.nav-open .nav-toggle-bars{ background-color: transparent; }
+.nav-open .nav-toggle-bars::before{ transform: translateY(6px) rotate(45deg); }
+.nav-open .nav-toggle-bars::after{ transform: translateY(-6px) rotate(-45deg); }
+
+/* ---- Desktop: inline nav with dropdowns ---- */
+@media (min-width: 1100px){
+	.nav-list{ display: flex; align-items: center; gap: 2px; }
+	.nav-list > li > a{ padding: 10px 12px; border-radius: 8px; }
+	.nav-list > li:last-child > a{ padding: 10px 18px; margin-left: 6px; }
+
+	.has-sub > a::after{
+		content: "";
+		display: inline-block;
+		width: 7px;
+		height: 7px;
+		margin: 0 0 3px 8px;
+		border-right: 2px solid currentColor;
+		border-bottom: 2px solid currentColor;
+		transform: rotate(45deg);
+	}
+	.sub-menu{
+		position: absolute;
+		top: 100%;
+		left: 0;
+		min-width: 250px;
+		padding: 8px;
+		background-color: var(--white-color);
+		border-radius: 14px;
+		box-shadow: var(--shadow-md);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(8px);
+		transition: opacity .2s ease, transform .2s ease, visibility .2s;
+	}
+	/* Invisible bridge across the gap so the menu doesn't close mid-reach. */
+	.sub-menu::before{ content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
+	.has-sub:hover > .sub-menu,
+	.has-sub:focus-within > .sub-menu{
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(4px);
+	}
+	.sub-menu a{
+		color: var(--ink);
+		padding: 9px 14px;
+		border-radius: 8px;
+		font-size: 15px;
+	}
+	.sub-menu a:hover{ background-color: var(--secondary-color); color: var(--accent-color); }
+}
+@media (min-width: 1100px) and (max-width: 1299px){
+	.hc-label{ display: none; }
+	.nav-list > li > a{ padding: 10px 9px; }
+}
+
+/* ---- Below 1100px: slide-down drawer ---- */
+@media (max-width: 1099px){
+	.nav-toggle{ display: grid; }
+	.header-call{ margin-left: auto; }
+	.hc-text{ display: none; }
+
+	.main-menu{
+		position: fixed;
+		top: var(--header-h);
+		left: 0;
+		right: 0;
+		max-height: calc(100vh - var(--header-h));
+		max-height: calc(100dvh - var(--header-h));
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		margin: 0;
+		padding: 12px 20px 28px;
+		background-color: var(--primary-color);
+		border-top: 1px solid var(--dark-divider);
+		box-shadow: 0 18px 30px rgba(0,0,0,.25);
+		visibility: hidden;
+		opacity: 0;
+		transform: translateY(-8px);
+		transition: opacity .2s ease, transform .2s ease, visibility .2s;
+	}
+	.nav-open .main-menu{ visibility: visible; opacity: 1; transform: none; }
+
+	.nav-list > li{ border-bottom: 1px solid var(--dark-divider); }
+	.nav-list > li > a{ padding: 14px 4px; font-size: 17px; font-weight: 700; }
+	.nav-list > li:last-child{ border-bottom: 0; padding-top: 16px; }
+	.nav-list > li:last-child > a{ text-align: center; padding: 14px; }
+	.sub-menu{ padding: 0 0 12px 14px; border-left: 2px solid var(--accent-color); margin: 0 0 4px 4px; }
+	.sub-menu a{ padding: 8px 4px; font-size: 15px; color: var(--on-dark-muted); font-weight: 600; }
+}
+@media (max-width: 575px){
+	:root{ --header-h: 68px; }
+	.brand-lockup img{ height: 38px; }
+	.division-tag{ font-size: 10px; padding: 4px 7px; }
+	.header-bar{ gap: 10px; }
+	/* The fixed call bar at the bottom carries the phone on phones. */
+	.header-call{ display: none; }
+	.nav-toggle{ margin-left: auto; }
+}
 
 
-/************************************/
-/***        03. Buttons           ***/
-/************************************/
+/*----------------------------- 05. Buttons ------------------------------*/
 
-/* .btn-default is deliberately NOT restyled — the parent's green pill with
-   the circular arrow badge is the brand's button and it carries over intact.
-   Only the typographic weight is nudged, and a ghost variant added for the
-   secondary action sitting beside it. */
+/* The brand's green pill with a round arrow badge. On the lawn site the badge
+   hangs half outside the pill, which collides with the screen edge on phones;
+   here it sits inside, so the button is the same shape at every width. */
 .btn-default{
+	--btn-bg: var(--accent-color);
+	--btn-fg: var(--white-color);
+	--badge-bg: var(--white-color);
+	--badge-fg: var(--accent-color);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 14px;
+	min-height: 52px;
+	padding: 6px 6px 6px 26px;
+	font-family: inherit;
+	font-size: 15px;
 	font-weight: 800;
+	letter-spacing: .03em;
+	line-height: 1.2;
 	text-transform: uppercase;
-	letter-spacing: .02em;
+	text-align: center;
+	color: var(--btn-fg);
+	background-color: var(--btn-bg);
+	border: 2px solid transparent;
+	border-radius: 100px;
+	cursor: pointer;
+	transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
 }
+.btn-default::after{
+	content: "";
+	flex-shrink: 0;
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	background-color: var(--badge-bg);
+	/* Arrow drawn with a gradient mask so it takes the badge colour. */
+	background-image:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A7D2E' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 20px;
+	transition: transform .2s ease;
+}
+.btn-default:hover{
+	--btn-bg: var(--accent-hover);
+	color: var(--btn-fg);
+	transform: translateY(-1px);
+	box-shadow: 0 8px 20px rgba(42,125,46,.28);
+}
+.btn-default:hover::after{ transform: translateX(3px); }
 
-/* Outlined secondary — "call us" next to the primary "get a quote". */
+/* Outlined secondary: no badge, so it pads evenly. */
 .btn-default.btn-ghost{
-	background: transparent;
-	color: var(--white-color) !important;
-	border: 2px solid var(--white-color);
-	padding: 12px 30px;
+	--btn-bg: transparent;
+	padding: 6px 26px;
+	border-color: rgba(255,255,255,.85);
 }
-.btn-default.btn-ghost::before{ display: none; }
+.btn-default.btn-ghost::after{ display: none; }
 .btn-default.btn-ghost:hover{
-	background: var(--white-color);
-	color: var(--primary-color) !important;
+	--btn-bg: var(--white-color);
+	--btn-fg: var(--primary-color);
+	box-shadow: none;
 }
-/* Same button, on a white or honeydew band instead of a dark one. */
 .btn-default.btn-ghost.on-light{
-	color: var(--primary-color) !important;
+	--btn-fg: var(--primary-color);
 	border-color: var(--primary-color);
 }
 .btn-default.btn-ghost.on-light:hover{
-	background: var(--primary-color);
-	color: var(--white-color) !important;
+	--btn-bg: var(--primary-color);
+	--btn-fg: var(--white-color);
 }
 
-.btn-row{ display: flex; flex-wrap: wrap; gap: 14px 0; align-items: center; }
+.btn-row{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px 14px;
+}
+.btn-row.justify-content-center{ justify-content: center; }
+
+@media (max-width: 575px){
+	.btn-row{ flex-direction: column; align-items: stretch; }
+	.btn-row .btn-default{ width: 100%; }
+	.btn-default{ padding-left: 22px; }
+}
 
 
-/************************************/
-/***  04. Page header & hero      ***/
-/************************************/
+/*-------------------- 06. Page header & breadcrumb ----------------------*/
 
-/* The parent pulls the banner up under a transparent header
-   (margin-top:-100px). With a solid sticky header that would clip the H1,
-   so the offset is removed.
-
-   The band is LIGHT on purpose. The parent's banner is dark green and its
-   `background` shorthand also pulls in page-header-bg.jpg. Inherited as-is,
-   the dark green nav sat directly on a dark green banner with zero gap
-   between them — 377px of near-identical colour that read as two stacked
-   headers, which is exactly what it looked like. The grass photo could not
-   rescue it either: it measures 35/255 mean luminance under a 78% overlay,
-   so it was invisible, and grass is the wrong subject for a hauling site.
-
-   Honeydew here gives three unmistakable layers: dark green nav, light band,
-   white content. `background-image: none` is required — without it the
-   shorthand from custom.css keeps loading the lawn photo. */
 .page-header{
-	margin-top: 0;
-	padding: 54px 0 46px;
+	position: relative;
+	padding: clamp(40px, 6vw, 72px) 0 clamp(34px, 5vw, 56px);
 	background-color: var(--secondary-color);
-	background-image: none;
-	border-bottom: 4px solid var(--accent-color);
+	border-bottom: 1px solid var(--divider-color);
+	overflow: hidden;
 }
-/* custom.css puts a tinted scrim here for the photo. No photo, no scrim. */
-.page-header::before{ display: none; }
+/* A faint diagonal hazard stripe in the corner — hauling, not landscaping. */
+.page-header::after{
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: min(38vw, 420px);
+	height: 100%;
+	background: repeating-linear-gradient(-45deg,
+		rgba(42,125,46,.07) 0 16px, transparent 16px 32px);
+	-webkit-mask-image: linear-gradient(to left, #000, transparent);
+	mask-image: linear-gradient(to left, #000, transparent);
+	pointer-events: none;
+}
+.page-header .container{ position: relative; z-index: 1; }
 .page-header-box h1{
-	font-size: 46px;
-	font-weight: 800;
+	margin: 0 0 12px;
 	text-transform: uppercase;
-	color: var(--primary-color);
-	margin-bottom: 12px;
+	max-width: 900px;
 }
-.page-header-box .breadcrumb{ margin-bottom: 0; }
 
-/* The breadcrumb was built for a dark banner, so custom.css colours it white
-   at .page-header-box ol li.breadcrumb-item (0,2,2) and the separator to match.
-   On the light band that is white-on-honeydew — measured 1.04:1, invisible.
-   These selectors mirror that specificity exactly so the colours actually
-   apply; a plainer `.page-header-box .breadcrumb li` (0,2,1) silently loses. */
-.page-header-box ol li.breadcrumb-item{ color: var(--text-color); }
-.page-header-box ol li.breadcrumb-item.active{ color: var(--text-color); }
-.page-header-box ol li.breadcrumb-item a{ color: var(--accent-color); }
-.page-header-box ol li.breadcrumb-item a:hover{ color: var(--primary-color); }
-.page-header-box ol .breadcrumb-item + .breadcrumb-item::before{
+.breadcrumb{
+	display: flex;
+	flex-wrap: wrap;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--muted);
+}
+.breadcrumb-item + .breadcrumb-item::before{
 	content: "/";
 	padding: 0 10px;
-	color: var(--text-color);
+	color: var(--muted);
 }
+.breadcrumb-item a{ color: var(--accent-color); }
+.breadcrumb-item a:hover{ color: var(--primary-color); }
 
 
-/* ---- Homepage hero ----
-   Backed by a real photo of their own skid steer rather than flat colour —
-   the hero was 683px of empty green otherwise. The source is dark (63/255
-   mean luminance), which suits a hero: the headline stays legible through
-   the scrim without fighting the image.
+/*----------------------- 07. Homepage hero & trust ----------------------*/
 
-   The gradient is heavy on the left, where the text sits, and thins toward
-   the right so the machine still reads. It also hides the fact that the
-   source is only 1024px wide when stretched across a large display.
-
-   Swap in the real crew-and-trailer shot by changing this one url() to
-   images/junk-hero.webp — see README. */
 .junk-hero{
-	background-color: var(--primary-color);
-	background-image: url('../images/skid_steer.webp');
-	background-size: cover;
-	background-position: center right;
 	position: relative;
-	padding: 110px 0 90px;
-}
-.junk-hero::before{
-	content: '';
-	position: absolute;
-	inset: 0;
-	background: linear-gradient(100deg,
-		rgba(11,61,44,.97) 0%,
-		rgba(11,61,44,.93) 42%,
-		rgba(11,61,44,.72) 100%);
-}
-.junk-hero .container{ position: relative; z-index: 2; }
-.junk-hero h1{
-	font-size: 66px;
-	font-weight: 800;
-	line-height: 1.05em;
+	padding: clamp(56px, 7vw, 96px) 0 clamp(56px, 7vw, 96px);
+	background-color: var(--primary-color);
+	background-image:
+		radial-gradient(ellipse 60% 80% at 85% 40%, rgba(42,125,46,.45), transparent 70%),
+		linear-gradient(160deg, var(--primary-color) 0%, var(--primary-deep) 100%);
 	color: var(--white-color);
+	overflow: hidden;
+	isolation: isolate;
+}
+/* Hazard-stripe texture along the bottom edge — hauling, not landscaping. */
+.junk-hero::before{
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 10px;
+	z-index: -1;
+	background: repeating-linear-gradient(-45deg, var(--highlight) 0 14px, var(--primary-deep) 14px 28px);
+	opacity: .9;
+}
+
+.hero-photo{
+	position: relative;
+	margin: 0 0 0 auto;
+	max-width: 460px;
+}
+.hero-photo img{
+	display: block;
+	width: 100%;
+	aspect-ratio: 4 / 5;
+	object-fit: cover;
+	border-radius: 24px;
+	box-shadow: 0 30px 60px rgba(0,0,0,.35);
+}
+.hero-badge{
+	position: absolute;
+	left: -28px;
+	bottom: 36px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 20px 14px 16px;
+	background-color: var(--white-color);
+	border-radius: 18px;
+	box-shadow: 0 16px 36px rgba(0,0,0,.28);
+	color: var(--ink);
+}
+.hb-num{ font-size: 2rem; font-weight: 800; line-height: 1; color: var(--accent-color); }
+.hb-lab{ font-size: 13px; font-weight: 700; line-height: 1.25; text-transform: uppercase; letter-spacing: .04em; }
+@media (max-width: 1199px){ .hero-badge{ left: 16px; bottom: 16px; } }
+@media (max-width: 991px){ .hero-photo{ display: none; } }
+
+.junk-hero h1{
+	font-size: clamp(2.4rem, 1.2rem + 4.4vw, 4.2rem);
+	line-height: 1;
 	text-transform: uppercase;
+	color: var(--white-color);
 	margin-bottom: 22px;
 }
-/* "No runaround." — the most prominent words on the site. 2.37:1 with
-   --accent-color on this scrim; 6.34:1 with --accent-on-dark. */
 .junk-hero h1 .accent{ color: var(--accent-on-dark); }
-.junk-hero .hero-sub{
-	font-size: 20px;
+.hero-sub{
+	font-size: clamp(1.05rem, .95rem + .5vw, 1.3rem);
 	color: rgba(255,255,255,.9);
 	max-width: 640px;
+	margin-bottom: 16px;
 }
 /* The price anchor. No competitor in this market puts a number above the
-   fold — most publish none at all — so it is set in full white rather than
-   the dimmed rgba the sub-head uses, because it is the differentiator. */
-.junk-hero .hero-price{
-	margin: 18px 0 0;
-	font-size: 19px;
-	line-height: 1.5;
+   fold, so it gets full white and a yellow marker under the figures. */
+.hero-price{
+	font-size: 1.1rem;
 	color: var(--white-color);
 	max-width: 640px;
+	margin: 0;
 }
-.junk-hero .hero-price strong{ color: var(--white-color); font-weight: 800; }
+.hero-price strong{
+	color: var(--white-color);
+	background-image: linear-gradient(transparent 68%, rgba(245,197,66,.55) 68%);
+	padding: 0 2px;
+}
+.junk-hero .trust-bar{ margin: 26px 0 30px; }
 .micro-trust{
-	color: rgba(255,255,255,.72);
+	color: rgba(255,255,255,.75);
 	font-size: 15px;
 	margin: 22px 0 0;
 }
 
-
-/************************************/
-/***       05. Trust bar          ***/
-/************************************/
-
 .trust-bar{
 	background-color: var(--white-color);
 	border-left: 6px solid var(--accent-color);
-	border-radius: var(--jr-radius);
-	padding: 20px 26px;
+	border-radius: var(--radius);
+	padding: 18px 24px;
 	margin: 28px 0 30px;
 	max-width: 660px;
+	box-shadow: var(--shadow-sm);
 }
-.trust-bar p{
-	margin: 0;
-	color: var(--text-color);
-	font-size: 17px;
-	line-height: 1.55em;
-}
-.trust-bar strong{ color: var(--primary-color); font-weight: 800; }
+.trust-bar p{ margin: 0; color: var(--text-color); font-size: 16px; line-height: 1.55; }
+.trust-bar strong{ color: var(--primary-color); }
 
 .trust-stats{
 	display: flex;
 	flex-wrap: wrap;
-	gap: 40px;
+	gap: 24px 40px;
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 .trust-stats .num{
 	display: block;
-	font-size: 40px;
+	font-size: clamp(2rem, 1.6rem + 1vw, 2.5rem);
 	font-weight: 800;
 	line-height: 1;
 	color: var(--accent-color);
 }
-.trust-stats .lab{ font-size: 15px; color: var(--text-color); }
+.trust-stats .lab{ font-size: 15px; color: var(--muted); }
 
 
-/************************************/
-/***      06. Reason cards        ***/
-/************************************/
+/*---------------------- 08. Section titles & bands ----------------------*/
 
-.reason-card{
+.bg-tint{ background-color: var(--secondary-color); }
+.bg-forest{ background-color: var(--primary-color); color: var(--on-dark-muted); }
+.bg-forest :is(h2, h3, h4, strong, li){ color: var(--white-color); }
+.bg-forest p{ color: var(--on-dark-muted); }
+.bg-forest .lead-in{ color: var(--white-color); }
+.bg-forest a:not(.btn-default){ color: var(--accent-on-dark); }
+
+.section-title{ margin-bottom: clamp(28px, 4vw, 44px); }
+.section-title h2{ text-transform: uppercase; margin: 0; }
+.section-title.text-center h2{ max-width: 860px; margin-inline: auto; }
+
+/* The eyebrow is a <p>, not a heading: it is decoration above the h2. */
+.eyebrow{
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0 0 12px;
+	color: var(--accent-color);
+	text-transform: uppercase;
+	letter-spacing: .14em;
+	font-size: 13px;
+	font-weight: 800;
+	line-height: 1.2;
+}
+.eyebrow::before{
+	content: "";
+	width: 28px;
+	height: 3px;
+	border-radius: 2px;
+	background-color: currentColor;
+}
+.text-center .eyebrow::before{ display: none; }
+.bg-forest .eyebrow{ color: var(--accent-on-dark); }
+
+
+/*------------------- 09. Cards: reason, quote, review, post --------------*/
+
+.reason-card,
+.quote-card,
+.review-card,
+.post-card{
+	height: 100%;
 	background-color: var(--white-color);
 	border: 1px solid var(--divider-color);
-	border-top: 5px solid var(--accent-color);
-	border-radius: var(--jr-radius);
-	padding: 34px 30px;
-	height: 100%;
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-sm);
+	transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
 }
-.reason-card .rc-icon{
+.reason-card,
+.quote-card{ padding: 32px 28px; }
+
+.reason-card:hover,
+.post-card:hover{
+	transform: translateY(-3px);
+	box-shadow: var(--shadow-md);
+	border-color: rgba(42,125,46,.35);
+}
+
+.rc-icon{
 	width: 56px;
 	height: 56px;
-	border-radius: 12px;
-	background-color: var(--accent-color);
-	color: var(--white-color);
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	border-radius: 14px;
+	background-color: var(--secondary-color);
+	color: var(--accent-color);
+	display: grid;
+	place-items: center;
 	margin-bottom: 20px;
 }
-.reason-card .rc-icon svg{ width: 30px; height: 30px; }
-.reason-card h3{ font-size: 22px; margin-bottom: 12px; text-transform: uppercase; }
+.rc-icon svg{ width: 28px; height: 28px; }
+.reason-card h3{ font-size: 1.2rem; text-transform: uppercase; margin-bottom: 10px; }
 .reason-card p{ margin-bottom: 0; }
-.reason-card a{ color: var(--accent-color); }
+.reason-card p + p{ margin-top: 12px; }
+
+.quote-card .qc-num{
+	display: inline-grid;
+	place-items: center;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	background-color: var(--accent-color);
+	color: var(--white-color);
+	font-weight: 800;
+	font-size: 19px;
+	margin-bottom: 16px;
+}
+.quote-card h3{ font-size: 1.15rem; text-transform: uppercase; margin-bottom: 10px; }
+.quote-card p:last-child{ margin-bottom: 0; }
+
+.review-card{ padding: 30px 28px; display: flex; flex-direction: column; }
+.review-card .stars{ color: #E0A800; font-size: 19px; letter-spacing: 2px; margin-bottom: 12px; }
+.review-card blockquote{
+	flex: 1;
+	margin: 0 0 22px;
+	font-size: 16.5px;
+	line-height: 1.7;
+	color: var(--text-color);
+}
+.review-card .reviewer{ display: flex; align-items: center; gap: 14px; }
+.review-card .reviewer img{ width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+.review-card .reviewer h3{ font-size: 1rem; margin: 0; }
+.review-card .reviewer span{ font-size: 14px; color: var(--muted); }
+/* Reviews carried over from the landscaping side are always labelled. */
+.carryover-flag{
+	align-self: flex-start;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	color: var(--primary-color);
+	background-color: var(--secondary-color);
+	padding: 5px 10px;
+	border-radius: 100px;
+	margin-bottom: 14px;
+}
+
+.post-card{ padding: 28px 26px; display: flex; flex-direction: column; }
+.post-card-meta{
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	color: var(--muted);
+	margin-bottom: 10px;
+}
+.post-card :is(h2, h3){ font-size: 1.25rem; line-height: 1.3; margin-bottom: 10px; }
+.post-card :is(h2, h3) a{ color: var(--ink); }
+.post-card :is(h2, h3) a:hover{ color: var(--accent-color); }
+/* The heading link covers the card, so the whole card is clickable. */
+.post-card{ position: relative; }
+.post-card :is(h2, h3) a::after{ content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.post-card p{ font-size: 16px; margin-bottom: 18px; }
+.post-card-more{ margin-top: auto; color: var(--accent-color); font-weight: 800; font-size: 15px; }
 
 
-/************************************/
-/***    07. What We Take grid     ***/
-/************************************/
+/*-------- 10. What We Take: grid, list, category items, A-Z, can't take --------*/
 
 .take-grid{
 	display: grid;
 	grid-template-columns: repeat(6, 1fr);
-	gap: 16px;
+	gap: 14px;
 	list-style: none;
 	padding: 0;
-	margin: 0 0 36px;
+	margin: 0 0 32px;
 }
 .take-grid li{ margin: 0; }
 .take-grid a{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: flex-start;
 	gap: 12px;
-	text-align: center;
 	height: 100%;
-	padding: 24px 12px;
+	padding: 24px 10px 20px;
+	text-align: center;
 	border: 1px solid var(--divider-color);
-	border-radius: var(--jr-radius);
+	border-radius: var(--radius);
 	background-color: var(--white-color);
-	color: var(--primary-color);
+	box-shadow: var(--shadow-sm);
+	color: var(--ink);
 	font-weight: 700;
 	font-size: 15px;
-	line-height: 1.3em;
-	text-decoration: none;
-	transition: all .25s ease-in-out;
+	line-height: 1.3;
+	transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 .take-grid a:hover{
 	border-color: var(--accent-color);
-	background-color: var(--secondary-color);
 	transform: translateY(-3px);
+	box-shadow: var(--shadow-md);
 }
 
-/* Longhand, not the `mask:` shorthand — the shorthand's `position / size`
-   syntax does not reliably resolve when the value comes from var().
-
-   The mask URLs live here rather than in a custom property set on the
-   element: a url() inside a custom property resolves relative to the
-   stylesheet where it is substituted, not the document, so `images/x.svg`
-   set inline on the HTML resolved to `css/images/x.svg` and 404'd. Declared
-   here, `../images/` is correct and stays correct.
-
-   Masking (rather than <img>) is what lets one declaration recolour all
-   twelve icons: an external SVG file never inherits currentColor. */
+/* Masked icons so one declaration colours all twelve. Mask URLs live here
+   (not in a custom property) so ../images/ resolves against this file.
+   Longhands only: the `mask` shorthand also resets mask-image, and this rule
+   outranks the .ti-* rules below, so every icon became a solid square. */
 .take-grid .ti{
 	display: block;
 	width: 44px;
@@ -469,109 +845,104 @@ header.main-header .header-sticky{
 	mask-position: center;
 	-webkit-mask-size: contain;
 	mask-size: contain;
+	transition: background-color .2s ease;
 }
 .take-grid a:hover .ti{ background-color: var(--primary-color); }
 
-.ti-furniture   { -webkit-mask-image: url('../images/icon-take-furniture.svg');   mask-image: url('../images/icon-take-furniture.svg'); }
-.ti-appliance   { -webkit-mask-image: url('../images/icon-take-appliance.svg');   mask-image: url('../images/icon-take-appliance.svg'); }
-.ti-mattress    { -webkit-mask-image: url('../images/icon-take-mattress.svg');    mask-image: url('../images/icon-take-mattress.svg'); }
-.ti-ewaste      { -webkit-mask-image: url('../images/icon-take-ewaste.svg');      mask-image: url('../images/icon-take-ewaste.svg'); }
-.ti-reno        { -webkit-mask-image: url('../images/icon-take-reno-debris.svg'); mask-image: url('../images/icon-take-reno-debris.svg'); }
-.ti-hot-tub     { -webkit-mask-image: url('../images/icon-take-hot-tub.svg');     mask-image: url('../images/icon-take-hot-tub.svg'); }
-.ti-shed        { -webkit-mask-image: url('../images/icon-take-shed-deck.svg');   mask-image: url('../images/icon-take-shed-deck.svg'); }
-.ti-concrete    { -webkit-mask-image: url('../images/icon-take-concrete.svg');    mask-image: url('../images/icon-take-concrete.svg'); }
-.ti-yard        { -webkit-mask-image: url('../images/icon-take-yard-waste.svg');  mask-image: url('../images/icon-take-yard-waste.svg'); }
-.ti-estate      { -webkit-mask-image: url('../images/icon-take-estate.svg');      mask-image: url('../images/icon-take-estate.svg'); }
-.ti-scrap       { -webkit-mask-image: url('../images/icon-take-scrap-metal.svg'); mask-image: url('../images/icon-take-scrap-metal.svg'); }
-.ti-piano       { -webkit-mask-image: url('../images/icon-take-piano.svg');       mask-image: url('../images/icon-take-piano.svg'); }
+.ti-furniture{ -webkit-mask-image: url('../images/icon-take-furniture.svg'); mask-image: url('../images/icon-take-furniture.svg'); }
+.ti-appliance{ -webkit-mask-image: url('../images/icon-take-appliance.svg'); mask-image: url('../images/icon-take-appliance.svg'); }
+.ti-mattress{ -webkit-mask-image: url('../images/icon-take-mattress.svg'); mask-image: url('../images/icon-take-mattress.svg'); }
+.ti-ewaste{ -webkit-mask-image: url('../images/icon-take-ewaste.svg'); mask-image: url('../images/icon-take-ewaste.svg'); }
+.ti-reno{ -webkit-mask-image: url('../images/icon-take-reno-debris.svg'); mask-image: url('../images/icon-take-reno-debris.svg'); }
+.ti-hot-tub{ -webkit-mask-image: url('../images/icon-take-hot-tub.svg'); mask-image: url('../images/icon-take-hot-tub.svg'); }
+.ti-shed{ -webkit-mask-image: url('../images/icon-take-shed-deck.svg'); mask-image: url('../images/icon-take-shed-deck.svg'); }
+.ti-concrete{ -webkit-mask-image: url('../images/icon-take-concrete.svg'); mask-image: url('../images/icon-take-concrete.svg'); }
+.ti-yard{ -webkit-mask-image: url('../images/icon-take-yard-waste.svg'); mask-image: url('../images/icon-take-yard-waste.svg'); }
+.ti-estate{ -webkit-mask-image: url('../images/icon-take-estate.svg'); mask-image: url('../images/icon-take-estate.svg'); }
+.ti-scrap{ -webkit-mask-image: url('../images/icon-take-scrap-metal.svg'); mask-image: url('../images/icon-take-scrap-metal.svg'); }
+.ti-piano{ -webkit-mask-image: url('../images/icon-take-piano.svg'); mask-image: url('../images/icon-take-piano.svg'); }
 
 .take-list{
 	background-color: var(--white-color);
 	border: 1px solid var(--divider-color);
-	border-radius: var(--jr-radius);
-	padding: 28px 30px;
-	font-size: 16px;
-	line-height: 2em;
+	border-radius: var(--radius);
+	padding: 26px 28px;
+	font-size: 15.5px;
+	line-height: 1.95;
 	color: var(--text-color);
 }
-.take-list a{ color: var(--accent-color); font-weight: 700; white-space: nowrap; }
+.take-list a{ font-weight: 700; white-space: nowrap; }
 
-/* ---- Hub page category cards ---- */
-.cat-card-items{ font-size: 15px; color: var(--text-color); margin: 0 0 14px; }
-.cat-card-link{ color: var(--accent-color); font-weight: 800; text-decoration: none; }
+/* Hub page category cards */
+.cat-card-items{ font-size: 15px; color: var(--muted); margin: 0 0 14px; }
+.cat-card-link{ font-weight: 800; }
 .cat-card-link:hover{ text-decoration: underline; }
 
-/* ---- Item list on each category page ----
-   Generated from _categories.py. A definition list, because that is what it
-   is: a thing, and what is worth knowing about it. */
-.ci-heading{ margin: 34px 0 16px; text-transform: uppercase; }
+/* Item list on each category page (generated from _categories.py) */
+.ci-heading{ margin: 36px 0 14px; text-transform: uppercase; }
 .ci-list{ margin: 0 0 18px; }
-.ci-item{ padding: 14px 0; border-top: 1px solid var(--divider-color); scroll-margin-top: 110px; }
+.ci-item{ padding: 14px 0; border-top: 1px solid var(--divider-color); }
 .ci-item:last-child{ border-bottom: 1px solid var(--divider-color); }
-.ci-item dt{ color: var(--primary-color); font-weight: 800; font-size: 17px; margin: 0 0 4px; }
-.ci-item dd{ margin: 0; line-height: 1.65em; }
-.ci-aka{ display: block; margin-top: 6px; font-size: 14px; color: var(--text-color); }
+.ci-item dt{ color: var(--ink); font-weight: 800; margin: 0 0 4px; }
+.ci-item dd{ margin: 0; }
+.ci-aka{ display: block; margin-top: 6px; font-size: 14px; color: var(--muted); }
 .ci-more{ margin: 0 0 24px; font-size: 16px; }
-.ci-more a{ color: var(--accent-color); font-weight: 700; }
+.ci-more a{ font-weight: 700; }
 
-/* ---- A to Z index ---- */
+/* A to Z index */
 .az-tools{ margin: 0 0 22px; }
-.az-filter-label{ display: block; font-weight: 800; color: var(--primary-color); margin: 0 0 8px; }
+.az-filter-label{ display: block; font-weight: 800; color: var(--ink); margin: 0 0 8px; }
 .az-filter{
 	width: 100%;
 	max-width: 520px;
 	padding: 14px 18px;
-	font-size: 17px;
+	font: inherit;
 	border: 2px solid var(--divider-color);
-	border-radius: var(--jr-radius);
+	border-radius: var(--radius-sm);
 	background-color: var(--white-color);
-	color: var(--primary-color);
+	color: var(--ink);
 }
-.az-filter:focus{ outline: none; border-color: var(--accent-color); }
-/* Only letters with entries are rendered, so there is never a dead, low-
-   contrast "disabled" letter. Each target is 44px, the minimum for a thumb. */
+.az-filter:focus{ outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 4px rgba(42,125,46,.15); }
 .az-jump{ display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .az-jump a{
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+	display: inline-grid;
+	place-items: center;
 	min-width: 44px;
 	min-height: 44px;
-	border-radius: 8px;
-	background-color: var(--secondary-color);
-	color: var(--primary-color);
+	border-radius: 10px;
+	background-color: var(--white-color);
+	border: 1px solid var(--divider-color);
+	color: var(--ink);
 	font-weight: 800;
-	font-size: 16px;
-	text-decoration: none;
 }
-.az-jump a:hover, .az-jump a:focus-visible{ background-color: var(--accent-color); color: var(--white-color); }
-.az-body{ padding-top: 60px; }
-.az-group{ margin: 0 0 34px; scroll-margin-top: 110px; }
+.az-jump a:hover,
+.az-jump a:focus-visible{ background-color: var(--accent-color); border-color: var(--accent-color); color: var(--white-color); }
+.az-body{ padding-top: 56px; }
+.az-group{ margin: 0 0 34px; }
 .az-letter{
-	font-size: 34px;
-	font-weight: 800;
-	color: var(--primary-color);
+	font-size: 2rem;
+	color: var(--ink);
 	border-bottom: 3px solid var(--accent-color);
 	padding-bottom: 6px;
 	margin: 0 0 8px;
 }
 .az-list{ margin: 0; }
-.az-entry{ padding: 14px 0; border-bottom: 1px solid var(--divider-color); scroll-margin-top: 110px; }
-.az-entry dt{ font-weight: 800; font-size: 17px; color: var(--primary-color); margin: 0 0 4px; }
-.az-entry dd{ margin: 0; line-height: 1.65em; }
-.az-entry dd a{ color: var(--accent-color); font-weight: 700; }
-.az-see dd{ color: var(--text-color); }
+.az-entry{ padding: 14px 0; border-bottom: 1px solid var(--divider-color); }
+.az-entry dt{ font-weight: 800; color: var(--ink); margin: 0 0 4px; }
+.az-entry dd{ margin: 0; }
+.az-entry dd a{ font-weight: 700; }
+.az-see dd{ color: var(--muted); }
 .az-no dt{ color: var(--warning-color); }
 .az-tag{
 	display: inline-block;
 	margin-right: 6px;
 	padding: 2px 8px;
 	border-radius: 6px;
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: 800;
 	letter-spacing: .06em;
 	text-transform: uppercase;
-	vertical-align: 1px;
+	vertical-align: 2px;
 }
 .az-tag-no{ background-color: var(--warning-tint); color: var(--warning-color); }
 .az-tag-service{ background-color: var(--secondary-color); color: var(--primary-color); }
@@ -580,80 +951,90 @@ header.main-header .header-sticky{
 	margin: 0 0 30px;
 	background-color: var(--white-color);
 	border: 1px solid var(--divider-color);
-	border-radius: var(--jr-radius);
+	border-radius: var(--radius);
 }
-/* Author display rules would otherwise beat the [hidden] attribute. */
 .az-entry[hidden], .az-group[hidden], .az-tools[hidden], .az-empty[hidden]{ display: none !important; }
 
-/* ---- What we can't take ---- */
+/* What we can't take */
 .nt-grid{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .nt-card{
 	background-color: var(--white-color);
 	border: 1px solid var(--divider-color);
 	border-left: 5px solid var(--warning-color);
-	border-radius: var(--jr-radius);
+	border-radius: var(--radius);
 	padding: 24px 26px;
 }
-.nt-card h3{ font-size: 21px; margin: 0 0 10px; }
+.nt-card h3{ font-size: 1.2rem; margin: 0 0 10px; }
 .nt-card p{ margin: 0 0 8px; }
-.nt-label{ font-weight: 800; color: var(--primary-color); }
-.nt-card .nt-aka{ font-size: 14px; color: var(--text-color); margin: 10px 0 0; }
+.nt-label{ font-weight: 800; color: var(--ink); }
+.nt-card .nt-aka{ font-size: 14px; color: var(--muted); margin: 10px 0 0; }
+
+@media (max-width: 1199px){ .take-grid{ grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 767px){
+	.take-grid{ grid-template-columns: repeat(2, 1fr); gap: 10px; }
+	.take-grid a{ padding: 18px 8px 16px; font-size: 14px; }
+	.take-grid .ti{ width: 38px; height: 38px; }
+	.take-list{ padding: 20px; }
 	.nt-grid{ grid-template-columns: 1fr; }
-	.az-letter{ font-size: 28px; }
+	.az-letter{ font-size: 1.7rem; }
 }
 
 
-/************************************/
-/***     08. Pricing table        ***/
-/************************************/
+/*------------------------ 11. Pricing & tables --------------------------*/
 
-.price-table{
+.price-table,
+.where-table{
 	width: 100%;
 	border-collapse: separate;
 	border-spacing: 0;
 	border: 1px solid var(--divider-color);
-	border-radius: var(--jr-radius);
+	border-radius: var(--radius);
 	overflow: hidden;
-	margin-bottom: 18px;
 	background-color: var(--white-color);
+	box-shadow: var(--shadow-sm);
+	margin-bottom: 18px;
 }
 .price-table caption{
 	caption-side: top;
 	text-align: left;
 	padding: 0 0 12px;
-	color: var(--text-color);
+	color: var(--muted);
 	font-size: 15px;
 }
-.price-table th,
-.price-table td{
-	padding: 16px 20px;
+.price-table :is(th, td),
+.where-table :is(th, td){
+	padding: 15px 20px;
 	text-align: left;
+	vertical-align: top;
 	border-bottom: 1px solid var(--divider-color);
 }
-.price-table thead th{
+.price-table thead th,
+.where-table thead th{
 	background-color: var(--primary-color);
 	color: var(--white-color);
-	font-size: 15px;
+	font-size: 13px;
+	font-weight: 800;
 	text-transform: uppercase;
-	letter-spacing: .06em;
+	letter-spacing: .08em;
 }
-.price-table tbody tr:last-child th,
-.price-table tbody tr:last-child td{ border-bottom: 0; }
-.price-table tbody tr:nth-child(even){ background-color: var(--secondary-color); }
-.price-table th{ font-weight: 600; color: var(--primary-color); }
+.price-table tbody tr:last-child :is(th, td),
+.where-table tbody tr:last-child :is(th, td){ border-bottom: 0; }
+.price-table tbody tr:nth-child(even),
+.where-table tbody tr:nth-child(even){ background-color: #F8FBF7; }
+.price-table tbody th,
+.where-table tbody th{ font-weight: 700; color: var(--ink); }
+.price-table tbody tr{ transition: background-color .15s ease; }
+.price-table tbody tr:hover{ background-color: var(--secondary-color); }
 .price-table .price{
 	font-weight: 800;
-	font-size: 20px;
+	font-size: 1.25rem;
 	color: var(--accent-color);
 	white-space: nowrap;
 	text-align: right;
+	vertical-align: middle;
 	font-variant-numeric: tabular-nums;
 }
-.price-table .note{ font-size: 14px; color: var(--text-color); font-weight: 400; }
-
-/* Every unset price is wrapped in this so it is impossible to publish by
-   accident — see the PRICES block at the top of pricing.html. */
+.price-table .note{ font-size: 14px; color: var(--muted); font-weight: 400; }
 .price-tbd{
 	background-color: var(--secondary-color);
 	border: 1px dashed var(--accent-color);
@@ -661,575 +1042,92 @@ header.main-header .header-sticky{
 	padding: 1px 8px;
 	color: var(--accent-color);
 }
-
-.price-includes{ list-style: none; padding: 0; margin: 0 0 30px; }
-.price-includes li{
-	position: relative;
-	padding-left: 34px;
-	margin-bottom: 12px;
-	font-size: 17px;
+@media (max-width: 575px){
+	.price-table :is(th, td),
+	.where-table :is(th, td){ padding: 12px 14px; }
 }
-.price-includes li::before{
-	content: '';
+
+
+/*--------------- 12. Callouts, steps, lists, area pills -----------------*/
+
+.callout{
+	position: relative;
+	background-color: var(--secondary-color);
+	border-left: 6px solid var(--accent-color);
+	border-radius: var(--radius);
+	padding: 26px 30px;
+	margin: 32px 0;
+}
+.callout h3{ font-size: 1.15rem; text-transform: uppercase; margin-bottom: 8px; }
+.callout p:last-child{ margin-bottom: 0; }
+.callout .btn-default{ margin-top: 4px; }
+.bg-tint .callout{ background-color: var(--white-color); box-shadow: var(--shadow-sm); }
+.bg-forest .callout{ background-color: rgba(255,255,255,.06); border-left-color: var(--accent-on-dark); }
+
+.price-includes,
+.price-excludes{ list-style: none; padding: 0; margin: 0 0 28px; }
+.price-includes li,
+.price-excludes li{ position: relative; padding-left: 36px; margin-bottom: 12px; }
+.price-includes li::before,
+.price-excludes li::before{
+	content: "";
 	position: absolute;
 	left: 0;
 	top: 3px;
 	width: 22px;
 	height: 22px;
 	border-radius: 50%;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 13px;
+}
+.price-includes li::before{
 	background-color: var(--accent-color);
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");
-	background-size: 14px;
-	background-position: center;
-	background-repeat: no-repeat;
-}
-.bg-forest .price-includes li{ color: var(--white-color); }
-
-.price-excludes{ list-style: none; padding: 0; margin: 0 0 24px; }
-.price-excludes li{
-	position: relative;
-	padding-left: 34px;
-	margin-bottom: 10px;
 }
 .price-excludes li::before{
-	content: '';
-	position: absolute;
-	left: 0;
-	top: 4px;
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
 	background-color: var(--error-color);
+	background-size: 11px;
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round'%3E%3Cpath d='M18 6L6 18M6 6l12 12'/%3E%3C/svg%3E");
-	background-size: 12px;
-	background-position: center;
-	background-repeat: no-repeat;
 }
-
-
-/************************************/
-/***     09. Callout boxes        ***/
-/************************************/
-
-.callout{
-	border-left: 6px solid var(--accent-color);
-	background-color: var(--secondary-color);
-	border-radius: var(--jr-radius);
-	padding: 26px 30px;
-	margin: 30px 0;
-}
-.callout h3{
-	font-size: 20px;
-	text-transform: uppercase;
-	margin-bottom: 10px;
-	color: var(--primary-color);
-}
-.callout p:last-child{ margin-bottom: 0; }
-.callout a:not(.btn-default){ color: var(--accent-color); }
-/* On a honeydew band the callout needs to separate from its ground. */
-.bg-tint .callout,
-.bg-bone .callout{ background-color: var(--white-color); }
-
-
-
-/************************************/
-/***   10. Before / after pairs   ***/
-/************************************/
-
-.beforeafter{
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 18px;
-	margin-bottom: 30px;
-}
-.beforeafter figure{
-	margin: 0;
-	border-radius: var(--jr-radius);
-	overflow: hidden;
-	background-color: var(--secondary-color);
-}
-.beforeafter img{ width: 100%; height: auto; display: block; }
-.beforeafter figcaption{
-	font-size: 13px;
-	font-weight: 800;
-	letter-spacing: .12em;
-	text-transform: uppercase;
-	padding: 10px 14px;
-	color: var(--white-color);
-	background-color: var(--primary-color);
-}
-.beforeafter figure.is-after figcaption{ background-color: var(--accent-color); }
-
-
-/************************************/
-/***     12. Process steps        ***/
-/************************************/
+.bg-forest .price-includes li::before{ background-color: var(--accent-on-dark); }
 
 .steps{
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 24px;
+	gap: 20px;
 	list-style: none;
 	padding: 0;
 	margin: 0;
 	counter-reset: step;
 }
 .steps li{
+	position: relative;
 	counter-increment: step;
 	background-color: var(--white-color);
-	border-radius: var(--jr-radius);
-	padding: 30px 26px;
 	border: 1px solid var(--divider-color);
+	border-radius: var(--radius);
+	padding: 28px 24px;
+	box-shadow: var(--shadow-sm);
 }
-/* Numbered because the four steps genuinely are a sequence. */
 .steps li::before{
 	content: counter(step);
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	display: grid;
+	place-items: center;
 	width: 46px;
 	height: 46px;
 	border-radius: 50%;
 	background-color: var(--accent-color);
 	color: var(--white-color);
-	font-size: 22px;
+	font-size: 20px;
 	font-weight: 800;
-	margin-bottom: 18px;
-}
-.steps h3{ font-size: 19px; margin-bottom: 8px; text-transform: uppercase; }
-.steps p{ margin-bottom: 0; font-size: 16px; }
-
-
-/************************************/
-/***  13. Testimonials / tables   ***/
-/************************************/
-
-.review-card{
-	background-color: var(--white-color);
-	border: 1px solid var(--divider-color);
-	border-radius: var(--jr-radius);
-	padding: 30px;
-	height: 100%;
-}
-.review-card .stars{ color: var(--accent-color); font-size: 18px; letter-spacing: 2px; margin-bottom: 14px; }
-.review-card blockquote{ margin: 0 0 20px; font-size: 17px; line-height: 1.7em; color: var(--text-color); }
-.review-card .reviewer{ display: flex; align-items: center; gap: 14px; }
-.review-card .reviewer img{ width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
-/* The reviewer name. An h4 here skipped a level under the section h2, so it
-   is an h3 — the card is a subsection of the reviews block, not of a heading
-   that does not exist. */
-.review-card .reviewer h3{ font-size: 17px; margin: 0; }
-.review-card .reviewer span{ font-size: 14px; color: var(--text-color); }
-
-/* Reviews carried over from the landscaping side are always visually
-   distinct and labelled, never presented as junk removal reviews. */
-.review-card.is-carryover{ border-left: 5px solid var(--accent-color); }
-.carryover-flag{
-	display: inline-block;
-	font-size: 12px;
-	font-weight: 800;
-	letter-spacing: .08em;
-	text-transform: uppercase;
-	color: var(--white-color);
-	background-color: var(--accent-color);
-	padding: 4px 10px;
-	border-radius: 5px;
-	margin-bottom: 14px;
-}
-
-.where-table{
-	width: 100%;
-	border-collapse: separate;
-	border-spacing: 0;
-	border: 1px solid var(--divider-color);
-	border-radius: var(--jr-radius);
-	overflow: hidden;
-	background-color: var(--white-color);
-}
-.where-table th,
-.where-table td{ padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--divider-color); vertical-align: top; }
-.where-table thead th{
-	background-color: var(--accent-color);
-	color: var(--white-color);
-	text-transform: uppercase;
-	font-size: 15px;
-	letter-spacing: .06em;
-}
-.where-table tbody tr:last-child th,
-.where-table tbody tr:last-child td{ border-bottom: 0; }
-.where-table tbody tr:nth-child(even){ background-color: var(--secondary-color); }
-.where-table th{ font-weight: 600; color: var(--primary-color); }
-
-.table-scroll{ overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-
-/************************************/
-/***         14. Forms            ***/
-/************************************/
-
-.quote-card{
-	background-color: var(--white-color);
-	border: 1px solid var(--divider-color);
-	border-top: 5px solid var(--accent-color);
-	border-radius: var(--jr-radius);
-	padding: 34px 30px;
-	height: 100%;
-}
-.quote-card .qc-num{
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-	background-color: var(--accent-color);
-	color: var(--white-color);
-	font-weight: 800;
-	font-size: 19px;
 	margin-bottom: 16px;
 }
-.quote-card h3{ font-size: 20px; text-transform: uppercase; margin-bottom: 10px; }
+.steps h3{ font-size: 1.05rem; text-transform: uppercase; margin-bottom: 6px; }
+.steps p{ margin: 0; font-size: 16px; }
+@media (max-width: 991px){ .steps{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 575px){ .steps{ grid-template-columns: 1fr; } }
 
-.junk-form label{
-	display: block;
-	font-weight: 700;
-	color: var(--primary-color);
-	margin-bottom: 6px;
-}
-.junk-form input,
-.junk-form select,
-.junk-form textarea{
-	width: 100%;
-	padding: 13px 16px;
-	font-family: var(--default-font);
-	font-size: 16px;
-	color: var(--text-color);
-	background-color: var(--white-color);
-	border: 1px solid var(--divider-color);
-	border-radius: 10px;
-	margin-bottom: 18px;
-}
-.junk-form input:focus,
-.junk-form select:focus,
-.junk-form textarea:focus{
-	outline: 3px solid var(--accent-color);
-	outline-offset: 2px;
-	border-color: var(--accent-color);
-}
-.junk-form textarea{ min-height: 130px; resize: vertical; }
-.junk-form .form-note{ font-size: 14px; color: var(--text-color); }
-.junk-form .form-note a{ color: var(--accent-color); }
-.junk-form button.btn-default{ cursor: pointer; }
-
-
-/************************************/
-/***     15. Mobile call bar      ***/
-/************************************/
-
-/* Blueprint requirement: tap-to-call and tap-to-text always visible on
-   mobile. Hidden above the 991px breakpoint custom.css already uses. */
-.mobile-call-bar{ display: none; }
-
-@media only screen and (max-width: 991px){
-	.mobile-call-bar{
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		position: fixed;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 999;
-		border-top: 2px solid var(--primary-color);
-	}
-	.mobile-call-bar a{
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
-		padding: 15px 10px;
-		font-size: 17px;
-		font-weight: 800;
-		text-transform: uppercase;
-		text-decoration: none;
-	}
-	.mobile-call-bar .mcb-call{ background-color: var(--accent-color); color: var(--white-color); }
-	.mobile-call-bar .mcb-text{ background-color: var(--primary-color); color: var(--white-color); }
-	.mobile-call-bar svg{ width: 20px; height: 20px; }
-	/* Keep the bar from covering the end of the page. */
-	body{ padding-bottom: 58px; }
-}
-
-
-/************************************/
-/***    16. Reveal animation      ***/
-/************************************/
-
-/* custom.css defines no .wow / .animated rules at all — those classes are
-   inert on the parent site. The reveal is therefore defined here, and only
-   ever on `.animated`, which js/function.js adds via IntersectionObserver.
-   The un-animated state is fully visible, so if JavaScript never runs the
-   content still reads normally. Never move opacity onto bare `.wow`. */
-@keyframes junkFadeInUp{
-	from{ opacity: 0; transform: translateY(24px); }
-	to{ opacity: 1; transform: translateY(0); }
-}
-.wow.animated{ animation: junkFadeInUp .6s ease-out both; }
-
-
-/************************************/
-/***      17. Responsive          ***/
-/************************************/
-
-/* This site's nav carries six items plus the phone block, two more than the
-   parent's. custom.css pads every item 14px, which pushes "What We Take" onto
-   a second line on a 1280px laptop — tighten the spacing before that happens. */
-@media only screen and (max-width: 1400px){
-	.main-menu ul li{ margin: 0 1px; }
-	.main-menu ul li a{ padding: 14px 9px !important; font-size: 15px; }
-	.contact-now-box .icon-box{ margin-right: 12px; }
-}
-
-@media only screen and (max-width: 1200px){
-	.junk-hero h1{ font-size: 54px; }
-	.section-title h2{ font-size: 38px; }
-	.take-grid{ grid-template-columns: repeat(4, 1fr); }
-	.main-menu ul li a{ padding: 14px 7px !important; font-size: 14px; }
-	.contact-now-box-content p{ display: none; }
-}
-
-@media only screen and (max-width: 991px){
-	.junk-hero{ padding: 70px 0 60px; }
-	.junk-hero h1{ font-size: 42px; }
-	.junk-hero .hero-sub{ font-size: 18px; }
-	.page-header{ padding: 60px 0 50px; }
-	.page-header-box h1{ font-size: 36px; }
-	.section-title h2{ font-size: 32px; }
-	.section-space{ padding: 60px 0; }
-	.steps{ grid-template-columns: repeat(2, 1fr); }
-	.brand-lockup .division-tag{ font-size: 11px; padding: 4px 7px; }
-	/* custom.css hides .contact-now-box below 991px; the fixed call bar
-	   takes over from here. */
-}
-
-@media only screen and (max-width: 767px){
-	.junk-hero h1{ font-size: 34px; }
-	.page-header-box h1{ font-size: 29px; }
-	.section-title h2{ font-size: 27px; }
-	.take-grid{ grid-template-columns: repeat(2, 1fr); gap: 12px; }
-	.steps{ grid-template-columns: 1fr; }
-	.beforeafter{ grid-template-columns: 1fr; }
-	.trust-stats{ gap: 24px; }
-	.trust-stats .num{ font-size: 32px; }
-	.btn-default{ margin-right: 0; width: 100%; text-align: center; }
-	/* Buttons go full width on phones for a decent tap target. custom.css pins
-	   the 36px arrow badge to right:0 and then translates it 50% outward, which
-	   at full width parks it hard against the viewport edge — visible on every
-	   CTA, not just the footer. Tuck it inside the pill on small screens and pad
-	   the text so the two never collide. */
-	.btn-default{ padding-right: 58px; }
-	.btn-default::before{
-		right: 7px;
-		transform: translate(0, -50%);
-	}
-	.btn-default:hover::before{ right: 4px; }
-	.btn-row{ flex-direction: column; align-items: stretch; gap: 12px; }
-	.price-table th,
-	.price-table td{ padding: 13px 14px; }
-}
-
-
-/************************************/
-/***     18. Accessibility        ***/
-/************************************/
-
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible{
-	outline: 3px solid var(--accent-color);
-	outline-offset: 3px;
-	border-radius: 4px;
-}
-
-/* Preview banner for container/staging deploys.
-   Nothing on this site emits .jr-staging — the element is injected at serve
-   time by deploy/railway.conf, so this rule is inert in production. It lives
-   here rather than in the container config so it uses the same tokens as
-   everything else and cannot drift from the palette. */
-.jr-staging{
-	background-color: var(--secondary-color);
-	border-bottom: 2px solid var(--accent-color);
-	color: var(--primary-color);
-	font-size: 15px;
-	line-height: 1.5;
-	text-align: center;
-	padding: 12px 20px;
-}
-.jr-staging strong{
-	color: var(--white-color);
-	background-color: var(--accent-color);
-	font-weight: 800;
-	letter-spacing: .08em;
-	padding: 3px 9px;
-	border-radius: 5px;
-	margin-right: 8px;
-	white-space: nowrap;
-}
-
-.skip-link{
-	position: absolute;
-	left: -9999px;
-	top: 0;
-	z-index: 1000;
-	padding: 12px 20px;
-	background-color: var(--accent-color);
-	color: var(--white-color);
-	font-weight: 800;
-	text-decoration: none;
-}
-.skip-link:focus{ left: 0; }
-
-.visually-hidden{
-	position: absolute !important;
-	width: 1px; height: 1px;
-	padding: 0; margin: -1px;
-	overflow: hidden;
-	clip: rect(0 0 0 0);
-	white-space: nowrap;
-	border: 0;
-}
-
-@media (prefers-reduced-motion: reduce){
-	.wow.animated{ animation: none; }
-	*,
-	*::before,
-	*::after{
-		animation-duration: .01ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: .01ms !important;
-		scroll-behavior: auto !important;
-	}
-}
-
-
-/************************************/
-/***         19. Blog             ***/
-/************************************/
-
-/* Post cards — used by both the blog index and the "keep reading" strip, so
-   the two can never drift apart visually. Same shell as .reason-card: white
-   ground, hairline border, accent rule along the top. */
-.post-card{
-	background-color: var(--white-color);
-	border: 1px solid var(--divider-color);
-	border-top: 5px solid var(--accent-color);
-	border-radius: var(--jr-radius);
-	padding: 28px 26px;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-}
-.post-card-meta{
-	font-size: 13px;
-	font-weight: 700;
-	letter-spacing: .06em;
-	text-transform: uppercase;
-	color: var(--text-color);
-	margin-bottom: 12px;
-}
-.post-card :is(h2, h3){
-	font-size: 21px;
-	line-height: 1.35em;
-	margin-bottom: 12px;
-}
-.post-card :is(h2, h3) a{ color: var(--primary-color); }
-.post-card :is(h2, h3) a:hover,
-.post-card :is(h2, h3) a:focus-visible{ color: var(--accent-color); }
-.post-card p{
-	margin-bottom: 18px;
-	font-size: 16px;
-	line-height: 1.7em;
-}
-/* Pushed to the bottom so the prompt lines up across cards of unequal length.
-   Deliberately a <span>, not a second <a>: the heading link already covers
-   the whole destination, and two links to one URL in a card is noise for
-   anyone tabbing or using a screen reader. */
-.post-card-more{
-	margin-top: auto;
-	color: var(--accent-color);
-	font-weight: 800;
-	font-size: 15px;
-}
-
-/* Article body. Constrained through the col-lg-8 wrapper rather than here, so
-   the measure stays consistent with the rest of the site's content columns. */
-.post-meta{
-	font-size: 14px;
-	font-weight: 700;
-	letter-spacing: .05em;
-	text-transform: uppercase;
-	color: var(--text-color);
-	padding-bottom: 20px;
-	margin-bottom: 32px;
-	border-bottom: 2px solid var(--divider-color);
-}
-.blog-post h2{
-	font-size: 30px;
-	line-height: 1.3em;
-	margin: 44px 0 16px;
-	color: var(--primary-color);
-}
-.blog-post h3{
-	font-size: 21px;
-	margin: 30px 0 12px;
-	color: var(--primary-color);
-}
-.blog-post p{ margin-bottom: 20px; }
-.blog-post ul,
-.blog-post ol{
-	margin: 0 0 24px;
-	padding-left: 22px;
-	color: var(--text-color);
-}
-.blog-post li{ margin-bottom: 12px; line-height: 1.75em; }
-.blog-post a{ color: var(--accent-color); text-decoration: underline; }
-.blog-post a:hover,
-.blog-post a:focus-visible{ color: var(--primary-color); }
-/* The article's own links are underlined for scannability, but the buttons in
-   the CTA are not links-in-prose and should keep their button treatment. */
-.blog-post .btn-default,
-.blog-post .callout h3 + p a{ text-decoration: none; }
-.blog-post .btn-default{ text-decoration: none; }
-
-.post-cta{
-	background-color: var(--secondary-color);
-	border-radius: var(--jr-radius);
-	padding: 32px 34px;
-	margin-top: 46px;
-}
-.post-cta h3{
-	font-size: 22px;
-	text-transform: uppercase;
-	margin-bottom: 10px;
-	color: var(--primary-color);
-}
-.post-cta p{ margin-bottom: 22px; }
-
-@media only screen and (max-width: 767px){
-	.blog-post h2{ font-size: 25px; margin-top: 34px; }
-	.blog-post h3{ font-size: 19px; }
-	.post-cta{ padding: 26px 22px; }
-	.post-card{ padding: 24px 22px; }
-}
-
-
-/************************************/
-/***      20. Service area        ***/
-/************************************/
-
-/* Neighbourhood list. Pills rather than a bulleted column: eighteen items in a
-   single list reads as filler, whereas a wrapped row scans as coverage. */
 .area-list{
 	list-style: none;
 	padding: 0;
@@ -1246,97 +1144,353 @@ textarea:focus-visible{
 	padding: 8px 18px;
 	font-size: 15px;
 	font-weight: 700;
-	color: var(--primary-color);
+	color: var(--ink);
 }
 
 
-/************************************/
-/***     21. Footer baseline      ***/
-/************************************/
+/*-------------------------------- 13. FAQ --------------------------------*/
 
-/* The copyright row is col-lg-8 + col-lg-4, which stacks below 768px. When it
-   stacks, the payment strip and the "Visit No-BS Yardwork" button landed flush
-   against each other — a measured 0px gap — because neither carries any
-   vertical margin of its own; on desktop they sit in separate columns so the
-   gap was never needed.
-   Also drops the inline align="right" on the button wrapper: right-aligned is
-   correct beside the copyright text, and wrong once it is the only thing on
-   its own row. */
-@media only screen and (max-width: 767px){
-	.footer-copyright{ text-align: center; }
-	.footer-copyright-text p{ margin-bottom: 0; }
-	.footer-copyright-text img{
-		display: block;
-		margin: 16px auto 0;
-	}
-	.footer-copyright .footer-links{
-		margin-top: 30px;
-		text-align: center;
-	}
-	.footer-copyright .footer-links p.btn-default{
-		text-align: center;
-		/* The 36px arrow badge is translated 50% past the right edge by
-		   design. Centred on a phone that reads as off-centre, so trade the
-		   stock right margin for symmetry. */
-		/* The stock 15px right margin exists to clear the badge from whatever
-		   follows it in a button row. Alone and centred there is nothing to
-		   clear, and keeping it pushed the button past the viewport edge. */
-		margin-right: 0;
-	}
+.faq{ display: grid; gap: 12px; }
+.faq-item{
+	background-color: var(--white-color);
+	border: 1px solid var(--divider-color);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-sm);
+	overflow: hidden;
 }
-
-
-/************************************/
-/***      22. Page photos         ***/
-/************************************/
-
-/* Service-page photography. Fixed 3:2 via aspect-ratio as well as the width/
-   height attributes, so the space is reserved before the image loads and the
-   text below does not jump — these are lazy-loaded and would otherwise shift
-   layout on slow connections. */
-.page-photo{
-	margin: 0 0 36px;
+.faq-item summary{
+	position: relative;
+	display: block;
+	padding: 20px 64px 20px 24px;
+	cursor: pointer;
+	list-style: none;
 }
+.faq-item summary::-webkit-details-marker{ display: none; }
+.faq-item summary h3{ margin: 0; font-size: 1.08rem; line-height: 1.4; }
+.faq-item summary::after{
+	content: "";
+	position: absolute;
+	right: 20px;
+	top: 50%;
+	width: 30px;
+	height: 30px;
+	margin-top: -15px;
+	border-radius: 50%;
+	background-color: var(--secondary-color);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A7D2E' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 15px;
+	transition: transform .25s ease, background-color .25s ease;
+}
+.faq-item summary:hover h3{ color: var(--accent-color); }
+.faq-item[open] summary::after{ transform: rotate(45deg); background-color: var(--white-color); box-shadow: inset 0 0 0 1px var(--divider-color); }
+.faq-item[open]{ border-color: rgba(42,125,46,.35); }
+.faq-body{ padding: 0 24px 22px; }
+.faq-body p:last-child{ margin-bottom: 0; }
+
+
+/*----------------------- 14. Photos & before/after ----------------------*/
+
+.page-photo{ margin: 0 0 36px; }
 .page-photo img{
 	display: block;
 	width: 100%;
-	height: auto;
 	aspect-ratio: 3 / 2;
 	object-fit: cover;
-	border-radius: var(--jr-radius);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-md);
 }
+.page-photo figcaption{ font-size: 14px; color: var(--muted); margin-top: 10px; }
+
+.photo-frame{
+	display: block;
+	width: 100%;
+	aspect-ratio: 3 / 2;
+	object-fit: cover;
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-md);
+}
+@media (max-width: 991px){ .photo-frame{ margin-top: 32px; } }
+
+.beforeafter{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 30px; }
+.beforeafter figure{ border-radius: var(--radius); overflow: hidden; background-color: var(--secondary-color); }
+.beforeafter img{ width: 100%; display: block; }
+.beforeafter figcaption{
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	padding: 10px 14px;
+	color: var(--white-color);
+	background-color: var(--primary-color);
+}
+.beforeafter figure.is-after figcaption{ background-color: var(--accent-color); }
+@media (max-width: 767px){ .beforeafter{ grid-template-columns: 1fr; } }
 
 
-/************************************/
-/***     23. JotForm embed        ***/
-/************************************/
+/*---------------------------- 15. Blog article ---------------------------*/
 
-/* The quote form is a JotForm iframe. for-form-embed-handler.js sets the real
-   height once the form reports it; min-height covers the gap before that and
-   the case where the script is blocked, so the form is never a squashed strip. */
+.post-meta{
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	color: var(--muted);
+	padding-bottom: 20px;
+	margin-bottom: 32px;
+	border-bottom: 2px solid var(--divider-color);
+}
+.blog-post{ font-size: 18px; }
+.blog-post h2{ font-size: clamp(1.45rem, 1.2rem + 1vw, 1.9rem); margin: 44px 0 14px; }
+.blog-post h3{ font-size: 1.25rem; margin: 30px 0 10px; }
+.blog-post p{ margin-bottom: 1.25em; }
+.blog-post :is(ul, ol){ margin: 0 0 24px; padding-left: 22px; }
+.blog-post li{ margin-bottom: 10px; }
+.blog-post li::marker{ color: var(--accent-color); }
+.blog-post a:not(.btn-default){ text-decoration: underline; text-underline-offset: 3px; }
+.blog-post a:not(.btn-default):hover{ color: var(--primary-color); }
+
+.post-cta{
+	background-color: var(--primary-color);
+	border-radius: var(--radius);
+	padding: 32px 34px;
+	margin-top: 46px;
+	color: var(--on-dark-muted);
+}
+.post-cta h3{ font-size: 1.3rem; text-transform: uppercase; margin: 0 0 10px; color: var(--white-color); }
+.post-cta p{ margin-bottom: 22px; color: var(--on-dark-muted); }
+.post-cta .btn-ghost.on-light{ --btn-fg: var(--white-color); border-color: rgba(255,255,255,.85); }
+.post-cta .btn-ghost.on-light:hover{ --btn-bg: var(--white-color); --btn-fg: var(--primary-color); }
+@media (max-width: 575px){ .post-cta{ padding: 26px 22px; } }
+
+
+/*-------------------------- 16. Forms & JotForm --------------------------*/
+
+.junk-form label{ display: block; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.junk-form :is(input, select, textarea){
+	width: 100%;
+	padding: 13px 16px;
+	font: inherit;
+	font-size: 16px;
+	color: var(--text-color);
+	background-color: var(--white-color);
+	border: 1px solid var(--divider-color);
+	border-radius: var(--radius-sm);
+	margin-bottom: 18px;
+}
+.junk-form :is(input, select, textarea):focus{
+	outline: none;
+	border-color: var(--accent-color);
+	box-shadow: 0 0 0 4px rgba(42,125,46,.15);
+}
+.junk-form textarea{ min-height: 130px; resize: vertical; }
+
 .jotform-embed{
 	background-color: var(--white-color);
 	border: 1px solid var(--divider-color);
-	border-radius: var(--jr-radius);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-md);
 	overflow: hidden;
 }
-.jotform-embed iframe{
-	display: block;
-	width: 1px;          /* with min-width:100% this is the reliable way to make */
-	min-width: 100%;     /* an iframe fill its container across browsers */
-	min-height: 720px;
-	border: none;
-}
-.form-fallback{
-	margin: 18px 0 0;
-	text-align: center;
-	font-size: 15px;
-	color: var(--text-color);
-}
-.form-fallback a{ color: var(--accent-color); font-weight: 700; }
+/* width:1px + min-width:100% is the reliable way to make an iframe fill. */
+.jotform-embed iframe{ display: block; width: 1px; min-width: 100%; min-height: 720px; border: 0; }
+.form-fallback{ margin: 18px 0 0; text-align: center; font-size: 15px; color: var(--muted); }
+.form-fallback a{ font-weight: 700; }
+@media (max-width: 767px){ .jotform-embed iframe{ min-height: 900px; } }
 
-@media only screen and (max-width: 767px){
-	/* Phones show fewer fields per row, so the form runs taller before the
-	   resize handler reports back. */
-	.jotform-embed iframe{ min-height: 900px; }
+
+/*------------------------------- 17. Footer ------------------------------*/
+
+.site-footer{
+	position: relative;
+	background-color: var(--primary-color);
+	color: var(--on-dark-muted);
+	padding: 72px 0 0;
+	font-size: 16px;
+	border-top: 4px solid var(--accent-color);
+}
+.site-footer a{ color: var(--white-color); }
+.site-footer a:hover{ color: var(--accent-on-dark); }
+.site-footer p{ margin: 0 0 10px; }
+.site-footer strong{ color: var(--white-color); }
+
+.footer-grid{
+	display: grid;
+	grid-template-columns: 1.4fr 1fr 1fr 1.1fr;
+	gap: 40px;
+}
+.footer-logo{ width: 200px; margin-bottom: 18px; display: block; }
+.footer-col h3{
+	font-size: 13px;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: var(--accent-on-dark);
+	margin: 6px 0 18px;
+}
+.footer-links{ list-style: none; margin: 0; padding: 0; }
+.footer-links li{ margin-bottom: 9px; }
+.footer-hours{ margin: 0; }
+.footer-hours div{
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--dark-divider);
+}
+.footer-hours dt{ color: var(--white-color); font-weight: 600; }
+.footer-hours dd{ margin: 0; font-variant-numeric: tabular-nums; }
+.footer-phone{ font-size: 1.4rem; font-weight: 800; }
+
+.footer-social{ display: flex; gap: 10px; list-style: none; margin: 18px 0 0; padding: 0; }
+.footer-social a{
+	display: grid;
+	place-items: center;
+	width: 42px;
+	height: 42px;
+	border-radius: 12px;
+	background-color: rgba(255,255,255,.1);
+	color: var(--white-color);
+	transition: background-color .2s ease;
+}
+.footer-social a:hover{ background-color: var(--accent-color); color: var(--white-color); }
+.footer-social svg{ width: 20px; height: 20px; }
+
+.footer-bottom{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 16px 28px;
+	margin-top: 56px;
+	padding: 26px 0 30px;
+	border-top: 1px solid var(--dark-divider);
+	font-size: 14px;
+}
+.footer-bottom p{ margin: 0; }
+.footer-bottom img{ display: block; height: 30px; width: auto; }
+.footer-bottom .btn-default{ margin-left: auto; min-height: 44px; font-size: 13px; }
+
+@media (max-width: 991px){
+	.footer-grid{ grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 575px){
+	.site-footer{ padding-top: 52px; }
+	.footer-grid{ grid-template-columns: 1fr; gap: 32px; }
+	.footer-bottom{ flex-direction: column; align-items: flex-start; }
+	.footer-bottom .btn-default{ margin-left: 0; width: 100%; }
+}
+
+
+/*--------------------------- 18. Mobile call bar -------------------------*/
+
+.mobile-call-bar{ display: none; }
+
+@media (max-width: 991px){
+	.mobile-call-bar{
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 950;
+		padding-bottom: env(safe-area-inset-bottom);
+		background-color: var(--primary-color);
+		box-shadow: 0 -6px 20px rgba(0,0,0,.18);
+	}
+	.mobile-call-bar a{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		min-height: 58px;
+		font-size: 16px;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: .03em;
+		color: var(--white-color);
+	}
+	.mobile-call-bar .mcb-call{ background-color: var(--accent-color); }
+	.mobile-call-bar .mcb-text{ background-color: var(--primary-color); }
+	.mobile-call-bar svg{ width: 20px; height: 20px; }
+	/* Keep the bar from covering the end of the page. */
+	body{ padding-bottom: calc(58px + env(safe-area-inset-bottom)); }
+}
+
+
+/*-------------------------------- 19. Motion -----------------------------*/
+
+/* Content is fully visible by default. js/site.js adds .reveal-ready to <html>
+   only once it is running, and .animated to each element as it scrolls in —
+   so if JavaScript never runs, nothing is ever hidden. */
+.reveal-ready .wow:not(.animated){ opacity: 0; transform: translateY(22px); }
+.reveal-ready .wow{
+	transition: opacity .6s ease-out, transform .6s ease-out;
+	transition-delay: var(--reveal-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce){
+	.reveal-ready .wow:not(.animated){ opacity: 1; transform: none; }
+	*,
+	*::before,
+	*::after{
+		animation-duration: .01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: .01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+
+/*------------------- 20. Accessibility & staging banner ------------------*/
+
+:focus-visible{
+	outline: 3px solid var(--highlight);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+.faq-item summary:focus-visible{ outline-offset: -3px; border-radius: var(--radius); }
+
+.skip-link{
+	position: absolute;
+	left: -9999px;
+	top: 0;
+	z-index: 1000;
+	padding: 12px 20px;
+	background-color: var(--accent-color);
+	color: var(--white-color);
+	font-weight: 800;
+}
+.skip-link:focus{ left: 0; color: var(--white-color); }
+
+.visually-hidden{
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Injected at serve time by deploy/railway.conf on staging only. */
+.jr-staging{
+	background-color: var(--secondary-color);
+	border-bottom: 2px solid var(--accent-color);
+	color: var(--primary-color);
+	font-size: 15px;
+	line-height: 1.5;
+	text-align: center;
+	padding: 12px 20px;
+}
+.jr-staging strong{
+	color: var(--white-color);
+	background-color: var(--accent-color);
+	letter-spacing: .08em;
+	padding: 3px 9px;
+	border-radius: 5px;
+	margin-right: 8px;
+	white-space: nowrap;
 }

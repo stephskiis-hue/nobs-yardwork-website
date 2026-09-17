@@ -48,9 +48,10 @@ These are the things only you can do. Nothing on this list is code.
 
 ## Photos still needed
 
-**This changed.** Seven Unsplash-licensed stock photos now sit on the service
-pages — see [`images/CREDITS.md`](images/CREDITS.md) for what each one shows and
-the licence terms. The old labelled placeholder blocks are gone.
+**This changed.** Every one of the twelve category pages and the homepage hero
+now carries a free-licence stock photo (seven from Unsplash, six from Pexels) —
+see [`images/CREDITS.md`](images/CREDITS.md) for what each one shows, where it
+came from and the licence terms.
 
 Stock is a stopgap, not the goal. Real photos of your own crew and equipment
 beat it on trust and on local SEO, because Google favours original imagery. Drop
@@ -59,7 +60,7 @@ change. The shot list below is still the brief worth shooting to.
 
 | File | Shot |
 |---|---|
-| `junk-hero.webp` | Crew + dump trailer in a real Winnipeg driveway, daylight, nobody posing. The single most important image on the site. |
+| `junk-hero.webp` | Crew + dump trailer in a real Winnipeg driveway, daylight, nobody posing. The single most important image on the site. **Portrait, 4:5, at least 800×1000** — it sits in a framed card beside the headline. |
 | `junk-hottub.webp` | Hot tub cut into sections, deck and fence intact in frame |
 | `junk-hottub-before.webp` / `-after.webp` | Same angle, tub in place then empty swept pad |
 | `junk-appliances.webp` | Trailer with 4–6 appliances strapped in, crew for scale |
@@ -78,12 +79,8 @@ change. The shot list below is still the brief worth shooting to.
 | `junk-scrap-metal.webp` | Full metal load, ideally on the scale at the yard |
 | `junk-piano.webp` | Upright coming down a staircase on dollies with straps |
 
-For the hero, once `junk-hero.webp` exists, add to the `<section class="junk-hero">`
-tag in `_pages/index.html`:
-
-```html
-style="background-image: url('images/junk-hero.webp')"
-```
+The service-page photos are 3:2 (1000×667). The hero is already wired up;
+replacing `images/junk-hero.webp` is all it takes.
 
 ---
 
@@ -273,50 +270,60 @@ docker run --rm -p 8080:8080 nobs-junk    # then open http://localhost:8080
 
 ### Design system
 
-`css/custom.css` is a **byte-identical copy** from no-bs-yardwork.com so it can be
-re-synced from the parent later. Do not edit it — every junk-specific rule belongs
-in `css/junk.css`, which loads after it.
+`css/junk.css` is the **only stylesheet** and `js/site.js` the **only script**.
+There is no Bootstrap, jQuery, Font Awesome, GSAP or lawn-template CSS
+underneath them any more — those came to roughly 900 KB across 14 files, and
+almost all of it styled things this site does not have. The replacement is
+about 45 KB of CSS and 3 KB of JavaScript.
 
-The brand palette comes from the tokens `custom.css` declares, so this site and
-the lawn site stay in step and re-syncing the parent's palette updates this one
-for free:
+It is written for this site rather than copied from no-bs-yardwork.com, but
+keeps the family resemblance deliberately: the same forest and brand greens,
+honeydew bands, Plus Jakarta Sans, heavy uppercase headings and green pill
+buttons with a round arrow badge. Hauling-specific touches — the yellow hazard
+stripe under the hero and the diagonal stripe texture on page banners — are
+what make it this site and not the lawn site.
 
-| Token | Value | Used for |
-|---|---|---|
-| `--primary-color` | `#0B3D2C` | dark green — header, footer, dark bands, headings |
-| `--accent-color` | `#2A7D2E` | brand green — buttons, icons, highlights |
-| `--secondary-color` | `#F0FFF0` | honeydew — alternating section bands |
-| `--divider-color` | `#E7ECEA` | card borders, table rules |
-| `--text-color` | `#555555` | body copy |
-| `--white-color` | `#FFFFFF` | page ground |
-
-`junk.css` adds three tokens of its own, each for a job the palette above cannot
-do legibly. The ratios are measured:
+Every colour is a token at the top of `junk.css`. The ratios are measured:
 
 | Token | Value | Used for |
 |---|---|---|
-| `--accent-on-dark` | `#6FCF7C` | green **text** on the dark green. The brand accent measures 2.37:1 there and fails WCAG; this is 6.34:1 |
+| `--primary-color` | `#0B3D2C` | forest — header, footer, dark bands, headings |
+| `--accent-color` | `#2A7D2E` | brand green — buttons, icons. 5.16:1 on white |
+| `--accent-on-dark` | `#6FCF7C` | green **text** on forest. The brand green measures 2.37:1 there and fails WCAG; this is 6.34:1 |
+| `--secondary-color` | `#F0F7EF` | honeydew — alternating bands |
+| `--text-color` | `#46514C` | body copy — 8.3:1 on white |
+| `--muted` | `#5F6B66` | captions and meta — 5.6:1 on white |
+| `--highlight` | `#F5C542` | safety yellow — focus ring, hero price marker, hazard stripe |
 | `--warning-color` | `#9B2C2C` | "we can't take this" — 7.53:1 on white |
-| `--warning-tint` | `#FDECEC` | behind the warning label — the red is 6.59:1 on it |
 
-White page, green furniture — the same arrangement as no-bs-yardwork.com. If you
-need a new colour, add it as a token first; don't hard-code a hex in a component
-rule. The green button on white measures 5.16:1, which passes WCAG AA.
+If you need a new colour, add it as a token first; don't hard-code a hex in a
+component rule. **Use `--accent-color` for green on light backgrounds and
+`--accent-on-dark` for green text on dark ones.**
 
-**Use `--accent-color` for green on light backgrounds and `--accent-on-dark` for
-green text on dark ones.** Using the first on the second is exactly how the
-homepage headline came to fail contrast.
+How the pieces work without the old libraries:
 
-Two class-naming traps worth knowing, both already hit and fixed:
+- **Grid.** `.row` / `.col-md-*` / `.col-lg-*` still exist, as a small flexbox
+  grid with the same names and breakpoints (768px, 992px), so page sources did
+  not need rewriting. Only the column sizes the pages use are defined.
+- **Nav.** Inline with hover/focus dropdowns from 1100px up; below that a
+  drawer opened by the menu button (`site.js`, Escape closes it). Below 576px
+  the header phone block hides because the fixed call bar carries it.
+- **FAQs** are native `<details>` elements. They open with no JavaScript, are
+  keyboard-accessible by default, and the answer is always in the page for
+  Google.
+- **Scroll reveal.** Nothing is hidden unless `site.js` is running, and
+  anything already on screen at load is shown immediately. Reduced-motion
+  users get no animation.
 
-- **Don't name a section band `.bg-dark`.** Bootstrap defines `.bg-dark` with
-  `!important` (`#212529`) and wins, painting the band charcoal. The dark green
-  bands use `.bg-forest`.
+Two traps worth knowing, both already hit and fixed:
+
+- **Don't use the `mask:` shorthand on `.take-grid .ti`.** It resets
+  `mask-image`, and because that rule outranks the `.ti-*` rules, all twelve
+  icons render as solid green squares. Use the longhands.
 - **Don't put an icon path in a CSS custom property set on the element.** A
   `url()` inside a custom property resolves relative to the *stylesheet* that
   substitutes it, not the document, so `images/x.svg` became `css/images/x.svg`
-  and 404'd. The What We Take icon masks are declared in `junk.css` with
-  `../images/` paths.
+  and 404'd. The icon masks are declared in `junk.css` with `../images/` paths.
 
 ---
 
@@ -326,10 +333,10 @@ Two class-naming traps worth knowing, both already hit and fixed:
 |---|---|
 | No `.preloader` | On the parent it is a full-screen overlay removed only by jQuery. If a script fails, the site is a green screen. Not worth the risk. |
 | No `text-anime-style-2` on headings | The GSAP SplitText treatment adds an invisible-text failure mode and delays the largest contentful paint. Plain headings are faster and safer. |
-| `css/all.min.css`, not `css/all.css` | The parent's `index.html` requests `all.css`, which does not exist on the server. |
+| Own stylesheet and script, no template libraries | See *Design system*. Same look and feel, a fraction of the weight, and no script whose failure breaks the nav. |
 | No `aggregateRating` in the structured data | The 4.9/23 rating belongs to the landscaping business. Claiming it here would be a Google structured-data violation. It goes in once this division earns its own. |
 | Reviews labelled "From No-BS Yardwork" | They are genuine, but they are not junk removal reviews. Labelling them is the whole point of the brand name. |
-| Solid dark-green sticky header, not the parent's transparent one | The parent's header is transparent until you scroll, which relies on a dark hero image sitting behind it. With the hero photo slot still empty that would leave white nav text on white. Same `#0B3D2C` as the parent's scrolled state. |
+| Solid dark-green sticky header, not the parent's transparent one | Legible on every page with no dependence on what sits behind it. Same `#0B3D2C` as the parent's scrolled state. |
 
 ---
 

@@ -1,10 +1,8 @@
       <!-- ============ HERO ============ -->
-      <!-- PHOTO: once junk-hero.webp exists, add to the section below:
-           style="background-image: url('images/junk-hero.webp')" -->
       <section class="junk-hero">
         <div class="container">
-          <div class="row">
-            <div class="col-lg-9">
+          <div class="row align-items-center">
+            <div class="col-lg-7">
               <h1>Junk gone.<br /><span class="accent">No runaround.</span></h1>
               <p class="hero-sub">
                 Winnipeg's straight-talking junk removal crew. We load it, we haul it,
@@ -32,6 +30,19 @@
                 Same-day and next-day available &middot; Licensed &amp; insured &middot;
                 Free on-site estimates &middot; 7 days a week
               </p>
+            </div>
+            <div class="col-lg-5">
+              <!-- Stock photo (Pexels, free licence) until real crew photos exist.
+                   Hidden below 992px, where the headline and buttons need the room;
+                   loading="lazy" means phones never download it. -->
+              <figure class="hero-photo">
+                <img src="images/junk-hero.webp" alt="Two movers carrying a green couch out through a front door"
+                     width="800" height="1000" loading="lazy" decoding="async" />
+                <figcaption class="hero-badge">
+                  <span class="hb-num">$139</span>
+                  <span class="hb-lab">single item,<br />all-in</span>
+                </figcaption>
+              </figure>
             </div>
           </div>
         </div>
@@ -189,9 +200,8 @@
               </div>
             </div>
             <div class="col-lg-6">
-              <img src="images/skid_steer.webp" alt="No-BS skid steer working on a Winnipeg property"
-                   loading="lazy" width="600" height="400"
-                   style="width: 100%; height: auto; border-radius: 14px" />
+              <img class="photo-frame" src="images/skid_steer.webp" alt="No-BS skid steer working on a Winnipeg property"
+                   loading="lazy" width="600" height="400" />
             </div>
           </div>
         </div>

@@ -35,6 +35,32 @@ nothing here is out of compliance — but if you ever want to credit the
 photographers by name, these seven would need to be re-sourced with their IDs
 tracked. Any photo added from here on should have its ID recorded in this table.
 
+### Pexels
+
+Six more photos came from **Pexels** (`images.pexels.com`), added when the
+site's own stylesheet replaced the lawn template. The
+[Pexels Licence](https://www.pexels.com/license/) allows free commercial use
+with no permission or attribution required, and modification is allowed
+(these were cropped and re-encoded). What it forbids — selling the photos
+unaltered, implying endorsement by the people pictured — this site does not do.
+
+Unlike the Unsplash set, the photo IDs **were** recorded. The photo page is
+`https://www.pexels.com/photo/<ID>/`.
+
+| File | Pexels ID | What the picture actually shows | Used on |
+|---|---|---|---|
+| `junk-hero.webp` | 7464406 | Two movers carrying a green couch out through a brick front doorway | Homepage hero (and its share image) |
+| `hot-tub-removal.webp` | 9899878 | An outdoor hot tub with a weathered wooden cabinet, cover folded back | `/hot-tub-removal-winnipeg` |
+| `concrete-removal.webp` | 33484883 | A worker in hi-vis breaking pavement with a jackhammer beside a work truck | `/concrete-removal-winnipeg` |
+| `mattress-disposal.webp` | 29348622 | A discarded mattress dumped against a pile of garbage bags | `/mattress-disposal-winnipeg` |
+| `piano-removal.webp` | 1021142 | A wooden upright piano against a plain wall | `/piano-removal-winnipeg` |
+| `shed-deck-removal.webp` | 3612412 | A weathered grey backyard shed with a broken door leaning against it | `/shed-deck-removal-winnipeg` |
+
+All six were opened and looked at before use. The hero is cropped to a 4:5
+portrait at 800x1000; the rest are 3:2 at 1000x667. All are WebP at quality
+72–78, 33–120 KB each. The movers in the hero are models, not No BS crew, and
+the alt text says what is in the frame rather than claiming otherwise.
+
 ### These are stock, not your jobs
 
 None of these are photographs of No BS work, crew, equipment or customers, and
@@ -52,8 +78,8 @@ no other change.
 `logo.svg`, `footer-logo.svg`, `favicon.webp`, the `icon-take-*.svg` set,
 `payments.webp`, crew headshots (`steph-headshot.jpg`, `ben-headshot-min.webp`)
 and the job photos carried over from the landscaping side (`skid_steer.webp`,
-`snow_removal.webp`, `plow_truck.webp`, `shoveling_snow.webp`, `before.webp`,
-`after.webp`, `patios.webp`) are No-BS's own property.
+`snow_removal.webp`, `plow_truck.webp`, `shoveling_snow.webp`) are No-BS's own
+property.
 
 The `No-Bs` wordmark inside `logo.svg` is set in **Plus Jakarta Sans ExtraBold**
 ([SIL Open Font Licence 1.1](https://openfontlicense.org/)), converted to vector
