@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-_build.py — assembles the static pages for no-bs-junkremoval.com.
+_build.py — assembles the static pages for no-bsjunk.com.
 
 WHY THIS EXISTS
 ---------------
@@ -53,7 +53,7 @@ def strip_tags(s):
 ROOT = Path(__file__).parent
 PAGES_DIR = ROOT / "_pages"
 
-SITE = "https://www.no-bs-junkremoval.com"
+SITE = "https://www.no-bsjunk.com"
 PHONE_DISPLAY = "204.900.0438"
 PHONE_TEL = "+12049000438"
 PHONE_E164 = "+12049000438"
@@ -2270,7 +2270,7 @@ def main():
                     faq_pairs.append((name, q["acceptedAnswer"]["text"]))
 
     L = []
-    L.append("# www.no-bs-junkremoval.com llms.txt")
+    L.append("# www.no-bsjunk.com llms.txt")
     L.append("")
     L.append("> No BS Junk Removal is the junk removal and hauling division of No-BS")
     L.append("> Yardwork in Winnipeg, Manitoba. Pricing is by volume — the space your")

@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------
-# no-bs-junkremoval.com
+# no-bsjunk.com
 #
 # Mirrors the conventions on no-bs-yardwork.com: extensionless URLs, long
 # cache on static assets, short cache on HTML, gzip.
@@ -76,7 +76,7 @@ RewriteRule ^(_pages|deploy)/ - [F,L]
 # ......................................................................
 # CANONICAL HOST — LEAVE COMMENTED UNTIL THE DOMAIN IS LIVE
 #
-# Until no-bs-junkremoval.com resolves, this site is reachable as a
+# Until no-bsjunk.com resolves, this site is reachable as a
 # subdirectory of no-bs-yardwork.com. Uncommenting these three lines before
 # DNS is working would 301 every visitor to a domain that does not answer,
 # making the site unreachable by any route.
@@ -86,8 +86,8 @@ RewriteRule ^(_pages|deploy)/ - [F,L]
 # The canonical tags on every page already point at the junk domain, which
 # is enough on its own in the meantime.
 # ......................................................................
-# RewriteCond %{HTTP_HOST} !^(www\.)?no-bs-junkremoval\.com$ [NC]
-# RewriteRule ^(.*)$ https://www.no-bs-junkremoval.com/$1 [R=301,L]
+# RewriteCond %{HTTP_HOST} !^(www\.)?no-bsjunk\.com$ [NC]
+# RewriteRule ^(.*)$ https://www.no-bsjunk.com/$1 [R=301,L]
 
 # Strip .html when it is typed or linked explicitly.
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.html\ HTTP/

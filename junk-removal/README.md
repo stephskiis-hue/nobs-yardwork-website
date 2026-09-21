@@ -2,7 +2,7 @@
 
 Static site for the junk removal division of **No-BS Yardwork**.
 Target domain: `nobs-junk.com` — chosen, not yet registered. Until `SITE` in
-`_build.py` is changed, the build still generates against `no-bs-junkremoval.com`.
+`_build.py` is changed, the build still generates against `no-bsjunk.com`.
 
 Hand-coded static HTML, same stack as no-bs-yardwork.com: no framework, no
 runtime dependencies, deploys by FTP to cPanel/Apache.
@@ -223,12 +223,12 @@ allowlist. Share it freely with crew, family or a designer.
 `X-Robots-Tag: noindex, nofollow, noarchive` on every response, which tells
 *search engines* not to list the page. It has no effect on people with the link.
 It is there because without it Google can index a staging copy carrying
-placeholder prices, which then competes with the real no-bs-junkremoval.com
+placeholder prices, which then competes with the real no-bsjunk.com
 later — a duplicate-content mess that is tedious to unwind. The header lives in
 the container config, not in `.htaccess`, so it can never follow the site to
 production. Leave it on until the real domain is live.
 
-**Link previews work.** Every page hard-codes `https://www.no-bs-junkremoval.com`
+**Link previews work.** Every page hard-codes `https://www.no-bsjunk.com`
 in its `canonical`, `og:url` and `og:image` — correct for production, but that
 domain does not resolve yet, so a staging link pasted into Messenger, Slack or a
 text message would show a preview card with no image and a dead click-through.

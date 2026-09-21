@@ -17,18 +17,18 @@ and no file reaches outside this directory, so moving it is a copy.
 files sit at the root, then pushes that branch to the new repo.
 
 ```bash
-# 1. On github.com, create a new PRIVATE repo: no-bs-junkremoval-website
+# 1. On github.com, create a new PRIVATE repo: no-bsjunk-website
 #    Do NOT initialise it with a README, .gitignore or licence.
 
 # 2. From a clone of nobs-yardwork-website, on the branch holding this work:
 git subtree split --prefix=junk-removal -b junk-site
 
 # 3. Push that branch as the new repo's main branch:
-git push https://github.com/stephskiis-hue/no-bs-junkremoval-website.git junk-site:main
+git push https://github.com/stephskiis-hue/no-bsjunk-website.git junk-site:main
 
 # 4. Clone the new repo somewhere fresh and check it:
-git clone https://github.com/stephskiis-hue/no-bs-junkremoval-website.git
-cd no-bs-junkremoval-website
+git clone https://github.com/stephskiis-hue/no-bsjunk-website.git
+cd no-bsjunk-website
 python3 -m http.server 8000     # then open http://localhost:8000/
 ```
 
@@ -37,13 +37,13 @@ python3 -m http.server 8000     # then open http://localhost:8000/
 Simpler, loses the commit history for these files.
 
 ```bash
-mkdir ~/no-bs-junkremoval-website
-cp -r junk-removal/. ~/no-bs-junkremoval-website/
-cd ~/no-bs-junkremoval-website
+mkdir ~/no-bsjunk-website
+cp -r junk-removal/. ~/no-bsjunk-website/
+cd ~/no-bsjunk-website
 git init -b main
 git add -A
 git commit -m "Initial commit: No BS Junk Removal Winnipeg site"
-git remote add origin https://github.com/stephskiis-hue/no-bs-junkremoval-website.git
+git remote add origin https://github.com/stephskiis-hue/no-bsjunk-website.git
 git push -u origin main
 ```
 

@@ -92,7 +92,7 @@ the 404 page and the quote form are the four that matter.
 
 **Custom domains → Set up a domain.** If the domain is registered at Cloudflare,
 DNS is filled in for you; otherwise point the nameservers at Cloudflare first.
-Add both the apex (`no-bs-junkremoval.com`) and `www`, and let Cloudflare
+Add both the apex (`no-bsjunk.com`) and `www`, and let Cloudflare
 redirect one to the other so only one version is canonical.
 
 HTTPS is automatic. There is no certificate to buy or renew.
@@ -111,9 +111,9 @@ no-bs-yardwork.com already runs on.
 
 ### 1. Point the domain at a folder
 
-In cPanel, **Domains → Create A New Domain**. Enter `no-bs-junkremoval.com` and
+In cPanel, **Domains → Create A New Domain**. Enter `no-bsjunk.com` and
 note the **Document Root** it gives you — usually something like
-`/home/youruser/no-bs-junkremoval.com`.
+`/home/youruser/no-bsjunk.com`.
 
 > Write that path down and check it. Uploading to the wrong document root is
 > how people overwrite their existing site. If the path says `public_html` with
@@ -141,11 +141,11 @@ links to itself over `https://` throughout.
 ### 5. After DNS resolves, force the canonical host
 
 `.htaccess` has three commented lines near the top that redirect every visitor
-to `https://www.no-bs-junkremoval.com`. **Leave them commented until the domain
+to `https://www.no-bsjunk.com`. **Leave them commented until the domain
 actually resolves** — enabling them early sends every visitor to a domain that
 does not answer, which takes the site down by every route at once.
 
-Once `https://www.no-bs-junkremoval.com` loads in a browser, uncomment them.
+Once `https://www.no-bsjunk.com` loads in a browser, uncomment them.
 
 ---
 
@@ -157,7 +157,7 @@ the server block instead. This config is the equivalent:
 ```nginx
 server {
     listen 80;
-    server_name no-bs-junkremoval.com www.no-bs-junkremoval.com;
+    server_name no-bsjunk.com www.no-bsjunk.com;
     root /var/www/no-bs-junkremoval;
     index index.html;
 
@@ -202,7 +202,7 @@ server {
 ```
 
 Then `sudo nginx -t && sudo systemctl reload nginx`, and get a certificate with
-`sudo certbot --nginx -d no-bs-junkremoval.com -d www.no-bs-junkremoval.com`.
+`sudo certbot --nginx -d no-bsjunk.com -d www.no-bsjunk.com`.
 
 ---
 
@@ -210,7 +210,7 @@ Then `sudo nginx -t && sudo systemctl reload nginx`, and get a certificate with
 
 Open the site and confirm each of these. They are the things that actually break.
 
-- [ ] `https://www.no-bs-junkremoval.com` loads with the green header and logo.
+- [ ] `https://www.no-bsjunk.com` loads with the green header and logo.
 - [ ] **Clean URLs**: `/pricing` works, not just `/pricing.html`. If this fails,
       `.htaccess` did not upload or `mod_rewrite` is off.
 - [ ] **The blog**: `/blog` shows eight cards, and `/blog/junk-removal-cost-winnipeg`
