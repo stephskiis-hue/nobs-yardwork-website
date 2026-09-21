@@ -56,6 +56,24 @@
     onScroll();
   }
 
+  /* ---- Print: expand every <details> ----
+   * FAQ answers and the full item list live in collapsed <details>. A closed
+   * one does not print, and a printed FAQ with no answers is useless. CSS
+   * cannot reliably force them open in Chrome, so do it here and put them
+   * back afterwards. */
+  window.addEventListener("beforeprint", function () {
+    document.querySelectorAll("details:not([open])").forEach(function (d) {
+      d.setAttribute("data-was-closed", "");
+      d.open = true;
+    });
+  });
+  window.addEventListener("afterprint", function () {
+    document.querySelectorAll("details[data-was-closed]").forEach(function (d) {
+      d.removeAttribute("data-was-closed");
+      d.open = false;
+    });
+  });
+
   /* ---- Scroll reveal ----
    * Only elements below the fold are hidden; anything already on screen at
    * load is marked visible immediately so there is no flash on first paint. */

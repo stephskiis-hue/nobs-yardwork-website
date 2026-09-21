@@ -321,7 +321,7 @@ def faq_schema(pairs):
 # Chrome
 # ---------------------------------------------------------------------------
 
-def render_nav(base=""):
+def render_nav(base="", current=""):
     """Render the nav. `base` is the prefix that walks back up to the web root.
 
     Every link and asset on this site is relative, which is what lets the whole
@@ -331,18 +331,30 @@ def render_nav(base=""):
     ("/css/...") would have been less code and would have broken the subfolder
     arrangement the site is currently reachable through.
     """
+    # aria-current tells a screen reader which item is the page you are on, and
+    # gives the CSS something to underline. `current` is the page slug; a
+    # dropdown parent is marked too when the page is one of its children, so
+    # "Furniture Removal" lights up "What We Take" as well.
+    # Every post under blog/ counts as being on the Blog nav item.
+    here = "blog/index" if current.startswith("blog/") else current
+
+    def mark(href, extra=""):
+        return ' aria-current="page"' if href == f"{here}.html" else extra
+
     out = []
     for label, href, children in NAV:
         if children:
             kids = "".join(
-                f'<li><a href="{base}{h}">{l}</a></li>' for l, h in children
+                f'<li><a href="{base}{h}"{mark(h)}>{l}</a></li>' for l, h in children
             )
+            in_section = any(h == f"{here}.html" for _, h in children)
+            attrs = mark(href, ' data-section="current"' if in_section else "")
             out.append(
-                f'<li class="has-sub"><a href="{base}{href}">{label}</a>'
+                f'<li class="has-sub"><a href="{base}{href}"{attrs}>{label}</a>'
                 f'<ul class="sub-menu">{kids}</ul></li>'
             )
         else:
-            out.append(f'<li><a href="{base}{href}">{label}</a></li>')
+            out.append(f'<li><a href="{base}{href}"{mark(href)}>{label}</a></li>')
     return "\n                  ".join(out)
 
 
@@ -667,21 +679,117 @@ def check_categories():
 check_categories()
 
 
+# Real before/after pairs, shown on the homepage. EMPTY ON PURPOSE: the
+# section renders only when there is something real to put in it, because a
+# strip of placeholder frames is worse than no strip at all. Add an entry once
+# a job has been photographed from the same spot twice:
+#
+#     {"before": "job1-before.webp", "after": "job1-after.webp",
+#      "alt": "Garage packed to the door, then swept empty",
+#      "caption": "Garage cleanout, St. Vital",
+#      "flag": ""}       # "flag" labels work carried over from the lawn side
+#
+# Both files go in images/ at 1000x667. The two frames must be shot from the
+# same spot — a pair where the camera moved is not proof of anything.
+BEFORE_AFTER = []
+
+
+def render_before_after():
+    """The before/after strip, or nothing at all if there are no pairs yet."""
+    if not BEFORE_AFTER:
+        return ""
+    cards = []
+    for p in BEFORE_AFTER:
+        flag = (f'\n                <span class="carryover-flag">{_e(p["flag"])}</span>'
+                if p.get("flag") else "")
+        cards.append(f'''
+              <figure class="ba-pair">{flag}
+                <div class="ba-frames">
+                  <div class="ba-shot is-before">
+                    <img src="{{BASE}}images/{p["before"]}" alt="{_e(p["alt"])} &mdash; before"
+                         width="1000" height="667" loading="lazy" decoding="async" />
+                    <span class="ba-tag">Before</span>
+                  </div>
+                  <div class="ba-shot is-after">
+                    <img src="{{BASE}}images/{p["after"]}" alt="{_e(p["alt"])} &mdash; after"
+                         width="1000" height="667" loading="lazy" decoding="async" />
+                    <span class="ba-tag">After</span>
+                  </div>
+                </div>
+                <figcaption>{_e(p["caption"])}</figcaption>
+              </figure>''')
+    return f'''      <section class="section-space bg-tint">
+        <div class="container">
+          <div class="section-title text-center">
+            <p class="eyebrow">Real jobs</p>
+            <h2>Same spot, two hours apart</h2>
+          </div>
+          <div class="ba-strip">{"".join(cards)}
+          </div>
+        </div>
+      </section>
+
+'''
+
+
 def render_take_grid():
-    """The twelve category tiles, used on the homepage and the hub."""
-    tiles = "".join(
-        f'\n            <li><a href="{{BASE}}{c["slug"]}.html">'
-        f'<span class="ti ti-{c["icon"]}"></span>{_e(c["short"])}</a></li>'
-        for c in CATEGORIES
-    )
-    return f'<ul class="take-grid">{tiles}\n          </ul>'
+    """The twelve category tiles, used on the homepage and the hub.
+
+    A tile is a photograph with its label over a gradient. If a category has no
+    photo in images/tiles/ yet, that one tile falls back to the line icon it
+    used before, so a missing file degrades to the old look instead of leaving
+    a hole. Photos are lazy-loaded and sized, so the grid costs no layout shift.
+    """
+    tiles = []
+    for c in CATEGORIES:
+        photo = ROOT / "images" / "tiles" / f'{c["icon"]}.webp'
+        if photo.exists():
+            inner = (
+                f'<img src="{{BASE}}images/tiles/{c["icon"]}.webp" alt="" '
+                f'width="500" height="333" loading="lazy" decoding="async" />'
+            )
+            cls = ' class="has-photo"'
+        else:
+            inner = f'<span class="ti ti-{c["icon"]}"></span>'
+            cls = ""
+        tiles.append(
+            f'\n            <li{cls}><a href="{{BASE}}{c["slug"]}.html">'
+            f'{inner}<span class="tk-label">{_e(c["short"])}</span></a></li>'
+        )
+    return f'<ul class="take-grid">{"".join(tiles)}\n          </ul>'
 
 
 def render_take_list():
-    """The homepage wall of item names: every real item, in category order."""
+    """The "is my thing on the list?" block for the homepage.
+
+    This used to be all 152 item names as one grey paragraph. The words earn
+    their keep for search, but nobody reads a wall of nouns, so they now sit
+    inside a closed <details>: still in the page for crawlers, out of the way
+    for people. Above it is the thing a visitor actually wants — a search box
+    that hands the query to the A-Z page, which filters on load.
+
+    The form is a plain GET, so it works with JavaScript off: without it you
+    land on the full A-Z list, which is a reasonable answer to the question.
+    """
     names = " ".join(f"{_e(it['name'])}." for c in CATEGORIES for it in c["items"])
-    return (f'<div class="take-list">{names} '
-            f'<a href="{{BASE}}what-we-take-a-z.html">The whole list, A to Z &rarr;</a></div>')
+    count = sum(len(c["items"]) for c in CATEGORIES)
+    return (
+        '<div class="take-find">'
+        '\n            <form class="take-search" action="{BASE}what-we-take-a-z.html" method="get">'
+        '\n              <label for="take-q">Type what you&rsquo;ve got</label>'
+        '\n              <div class="take-search-row">'
+        '\n                <input type="search" id="take-q" name="q" '
+        'placeholder="Treadmill, fridge, hot tub&hellip;" autocomplete="off" />'
+        '\n                <button type="submit" class="btn-default">Check the list</button>'
+        '\n              </div>'
+        '\n            </form>'
+        f'\n            <details class="take-all">'
+        f'\n              <summary>See all {count} things we take</summary>'
+        f'\n              <div class="take-list">{names} '
+        f'<a href="{{BASE}}what-we-take-a-z.html">The whole list, A to Z &rarr;</a></div>'
+        f'\n            </details>'
+        '\n          </div>'
+    )
 
 
 def render_category_items(c):
@@ -712,6 +820,8 @@ def expand_take_tokens(text, slug):
         text = text.replace("{TAKE_GRID}", render_take_grid())
     if "{TAKE_LIST}" in text:
         text = text.replace("{TAKE_LIST}", render_take_list())
+    if "{BEFORE_AFTER}" in text:
+        text = text.replace("{BEFORE_AFTER}", render_before_after())
     if "{CATEGORY_ITEMS}" in text:
         c = _category(slug)
         if c is None:
@@ -876,7 +986,7 @@ def render_az(_base=None):
           var entries = [].slice.call(document.querySelectorAll(".az-entry"));
           var groups = [].slice.call(document.querySelectorAll(".az-group"));
           var empty = document.getElementById("az-empty");
-          input.addEventListener("input", function () {{
+          function apply() {{
             var q = input.value.trim().toLowerCase();
             var shown = 0;
             entries.forEach(function (e) {{
@@ -888,7 +998,17 @@ def render_az(_base=None):
               g.hidden = !g.querySelector(".az-entry:not([hidden])");
             }});
             if (empty) empty.hidden = shown !== 0;
-          }});
+          }}
+          input.addEventListener("input", apply);
+          /* The homepage search box hands its query over as ?q=. Run the same
+             filter on arrival so the visitor lands on their answer, not on
+             735 entries they have to scroll. */
+          var q0 = new URLSearchParams(location.search).get("q");
+          if (q0) {{
+            input.value = q0;
+            apply();
+            input.focus();
+          }}
         }})();
       </script>
 '''
@@ -1971,13 +2091,14 @@ def strip_html_ext(text):
     return re.sub(r'href="([^"#?]+\.html)([#?][^"]*)?"', sub, text)
 
 
-def build_chrome(base, common):
-    """Header and footer rendered for one directory depth.
+def build_chrome(base, common, current=""):
+    """Header and footer rendered for one directory depth and one page.
 
-    Called once per distinct `base` ("" for root pages, "../" for /blog/), not
-    once per page — the chrome is identical within a depth.
+    Cached on (base, current) by the caller: the chrome only differs between
+    pages by which nav item carries aria-current, so pages in the same depth
+    that are not in the nav share one build.
     """
-    nav_html = render_nav(base)
+    nav_html = render_nav(base, current)
     footer_links = "".join(
         f'<li><a href="{base}{h}">{l}</a></li>' for l, h in FOOTER_LINKS
     )
@@ -1994,13 +2115,18 @@ def main():
         EMAIL=EMAIL, SITE=SITE, GTM_ID=GTM_ID, GA4_ID=GA4_ID,
         JOTFORM_ID=JOTFORM_ID,
     )
-    chrome = {b: build_chrome(b, common) for b in ("", "../")}
+    chrome = {}
 
     written = 0
     for page in PAGES:
         slug = page["slug"]
         base = page.get("base", "")
-        header, footer = chrome[base]
+        # Blog posts live one level down; their slugs carry the "blog/" prefix
+        # the nav hrefs use, so they match the nav's Blog entry directly.
+        key = (base, slug)
+        if key not in chrome:
+            chrome[key] = build_chrome(base, common, slug)
+        header, footer = chrome[key]
         if page.get("render"):
             raw = page["render"](base)
         else:

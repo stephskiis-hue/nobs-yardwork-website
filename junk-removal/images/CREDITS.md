@@ -49,15 +49,23 @@ Unlike the Unsplash set, the photo IDs **were** recorded. The photo page is
 
 | File | Pexels ID | What the picture actually shows | Used on |
 |---|---|---|---|
-| `junk-hero.webp` | 7464406 | Two movers carrying a green couch out through a brick front doorway | Homepage hero (and its share image) |
+| `junk-hero.webp` | 7464689 | Two workers loading a couch into the back of a white van on a residential street | Homepage hero (and its share image) |
 | `hot-tub-removal.webp` | 9899878 | An outdoor hot tub with a weathered wooden cabinet, cover folded back | `/hot-tub-removal-winnipeg` |
 | `concrete-removal.webp` | 33484883 | A worker in hi-vis breaking pavement with a jackhammer beside a work truck | `/concrete-removal-winnipeg` |
-| `mattress-disposal.webp` | 29348622 | A discarded mattress dumped against a pile of garbage bags | `/mattress-disposal-winnipeg` |
+| `mattress-disposal.webp` | 29348622 | An old mattress and box spring, cropped in tight from a wider rubbish pile | `/mattress-disposal-winnipeg` |
 | `piano-removal.webp` | 1021142 | A wooden upright piano against a plain wall | `/piano-removal-winnipeg` |
 | `shed-deck-removal.webp` | 3612412 | A weathered grey backyard shed with a broken door leaning against it | `/shed-deck-removal-winnipeg` |
 
-All six were opened and looked at before use. The hero is cropped to a 4:5
-portrait at 800x1000; the rest are 3:2 at 1000x667. All are WebP at quality
+All were opened and looked at before use. The hero is cropped to a 4:5
+portrait at 800x1000; the rest are 3:2 at 1000x667. Each category also has a
+500x333 tile crop in `images/tiles/`, used by the twelve-tile grid on the
+homepage and the What We Take hub; replacing a photo means regenerating its
+tile as well.
+
+**The weakest image on the site is `mattress-disposal.webp`.** The wider frame
+it came from reads as illegal dumping, which is the opposite of what this
+business sells, so it is cropped hard to the mattress. Replace it first when
+real job photos exist. All are WebP at quality
 72–78, 33–120 KB each. The movers in the hero are models, not No BS crew, and
 the alt text says what is in the frame rather than claiming otherwise.
 

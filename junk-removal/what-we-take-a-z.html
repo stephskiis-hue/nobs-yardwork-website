@@ -1037,7 +1037,7 @@
 
         <nav class="main-menu" id="main-menu" aria-label="Main">
           <ul class="nav-list">
-            <li class="has-sub"><a href="what-we-take">What We Take</a><ul class="sub-menu"><li><a href="what-we-take">All 12 Categories</a></li><li><a href="what-we-take-a-z">Everything, A to Z</a></li><li><a href="what-we-dont-take">What We Can&rsquo;t Take</a></li><li><a href="furniture-removal-winnipeg">Furniture Removal</a></li><li><a href="appliance-removal-winnipeg">Appliance Removal</a></li><li><a href="mattress-disposal-winnipeg">Mattress Disposal</a></li><li><a href="hot-tub-removal-winnipeg">Hot Tub Removal</a></li><li><a href="concrete-removal-winnipeg">Concrete &amp; Heavy Material</a></li></ul></li>
+            <li class="has-sub"><a href="what-we-take" data-section="current">What We Take</a><ul class="sub-menu"><li><a href="what-we-take">All 12 Categories</a></li><li><a href="what-we-take-a-z" aria-current="page">Everything, A to Z</a></li><li><a href="what-we-dont-take">What We Can&rsquo;t Take</a></li><li><a href="furniture-removal-winnipeg">Furniture Removal</a></li><li><a href="appliance-removal-winnipeg">Appliance Removal</a></li><li><a href="mattress-disposal-winnipeg">Mattress Disposal</a></li><li><a href="hot-tub-removal-winnipeg">Hot Tub Removal</a></li><li><a href="concrete-removal-winnipeg">Concrete &amp; Heavy Material</a></li></ul></li>
                   <li><a href="pricing">Pricing</a></li>
                   <li><a href="commercial-junk-removal-winnipeg">Commercial</a></li>
                   <li><a href="winter-services-winnipeg">Winter</a></li>
@@ -4207,7 +4207,7 @@
           var entries = [].slice.call(document.querySelectorAll(".az-entry"));
           var groups = [].slice.call(document.querySelectorAll(".az-group"));
           var empty = document.getElementById("az-empty");
-          input.addEventListener("input", function () {
+          function apply() {
             var q = input.value.trim().toLowerCase();
             var shown = 0;
             entries.forEach(function (e) {
@@ -4219,7 +4219,17 @@
               g.hidden = !g.querySelector(".az-entry:not([hidden])");
             });
             if (empty) empty.hidden = shown !== 0;
-          });
+          }
+          input.addEventListener("input", apply);
+          /* The homepage search box hands its query over as ?q=. Run the same
+             filter on arrival so the visitor lands on their answer, not on
+             735 entries they have to scroll. */
+          var q0 = new URLSearchParams(location.search).get("q");
+          if (q0) {
+            input.value = q0;
+            apply();
+            input.focus();
+          }
         })();
       </script>
     </main>
