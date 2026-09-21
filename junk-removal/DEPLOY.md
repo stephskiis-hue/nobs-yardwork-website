@@ -16,8 +16,9 @@ submissions go to JotForm rather than through the server. That means:
 
 ## What to upload, and what to leave behind
 
-Upload **everything except** the build tooling. None of it is secret, but a web
-root is not the place for it:
+`sh deploy/make-dist.sh` assembles a `dist/` folder containing exactly what
+belongs on a server. Upload the *contents* of `dist/`, not the repo. If you
+prefer to upload by hand, this is what the script leaves out, and why:
 
 | Leave out | Why |
 |---|---|
@@ -40,7 +41,70 @@ page, gzip and caching. Turn on "show hidden files" and confirm it arrived.
 
 ---
 
-## Option A — cPanel or any shared Apache host
+## Option A — Cloudflare Pages, deploying from GitHub (recommended)
+
+Free, fast everywhere, HTTPS included, and it redeploys itself every time you
+push. No FTP, no dragging folders, nothing to forget.
+
+**Why this one.** The site is static files, which is exactly what Pages is for.
+Its free plan carries unlimited static requests, 500 builds a month and up to
+100 custom domains per project, and it strips `.html` from URLs automatically —
+which is the same clean-URL shape `.htaccess` gives you on Apache, so every
+link on this site works unchanged. Netlify is an equally good alternative with
+the same shape of setup; the settings below translate directly.
+
+### 1. Get the code on GitHub
+
+The site currently lives in the `junk-removal/` folder of the lawn repo, on its
+own branch. That is fine — Pages can build from a subfolder. Push the branch:
+
+```bash
+git push -u origin claude/no-bs-junk-removal-site-vn1784
+```
+
+(If you would rather it had its own repository, `MIGRATE.md` walks through that
+and keeps the history. It is not required to go live.)
+
+### 2. Create the project
+
+In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to
+Git**, pick the repo, then set:
+
+| Setting | Value |
+|---|---|
+| Production branch | `claude/no-bs-junk-removal-site-vn1784` (or `main` after a migration) |
+| Root directory | `junk-removal` |
+| Build command | `sh deploy/make-dist.sh` |
+| Build output directory | `dist` |
+
+The build command runs `_build.py` and assembles `dist/` — the pages, CSS, JS
+and images, and nothing else. Without it you would be publishing the generator
+and the page sources too. Python 3 is already present in the build image, and
+the site needs nothing else installed.
+
+### 3. Check the preview URL
+
+Every deploy gets a `*.pages.dev` address. Open it and run the checklist at the
+bottom of this file **before** pointing the domain at it. Clean URLs, the blog,
+the 404 page and the quote form are the four that matter.
+
+### 4. Add the domain
+
+**Custom domains → Set up a domain.** If the domain is registered at Cloudflare,
+DNS is filled in for you; otherwise point the nameservers at Cloudflare first.
+Add both the apex (`no-bs-junkremoval.com`) and `www`, and let Cloudflare
+redirect one to the other so only one version is canonical.
+
+HTTPS is automatic. There is no certificate to buy or renew.
+
+### 5. From then on
+
+Push to the branch and the site updates itself in about a minute. Every deploy
+is kept, so a bad change can be rolled back from the dashboard in one click.
+
+---
+
+## Option B — cPanel or any shared Apache host
 
 This is almost certainly the right option; it is the same kind of hosting
 no-bs-yardwork.com already runs on.
@@ -85,7 +149,7 @@ Once `https://www.no-bs-junkremoval.com` loads in a browser, uncomment them.
 
 ---
 
-## Option B — a VPS running nginx
+## Option C — a VPS running nginx
 
 The `.htaccess` does nothing on nginx, so its behaviour has to be expressed in
 the server block instead. This config is the equivalent:
