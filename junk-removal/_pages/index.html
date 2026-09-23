@@ -33,11 +33,15 @@
             </div>
             <div class="col-lg-5">
               <!-- Stock photo (Pexels, free licence) until real crew photos exist.
-                   Hidden below 992px, where the headline and buttons need the room;
-                   loading="lazy" means phones never download it. -->
+                   Hidden below 992px, where the headline and buttons need the room.
+                   NOT lazy: above 992px this is the largest element above the
+                   fold, so it is the LCP, and lazy-loading it told the browser
+                   to wait for layout before even asking for it — the canonical
+                   way to make that number worse. display:none still keeps it
+                   off phones, which never lay it out. -->
               <figure class="hero-photo">
                 <img src="images/junk-hero.webp" alt="Two workers loading a couch into the back of a van"
-                     width="800" height="1000" loading="lazy" decoding="async" />
+                     width="800" height="1000" fetchpriority="high" decoding="async" />
                 <figcaption class="hero-badge">
                   <span class="hb-num">$139</span>
                   <span class="hb-lab">single item,<br />all-in</span>

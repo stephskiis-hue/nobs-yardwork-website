@@ -39,9 +39,11 @@
 # SECURITY HEADERS
 #
 # Cheap, standards-based, and they cost nothing to serve. No CSP here on
-# purpose: this site loads Google Tag Manager, GA4 and Google Fonts, and a CSP
-# written without testing against all three is a quick way to silently break
-# analytics or the quote form.
+# purpose: the quote form is a JotForm iframe and the page loads gtag.js, and
+# a CSP written without testing against both is a quick way to silently break
+# the form or the analytics. (Tag Manager and Google Fonts were removed on
+# 2026-09-23 — the fonts are self-hosted now, so a CSP would be easier to
+# write today than it was.)
 # ----------------------------------------------------------------------
 <IfModule mod_headers.c>
   # Stop browsers guessing a MIME type and executing something as script.
@@ -95,7 +97,9 @@ RewriteCond %{HTTP_HOST} ^www\.no-bsjunk\.com$ [NC]
 RewriteRule ^(.*)$ https://no-bsjunk.com/$1 [R=301,L]
 
 # Strip .html when it is typed or linked explicitly.
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.html\ HTTP/
+# The [\ ?] matters: with a bare space, /pricing.html?x=1 slipped past the
+# redirect and served a live duplicate of the page at a non-canonical URL.
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.html[\ ?]
 RewriteRule ^(.*)\.html$ /$1 [R=301,L]
 
 # Map the extensionless URL back to the file on disk.

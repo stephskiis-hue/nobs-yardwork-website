@@ -25,6 +25,7 @@ else depends on this script.
 """
 
 import hashlib
+import struct
 import html
 import json
 import re
@@ -248,7 +249,18 @@ def service_schema(name, description, url, service_type):
         "areaServed": {"@type": "City", "name": "Winnipeg"},
         "url": url,
         # A reference, not a copy — see the @id note on LOCAL_BUSINESS.
-        "provider": {"@id": f"{SITE}/#localbusiness"},
+        # A bare @id would dangle: LOCAL_BUSINESS is emitted on the homepage
+        # only, and Google resolves @id per document, so on a service page
+        # the provider had no type, name or phone at all. This is the
+        # minimum that still identifies the business, and it keeps the same
+        # @id so the homepage node remains the full record.
+        "provider": {
+            "@type": "LocalBusiness",
+            "@id": f"{SITE}/#localbusiness",
+            "name": "No BS Junk Removal",
+            "telephone": PHONE_E164,
+            "url": f"{SITE}/",
+        },
     }
 
 
@@ -394,7 +406,7 @@ HEADER = """    <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="container header-bar">
         <a class="brand-lockup" href="{BASE}index.html">
-          <img src="{BASE}images/logo.svg" alt="No-Bs Junk Removal" width="141" height="50"
+          <img src="{BASE}images/logo.svg" alt="No BS" width="141" height="50"
                fetchpriority="high" />
           <span class="division-tag">Junk Removal</span>
         </a>
@@ -429,7 +441,7 @@ FOOTER = """    <footer class="site-footer">
       <div class="container">
         <div class="footer-grid">
           <div class="footer-about">
-            <img class="footer-logo" src="{BASE}images/footer-logo.svg" alt="No BS Junk Removal Winnipeg"
+            <img class="footer-logo" src="{BASE}images/logo.svg" alt="No BS Junk Removal Winnipeg"
                  loading="lazy" width="220" height="78" />
             <p>Embrace hard work, honesty and watch amazing things unfold.</p>
             <p><strong>The hauling division of
@@ -451,7 +463,7 @@ FOOTER = """    <footer class="site-footer">
           <div class="footer-col">
             <h3>Office hours</h3>
             <dl class="footer-hours">
-              <div><dt>Monday &ndash; Friday</dt><dd>9:00 &ndash; 6:00</dd></div>
+              <div><dt>Monday &ndash; Friday</dt><dd>9:00am &ndash; 6:00pm</dd></div>
               <div><dt>Saturday</dt><dd>10:00 &ndash; 6:00</dd></div>
               <div><dt>Sunday</dt><dd>10:00 &ndash; 6:00</dd></div>
             </dl>
@@ -492,7 +504,7 @@ SCRIPTS = """    <script src="{BASE}js/site.js?v={JS_V}" defer></script>
 """
 
 PAGE = """<!doctype html>
-<html lang="en">
+<html lang="en-CA">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -510,6 +522,8 @@ PAGE = """<!doctype html>
     <meta property="og:description" content="{description}" />
     <meta property="og:url" content="{canonical}" />
     <meta property="og:image" content="{SITE}/images/{og_image}" />
+    <meta property="og:image:width" content="{og_w}" />
+    <meta property="og:image:height" content="{og_h}" />
     <meta property="og:locale" content="en_CA" />
 
     <!-- Twitter/X card. Without these a shared link renders as a bare title with
@@ -825,7 +839,36 @@ def render_category_items(c):
         '\n              <dl class="ci-list">' + "".join(rows) + '\n              </dl>'
         '\n              <p class="ci-more">Not on the list? Check '
         '<a href="{BASE}what-we-take-a-z.html">everything we take, A to Z</a>, or '
-        '<a href="sms:{PHONE_E164}">text us a photo</a> and we will tell you straight.</p>\n'
+        '<a href="sms:{PHONE_E164}">text us a photo</a> and we will tell you straight. '
+        'Every category is priced off the same '
+        '<a href="{BASE}pricing.html">rate card</a> &mdash; $139 to $689, all in.</p>'
+        + render_related_categories(c) + '\n'
+    )
+
+
+def render_related_categories(current):
+    """The three neighbouring category pages, linked from each category page.
+
+    Before this, the only internal links in the body of a service page were
+    the A-Z index and the quote form — identical on all twelve. Nothing linked
+    to /pricing, which is the page that closes the sale, and nothing linked
+    sideways, so twelve pages that will actually rank passed their standing to
+    nowhere. The neighbours are taken in list order and wrapped around, which
+    keeps the set stable between builds and gives every category the same
+    number of inbound links rather than piling them onto the first few.
+    """
+    i = [c["slug"] for c in CATEGORIES].index(current["slug"])
+    picks = [CATEGORIES[(i + n) % len(CATEGORIES)] for n in (1, 2, 3)]
+    links = "".join(
+        f'\n                <li><a href="{{BASE}}{c["slug"]}.html">{_e(c["name"])}'
+        f'<span>{_e(c["blurb"])}</span></a></li>'
+        for c in picks
+    )
+    return (
+        '\n              <nav class="related-cats" aria-labelledby="related-heading">'
+        '\n                <h3 id="related-heading">Other things we haul</h3>'
+        f'\n                <ul>{links}\n                </ul>'
+        '\n              </nav>'
     )
 
 
@@ -1023,7 +1066,10 @@ def render_az(_base=None):
           if (q0) {{
             input.value = q0;
             apply();
-            input.focus();
+            // Focusing the box opens the on-screen keyboard over the very
+            // results the visitor asked for. Only worth it where a keyboard
+            // is already there.
+            if (window.matchMedia("(pointer: fine)").matches) input.focus();
           }}
         }})();
       </script>
@@ -1847,6 +1893,10 @@ def blog_posting_schema(post):
         "url": url,
         "mainEntityOfPage": {"@type": "WebPage", "@id": url},
         "image": f"{SITE}/images/{post['og_image']}",
+        # Inline, not {"@id": ".../#organization"}. That node is emitted on the
+        # homepage only, and Google resolves @id per document — a reference to
+        # it from a blog post points at nothing at all, which is worse than a
+        # repeated description.
         "author": {"@type": "Organization", "name": BLOG_AUTHOR, "url": SITE + "/"},
         "publisher": {
             "@type": "Organization",
@@ -1855,7 +1905,7 @@ def blog_posting_schema(post):
             "logo": {"@type": "ImageObject", "url": f"{SITE}/images/logo-badge.png"},
         },
         "isPartOf": {"@type": "Blog", "name": "No BS Junk Removal Blog",
-                     "@id": f"{SITE}/blog"},
+                     "@id": f"{SITE}/blog/"},
     }
 
 
@@ -2029,7 +2079,7 @@ PAGES.append(P(
     "Junk Removal Advice for Winnipeg | No BS Junk Removal Blog",
     "Straight answers on junk removal in Winnipeg: what it costs, how heavy material "
     "is priced, bin rental versus a crew, estate cleanouts and winter hauling.",
-    crumbs=[("Blog", "/blog")],
+    crumbs=[("Blog", "/blog/")],
     base="../",
     priority="0.80",
     lastmod=max(p["updated"] for p in POSTS),
@@ -2042,7 +2092,7 @@ for _post in POSTS:
         _post["title"],
         _post["description"],
         og_image=_post["og_image"],
-        crumbs=[("Blog", "/blog"),
+        crumbs=[("Blog", "/blog/"),
                 (strip_tags(_post["h1"]), f"/blog/{_post['slug']}")],
         schema=[blog_posting_schema(_post)],
         base="../",
@@ -2089,7 +2139,7 @@ def subst(text, mapping):
 
 
 def strip_html_ext(text):
-    """Rewrite internal .html hrefs to the canonical extensionless form.
+    """Rewrite internal .html hrefs and form actions to the extensionless form.
 
     Every canonical, breadcrumb and sitemap entry is extensionless (clean_url),
     while fragments and NAV are written with .html so they stay readable and
@@ -2098,16 +2148,21 @@ def strip_html_ext(text):
 
     Directory indexes need the care: "index.html" has to become "./" and not
     "", which would point at the current page instead of the site root.
+
+    `action=` is in here because the homepage search form pointed at
+    what-we-take-a-z.html, and a .html URL with a query string slips past the
+    .htaccess redirect entirely — so every search landed on a live,
+    indexable duplicate of the A-Z page.
     """
     def sub(m):
-        path, suffix = m.group(1), m.group(2) or ""
+        attr, path, suffix = m.group(1), m.group(2), m.group(3) or ""
         if path.startswith(("http://", "https://", "mailto:", "tel:", "sms:")):
             return m.group(0)
         trimmed = (path[: -len("index.html")] if path.endswith("index.html")
                    else path[: -len(".html")])
-        return f'href="{trimmed or "./"}{suffix}"'
+        return f'{attr}="{trimmed or "./"}{suffix}"'
 
-    return re.sub(r'href="([^"#?]+\.html)([#?][^"]*)?"', sub, text)
+    return re.sub(r'(href|action)="([^"#?]+\.html)([#?][^"]*)?"', sub, text)
 
 
 def build_chrome(base, common, current=""):
@@ -2126,6 +2181,36 @@ def build_chrome(base, common, current=""):
         strip_html_ext(subst(HEADER.replace("{NAV}", nav_html), scoped)),
         strip_html_ext(subst(FOOTER.replace("{FOOTER_LINKS}", footer_links), scoped)),
     )
+
+
+def image_size(path):
+    """(width, height) of a PNG or WebP, read from the file's own header.
+
+    Facebook and LinkedIn will render a card without og:image:width, but they
+    fetch the image first to find out how big it is — and on the first share of
+    a new URL that fetch often has not finished when the card is drawn, so the
+    card appears with no image at all. Declaring the size removes that round
+    trip. No Pillow on this machine, and two container formats is not enough to
+    justify a dependency.
+    """
+    data = Path(path).read_bytes()
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        w, h = struct.unpack(">II", data[16:24])
+        return w, h
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        chunk = data[12:16]
+        if chunk == b"VP8X":
+            # 24-bit little-endian, stored as (width - 1) and (height - 1).
+            w = int.from_bytes(data[24:27], "little") + 1
+            h = int.from_bytes(data[27:30], "little") + 1
+            return w, h
+        if chunk == b"VP8 ":
+            w, h = struct.unpack("<HH", data[26:30])
+            return w & 0x3FFF, h & 0x3FFF
+        if chunk == b"VP8L":
+            bits = int.from_bytes(data[21:25], "little")
+            return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+    raise ValueError(f"cannot read dimensions of {path}")
 
 
 _ASSET_V_CACHE = {}
@@ -2245,10 +2330,12 @@ def main():
         else:
             schema_html = ""
 
+        og_w, og_h = image_size(ROOT / "images" / page["og_image"])
         # Not named `html`: that shadows the stdlib module the feed uses below.
         page_html = PAGE.format(
             title=page["title"], description=page["description"],
             canonical=canonical, og_image=page["og_image"],
+            og_w=og_w, og_h=og_h,
             robots=page["robots"], body_class=page["body_class"],
             og_type=page.get("og_type", "website"),
             schema=schema_html, body=body,

@@ -455,9 +455,19 @@ strong{ font-weight: 800; }
 		visibility: hidden;
 		opacity: 0;
 		transform: translateY(-8px);
-		transition: opacity .2s ease, transform .2s ease, visibility .2s;
+		/* visibility flips instantly on open and waits for the fade on close.
+		   With it transitioning like the others, the drawer is still computed
+		   as hidden on the frame it opens — and focus() on a hidden element
+		   does nothing, silently, which is what stopped the keyboard from
+		   ever reaching the menu. */
+		transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
 	}
-	.nav-open .main-menu{ visibility: visible; opacity: 1; transform: none; }
+	.nav-open .main-menu{
+		visibility: visible;
+		opacity: 1;
+		transform: none;
+		transition: opacity .2s ease, transform .2s ease, visibility 0s;
+	}
 
 	.nav-list > li{ border-bottom: 1px solid var(--dark-divider); }
 	.nav-list > li > a{ padding: 14px 4px; font-size: 17px; font-weight: 700; }
@@ -741,7 +751,7 @@ strong{ font-weight: 800; }
 .junk-hero .trust-bar{ margin: 26px 0 30px; }
 .micro-trust{
 	color: rgba(255,255,255,.75);
-	font-size: 15px;
+	font-size: 16px;
 	margin: 22px 0 0;
 }
 
@@ -1120,7 +1130,7 @@ strong{ font-weight: 800; }
 }
 
 /* Hub page category cards */
-.cat-card-items{ font-size: 15px; color: var(--muted); margin: 0 0 14px; }
+.cat-card-items{ font-size: 16px; color: var(--muted); margin: 0 0 14px; }
 .cat-card-link{ font-weight: 800; }
 .cat-card-link:hover{ text-decoration: underline; }
 
@@ -1292,8 +1302,28 @@ strong{ font-weight: 800; }
 	font-weight: 400;
 }
 .price-table thead .looks-like{ color: var(--white-color); font-weight: 800; }
+/* It used to be hidden on phones to save width. That removed the sentence
+   that makes the number mean something — "a washer, dryer and a few boxes"
+   is what tells you whether you need a quarter trailer. It stacks under the
+   tier instead, which costs height, not comprehension. */
 @media (max-width: 767px){
-	.price-table .looks-like{ display: none; }
+	.price-table .looks-like{
+		display: block;
+		padding-top: 0;
+		font-size: 14px;
+	}
+	.price-table tbody tr{
+		display: grid;
+		grid-template-columns: 1fr auto;
+		border-bottom: 1px solid var(--divider-color);
+		padding: 12px 0;
+		gap: 2px 12px;
+	}
+	.price-table tbody :is(th, td){ border-bottom: 0; padding: 0; }
+	.price-table tbody th{ grid-area: 1 / 1; }
+	.price-table tbody .price{ grid-area: 1 / 2; align-self: start; }
+	.price-table tbody .looks-like{ grid-area: 2 / 1 / 3 / -1; }
+	.price-table thead .looks-like{ display: none; }
 }
 .price-tbd{
 	background-color: var(--secondary-color);
@@ -1595,7 +1625,7 @@ strong{ font-weight: 800; }
 }
 /* width:1px + min-width:100% is the reliable way to make an iframe fill. */
 .jotform-embed iframe{ display: block; width: 1px; min-width: 100%; min-height: 720px; border: 0; }
-.form-fallback{ margin: 18px 0 0; text-align: center; font-size: 15px; color: var(--muted); }
+.form-fallback{ margin: 18px 0 0; text-align: center; font-size: 16px; color: var(--muted); }
 .form-fallback a{ font-weight: 700; }
 @media (max-width: 767px){ .jotform-embed iframe{ min-height: 900px; } }
 
@@ -1747,9 +1777,17 @@ strong{ font-weight: 800; }
 
 /*------------------- 20. Accessibility & staging banner ------------------*/
 
+/* Two-tone on purpose. Safety yellow alone measures 1.62:1 on white and
+   1.49:1 on the honeydew band, well under the 3:1 that WCAG 2.2 SC 1.4.11
+   asks of a focus indicator — it only ever passed on the forest header. The
+   dark ring carries the contrast on light backgrounds, the yellow halo
+   carries it on dark ones, so the indicator works everywhere without
+   darkening --highlight, which is also the hazard stripe and the price
+   marker. */
 :focus-visible{
-	outline: 3px solid var(--highlight);
+	outline: 3px solid var(--primary-color);
 	outline-offset: 3px;
+	box-shadow: 0 0 0 6px var(--highlight);
 	border-radius: 4px;
 }
 .faq-item summary:focus-visible{ outline-offset: -3px; border-radius: var(--radius); }
@@ -1849,4 +1887,51 @@ strong{ font-weight: 800; }
 	border-radius: 5px;
 	margin-right: 8px;
 	white-space: nowrap;
+}
+
+
+/*---------------------- 20. Related categories strip ---------------------*/
+
+/* Three sideways links at the foot of every category page. Card-shaped rather
+   than a bare list: this sits directly under a long <dl> of items, and a row
+   of plain links there reads as more of the same list. */
+.related-cats{ margin: 36px 0 0; }
+.related-cats h3{
+	font-size: 1.05rem;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	margin-bottom: 14px;
+}
+.related-cats ul{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 12px;
+}
+.related-cats li{ margin: 0; }
+.related-cats a{
+	display: block;
+	height: 100%;
+	padding: 16px 18px;
+	border: 1px solid var(--divider-color);
+	border-radius: var(--radius-sm);
+	background-color: var(--white-color);
+	font-weight: 700;
+	color: var(--ink);
+}
+.related-cats a:hover{
+	border-color: var(--accent-color);
+	color: var(--accent-color);
+}
+.related-cats span{
+	display: block;
+	margin-top: 4px;
+	font-size: 15px;
+	font-weight: 400;
+	color: var(--muted);
+}
+@media (max-width: 767px){
+	.related-cats ul{ grid-template-columns: 1fr; }
 }

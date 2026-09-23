@@ -40,7 +40,23 @@
     header.classList.toggle("nav-open", open);
     root.classList.toggle("nav-open-page", open);
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
-    if (!open) resetSubs();
+    if (!open) {
+      resetSubs();
+      return;
+    }
+    // The markup puts the nav before the toggle, because on a desktop it sits
+    // between the logo and the phone number. On a phone that means the drawer
+    // you just opened is BEHIND you in tab order: the next Tab used to land in
+    // the hero, eight Shift+Tabs away from the menu. Move focus into it.
+    //
+    // On the next frame, not this one. The drawer is visibility:hidden until
+    // .nav-open lands, and focus() on an element the browser still computes as
+    // hidden does nothing at all — silently, which is how this went unnoticed
+    // the first time.
+    requestAnimationFrame(function () {
+      var first = menu && menu.querySelector("a, button");
+      if (first) first.focus();
+    });
   }
 
   resetSubs();
