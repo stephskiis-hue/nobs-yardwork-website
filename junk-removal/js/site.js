@@ -103,6 +103,106 @@
     });
   });
 
+  /* ---- Lead tracking ----
+   * Calls, texts and the quote form are the only things on this site worth
+   * money, and none of them is a page view, so GA4 reports nothing about them
+   * on its own. These send the three events the owner reads to tell which
+   * pages actually produce work.
+   *
+   * Everything goes through send(): a large share of visitors run an ad
+   * blocker, which means gtag is simply not there, and a missing tag must
+   * never turn into a broken button. */
+  function send(name, params) {
+    try {
+      if (typeof window.gtag === "function") window.gtag("event", name, params);
+    } catch (err) {
+      /* Analytics is never worth an exception on a lead click. */
+    }
+  }
+
+  // Which piece of furniture the click came from. Counting calls alone says
+  // the phone rang; this says whether it was the sticky bar, the hero or a
+  // link buried in the copy that did it, which is what decides where the next
+  // call button goes.
+  function placeOf(el) {
+    if (el.closest(".mobile-call-bar")) return "mobile_call_bar";
+    if (el.closest(".site-header")) return "header";
+    if (el.closest(".site-footer")) return "footer";
+    if (el.closest(".junk-hero")) return "hero";
+    return "body";
+  }
+
+  // Delegated from the document so every tel:/sms: link is covered, including
+  // ones added to a page fragment later — there are already thirty-odd of them
+  // across the site and no one is going to remember to tag a new one.
+  //
+  // Nothing here calls preventDefault and nothing waits for a beacon: the dial
+  // or the text goes through exactly as it would with this file deleted. A
+  // dropped statistic costs nothing; a call that does not dial costs a job.
+  document.addEventListener("click", function (e) {
+    var el = e.target;
+    if (!el || !el.closest) return;
+    var link = el.closest('a[href^="tel:"], a[href^="sms:"]');
+    if (!link) return;
+    var sms = link.getAttribute("href").lastIndexOf("sms:", 0) === 0;
+    send(sms ? "text_click" : "call_click", {
+      link_location: placeOf(link),
+      // GA4 ties the event to the page on its own, but only as page_location.
+      // Sending the path as its own parameter is what lets these break down
+      // per page in a report without unpicking a full URL first.
+      page_path: location.pathname
+    });
+  });
+
+  /* ---- Quote form submissions ----
+   * The form on /quote is a JotForm iframe on another origin. There is no
+   * submit event to listen for and no URL to read: the browser will not let
+   * this page see inside it. JotForm's own form code posts a message out to
+   * the parent window instead, and that message is the only signal there is.
+   *
+   * We listen for {action: "submission-completed"}. Be clear about what that
+   * name rests on: JotForm support name it in their forum answers and every
+   * GTM guide uses it, but it is NOT in the code they ship — their form
+   * runtime (jotform.forms.js) posts only "submission-started" and
+   * "submission-end", and posts both with no targetOrigin, which means the
+   * browser delivers them to a same-origin parent and drops them for us.
+   * Those two also fire before validation, so a form that never sent would
+   * still count as a lead. JotForm say in the same answers that none of these
+   * messages are a public API and that they may change without notice.
+   *
+   * So if quote_form_submit reads zero for a month while leads are sitting in
+   * the JotForm inbox, the message shape changed. Check that first — and it is
+   * the reason the call and text events are the ones to trust.
+   */
+  var quoteFrame = document.querySelector('iframe[id^="JotFormIFrame-"]');
+  if (quoteFrame) {
+    var counted = false;
+    window.addEventListener("message", function (e) {
+      // Any site, and any frame, can post a message into this window. It only
+      // counts if it came out of the form frame itself AND off a JotForm host:
+      // without both checks a lead is something a stranger can fake, and the
+      // numbers stop meaning anything.
+      if (counted || e.source !== quoteFrame.contentWindow) return;
+      var host;
+      try {
+        host = new URL(e.origin).hostname;
+      } catch (err) {
+        return;
+      }
+      if (host !== "jotform.com" && host.slice(-12) !== ".jotform.com") return;
+
+      // Height messages arrive as plain strings ("setHeight:940:<id>") and the
+      // newer ones as objects, so read the action out of either shape.
+      var action = typeof e.data === "string" ? e.data : e.data && e.data.action;
+      if (action !== "submission-completed") return;
+
+      // Once per page. The frame is free to repeat itself, and a repeat here
+      // would show up as two leads from one customer.
+      counted = true;
+      send("quote_form_submit", { page_path: location.pathname });
+    });
+  }
+
   /* ---- Scroll reveal ----
    * Only elements below the fold are hidden; anything already on screen at
    * load is marked visible immediately so there is no flash on first paint. */
