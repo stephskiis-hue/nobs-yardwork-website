@@ -577,7 +577,10 @@ def clean_url(slug):
     if slug == "index":
         return "/"
     if slug.endswith("/index"):
-        return "/" + slug[: -len("/index")]
+        # Trailing slash kept on purpose: Apache's DirectorySlash 301s /blog to
+        # /blog/, so a sitemap or canonical saying "/blog" hands Google a
+        # redirect where a 200 belongs.
+        return "/" + slug[: -len("index")]
     return "/" + slug
 
 
