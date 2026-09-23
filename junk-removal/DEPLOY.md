@@ -41,6 +41,67 @@ page, gzip and caching. Turn on "show hidden files" and confirm it arrived.
 
 ---
 
+## How this site is deployed today (read this first)
+
+`no-bsjunk.com` is live on Namecheap shared hosting (`server258.web-hosting.com`),
+with Cloudflare in front of it. One command builds the site and uploads what
+changed:
+
+```bash
+python3 deploy/ftp-deploy.py            # build + upload changed files
+python3 deploy/ftp-deploy.py --dry-run  # show what would change, touch nothing
+python3 deploy/ftp-deploy.py --prune    # also delete remote files no longer in dist/
+python3 deploy/ftp-deploy.py --all      # force a full re-upload
+```
+
+It runs `deploy/make-dist.sh` first, so the server always gets a fresh build,
+and it hashes every file into `deploy/.deploy-state.json` so a routine deploy
+uploads three files rather than ninety-one.
+
+**Credentials** live in `deploy/.env`, which is gitignored and must never be
+committed:
+
+```
+FTP_HOST=server258.web-hosting.com
+FTP_USER=claude@no-bsjunk.com
+FTP_PASS=…
+FTP_PORT=21
+```
+
+The script connects with **FTPS** (explicit TLS) and refuses to fall back to
+plain FTP. Plain FTP would send that password, and every file, in clear text
+across the network.
+
+### What lives where on the server
+
+The FTP account lands directly in the domain's document root. Three things
+there are the server's, not ours, and `ftp-deploy.py` never deletes them:
+
+| Path | Whose | Why it matters |
+|---|---|---|
+| `.well-known/` | cPanel AutoSSL | Certificate renewal challenges. Delete it and HTTPS breaks weeks later. |
+| `cgi-bin/` | cPanel | Created by the host; harmless and empty. |
+| `.ftpquota` | Pure-FTPd | Disk accounting. |
+
+The Namecheap parking page (`parking-page.shtml`, `nc_assets/`) was removed on
+2026-09-23 when the real site went up.
+
+### Cloudflare sits in front — mind the redirect loop
+
+Cloudflare 301s `www.no-bsjunk.com` to the bare `no-bsjunk.com` at its edge,
+and redirects http to https before a request ever reaches Apache. So:
+
+- `SITE` in `_build.py` is `https://no-bsjunk.com` (no www).
+- `.htaccess` redirects www to the apex — the *same* direction as Cloudflare.
+- `.htaccess` does **not** force https.
+
+Point either of those the other way and the site becomes unreachable: the edge
+sends www to the apex, Apache sends the apex back to www, and the browser gives
+up. If you ever prefer `www`, change Cloudflare's rule, `SITE` and `.htaccess`
+in the same sitting.
+
+---
+
 ## Option A — Cloudflare Pages, deploying from GitHub (recommended)
 
 Free, fast everywhere, HTTPS included, and it redeploys itself every time you
@@ -138,14 +199,12 @@ cPanel → **SSL/TLS Status** → run AutoSSL for the new domain. Free, and take
 few minutes. Do not skip it — browsers now flag plain HTTP sites, and the site
 links to itself over `https://` throughout.
 
-### 5. After DNS resolves, force the canonical host
+### 5. The canonical host
 
-`.htaccess` has three commented lines near the top that redirect every visitor
-to `https://www.no-bsjunk.com`. **Leave them commented until the domain
-actually resolves** — enabling them early sends every visitor to a domain that
-does not answer, which takes the site down by every route at once.
-
-Once `https://www.no-bsjunk.com` loads in a browser, uncomment them.
+`.htaccess` redirects `www.no-bsjunk.com` to the bare domain, which is the
+direction Cloudflare already redirects at its edge. Both must point the same
+way, and `SITE` in `_build.py` must name the same host, or visitors bounce
+between the two forever. See "How this site is deployed today" above.
 
 ---
 
@@ -210,7 +269,8 @@ Then `sudo nginx -t && sudo systemctl reload nginx`, and get a certificate with
 
 Open the site and confirm each of these. They are the things that actually break.
 
-- [ ] `https://www.no-bsjunk.com` loads with the green header and logo.
+- [ ] `https://no-bsjunk.com` loads with the green header and logo, and
+      `https://www.no-bsjunk.com` redirects to it (not the other way round).
 - [ ] **Clean URLs**: `/pricing` works, not just `/pricing.html`. If this fails,
       `.htaccess` did not upload or `mod_rewrite` is off.
 - [ ] **The blog**: `/blog` shows eight cards, and `/blog/junk-removal-cost-winnipeg`
@@ -220,8 +280,9 @@ Open the site and confirm each of these. They are the things that actually break
 - [ ] **The form**: send yourself a test through `/quote` and confirm it lands
       in your JotForm inbox. Do this once, for real — it is the only thing on
       the site that earns money.
-- [ ] **Mobile**: open it on a phone. Check the hamburger menu opens and the
-      call bar at the bottom works.
+- [ ] **Mobile**: open it on a phone. Check the hamburger menu opens, that
+      “What We Take” and “About” expand when their chevrons are tapped, that
+      “Get a Quote” is visible without scrolling, and that the call bar works.
 - [ ] `/sitemap.xml` and `/feed.xml` both load.
 
 ### Then tell Google it exists

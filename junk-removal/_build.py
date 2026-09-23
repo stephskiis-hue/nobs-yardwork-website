@@ -53,7 +53,10 @@ def strip_tags(s):
 ROOT = Path(__file__).parent
 PAGES_DIR = ROOT / "_pages"
 
-SITE = "https://www.no-bsjunk.com"
+# Cloudflare 301s www -> the bare domain at its edge, so the bare domain is
+# the canonical host. Canonical tags, og:url and the sitemap must name the
+# host visitors actually land on, or every one of them is a redirect hop.
+SITE = "https://no-bsjunk.com"
 PHONE_DISPLAY = "204.900.0438"
 PHONE_TEL = "+12049000438"
 PHONE_E164 = "+12049000438"
@@ -2279,7 +2282,7 @@ def main():
                     faq_pairs.append((name, q["acceptedAnswer"]["text"]))
 
     L = []
-    L.append("# www.no-bsjunk.com llms.txt")
+    L.append("# no-bsjunk.com llms.txt")
     L.append("")
     L.append("> No BS Junk Removal is the junk removal and hauling division of No-BS")
     L.append("> Yardwork in Winnipeg, Manitoba. Pricing is by volume — the space your")

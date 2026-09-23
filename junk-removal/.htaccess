@@ -74,20 +74,25 @@ RewriteEngine On
 RewriteRule ^(_pages|deploy)/ - [F,L]
 
 # ......................................................................
-# CANONICAL HOST — LEAVE COMMENTED UNTIL THE DOMAIN IS LIVE
+# CANONICAL HOST
 #
-# Until no-bsjunk.com resolves, this site is reachable as a
-# subdirectory of no-bs-yardwork.com. Uncommenting these three lines before
-# DNS is working would 301 every visitor to a domain that does not answer,
-# making the site unreachable by any route.
+# Live since 2026-09-23: no-bsjunk.com resolves through Cloudflare to this
+# server. The canonical host is the BARE domain, because Cloudflare already
+# 301s www -> no-bsjunk.com at its edge. The rule below says the same thing at
+# the origin, for requests that reach Apache another way (the subdirectory copy
+# on no-bs-yardwork.com, or the server's own hostname).
 #
-# AFTER the addon domain is set up and resolving, uncomment to force the
-# junk domain and stop the subdirectory copy competing in search results.
-# The canonical tags on every page already point at the junk domain, which
-# is enough on its own in the meantime.
+# Point it at www and the site becomes unreachable: Cloudflare sends www to the
+# apex, Apache sends the apex back to www, and the browser gives up after about
+# twenty hops. If Cloudflare's redirect rule is ever flipped to prefer www,
+# flip this line and SITE in _build.py together, or the loop comes back.
+#
+# HTTPS is not forced here either — Cloudflare redirects http to https before
+# a request reaches Apache, and doing it in both places is the other common
+# way to build a loop.
 # ......................................................................
-# RewriteCond %{HTTP_HOST} !^(www\.)?no-bsjunk\.com$ [NC]
-# RewriteRule ^(.*)$ https://www.no-bsjunk.com/$1 [R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.no-bsjunk\.com$ [NC]
+RewriteRule ^(.*)$ https://no-bsjunk.com/$1 [R=301,L]
 
 # Strip .html when it is typed or linked explicitly.
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.html\ HTTP/

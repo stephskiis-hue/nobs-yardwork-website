@@ -1,11 +1,13 @@
 # No BS Junk Removal — Winnipeg
 
 Static site for the junk removal division of **No-BS Yardwork**.
-Target domain: `nobs-junk.com` — chosen, not yet registered. Until `SITE` in
-`_build.py` is changed, the build still generates against `no-bsjunk.com`.
+**Live at [no-bsjunk.com](https://no-bsjunk.com)** since 2026-09-23, on Namecheap
+shared hosting with Cloudflare in front. `SITE` in `_build.py` is the one place
+that name appears; every canonical, sitemap entry and share link comes from it.
 
 Hand-coded static HTML, same stack as no-bs-yardwork.com: no framework, no
-runtime dependencies, deploys by FTP to cPanel/Apache.
+runtime dependencies. Deploy with `python3 deploy/ftp-deploy.py` — build and
+upload in one command. See [DEPLOY.md](DEPLOY.md).
 
 > **Not in its own repo yet.** See [MIGRATE.md](MIGRATE.md) for the one command
 > that moves it, and why it started here.
@@ -16,15 +18,17 @@ runtime dependencies, deploys by FTP to cPanel/Apache.
 
 These are the things only you can do. Nothing on this list is code.
 
-- [ ] **Register `nobs-junk.com`** (it was available in September 2026), then
-      change `SITE` at the top of `_build.py` and rebuild. Every canonical,
-      sitemap entry and share link is generated from that one line.
-- [ ] **Add the addon domain** in cPanel and note its document root
+- [x] **Domain registered and live.** `no-bsjunk.com`, served from
+      `server258.web-hosting.com` through Cloudflare. The bare domain is
+      canonical; Cloudflare redirects `www` to it.
+- [x] **Domain added in cPanel.** The `claude@no-bsjunk.com` FTP account lands
+      straight in its document root.
 - [x] **Set the prices.** Done: $139 minimum up to $689 for a full trailer, plus
       per-tonne rates for heavy material. A price appears in three places; the
       comment at the top of `_pages/pricing.html` lists them.
-- [ ] **Uncomment the canonical-host rule** in `.htaccess` — *only after* DNS
-      resolves. Doing it early makes the site unreachable.
+- [x] **Canonical-host rule is on**, pointing www at the bare domain — the same
+      direction Cloudflare redirects. Reversing either one alone makes the site
+      unreachable in a redirect loop.
 - [ ] **Replace the stock photos** with real job photos. Seven service pages use
       Unsplash stock today; the shot list is below.
 - [ ] **Add your liability coverage amount** to the box on `_pages/about.html`
@@ -229,7 +233,7 @@ later — a duplicate-content mess that is tedious to unwind. The header lives i
 the container config, not in `.htaccess`, so it can never follow the site to
 production. Leave it on until the real domain is live.
 
-**Link previews work.** Every page hard-codes `https://www.no-bsjunk.com`
+**Link previews work.** Every page hard-codes `https://no-bsjunk.com`
 in its `canonical`, `og:url` and `og:image` — correct for production, but that
 domain does not resolve yet, so a staging link pasted into Messenger, Slack or a
 text message would show a preview card with no image and a dead click-through.
