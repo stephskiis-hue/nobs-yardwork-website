@@ -37,12 +37,13 @@ These are the things only you can do. Nothing on this list is code.
       match it exactly — `_build.py` currently has "Lakewood Blvd" with no number.
 - [ ] **Search Console** property + submit `sitemap.xml`
 - [ ] **Check the Tag Manager container** (`GTM-M3MHCKF5`). The site loads Tag
-      Manager *and* Google Analytics (`G-VN2QZ4KXXH`) separately, which likely
+      Manager *and* Google Analytics (`G-FRJ9TZ9ZWE`) separately, which likely
       counts every visit twice. If the container holds only Analytics, remove Tag
       Manager; if it holds an Ads tag or a Meta pixel, keep it and remove the
-      separate Analytics tag instead.
-- [ ] **Create a separate GA4 property** for the junk division. The current ID
-      belongs to the yardwork site, so the two businesses' leads are mixed.
+      separate Analytics tag instead. The container itself still belongs to the
+      yardwork site, so check which tags inside it fire on junk pages.
+- [x] **Separate GA4 property.** The junk site reports to `G-FRJ9TZ9ZWE`; the
+      yardwork site keeps `G-VN2QZ4KXXH`, so the two businesses' leads stay apart.
 
 ---
 

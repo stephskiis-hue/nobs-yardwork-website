@@ -59,7 +59,9 @@ PHONE_TEL = "+12049000438"
 PHONE_E164 = "+12049000438"
 EMAIL = "nobsyardwork@gmail.com"
 GTM_ID = "GTM-M3MHCKF5"
-GA4_ID = "G-VN2QZ4KXXH"
+# The junk site's own GA4 property. The lawn site keeps G-VN2QZ4KXXH, so the
+# two sets of numbers stay apart.
+GA4_ID = "G-FRJ9TZ9ZWE"
 # The quote form on /quote is a JotForm embed; this is the only place its ID
 # is set. Change it here and re-run the build.
 #
@@ -349,9 +351,16 @@ def render_nav(base="", current=""):
             )
             in_section = any(h == f"{here}.html" for _, h in children)
             attrs = mark(href, ' data-section="current"' if in_section else "")
+            # The chevron button opens the list in the mobile drawer; the label
+            # itself still goes to the hub page. Hidden on desktop, where the
+            # list opens on hover.
+            sub_id = f"sub-{_anchor(label)}"
             out.append(
                 f'<li class="has-sub"><a href="{base}{href}"{attrs}>{label}</a>'
-                f'<ul class="sub-menu">{kids}</ul></li>'
+                f'<button class="sub-toggle" type="button" aria-expanded="false" '
+                f'aria-controls="{sub_id}"><span class="visually-hidden">'
+                f'Show {label} pages</span></button>'
+                f'<ul class="sub-menu" id="{sub_id}">{kids}</ul></li>'
             )
         else:
             out.append(f'<li><a href="{base}{href}"{mark(href)}>{label}</a></li>')

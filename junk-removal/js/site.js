@@ -17,12 +17,41 @@
   /* ---- Mobile nav drawer ---- */
   var toggle = document.querySelector(".nav-toggle");
   var menu = document.getElementById("main-menu");
+  var root = document.documentElement;
+  var subToggles = document.querySelectorAll(".sub-toggle");
+
+  // Drawer sub-menus collapse only once this runs (see .nav-js in the CSS).
+  root.classList.add("nav-js");
+
+  function setSub(btn, open) {
+    btn.parentNode.classList.toggle("sub-open", open);
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  // Every section starts closed, on every page. Opening the one you are in
+  // reads well but costs eight rows, which pushes "Get a Quote" off the bottom
+  // of a short phone screen — the underlined parent already says where you are.
+  function resetSubs() {
+    subToggles.forEach(function (btn) { setSub(btn, false); });
+  }
 
   function setOpen(open) {
     if (!header || !toggle) return;
     header.classList.toggle("nav-open", open);
+    root.classList.toggle("nav-open-page", open);
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (!open) resetSubs();
   }
+
+  resetSubs();
+  // One list open at a time keeps the drawer short enough to see "Get a Quote".
+  subToggles.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var open = btn.getAttribute("aria-expanded") !== "true";
+      subToggles.forEach(function (other) { if (other !== btn) setSub(other, false); });
+      setSub(btn, open);
+    });
+  });
 
   if (toggle && menu) {
     toggle.addEventListener("click", function () {

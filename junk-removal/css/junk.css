@@ -403,6 +403,45 @@ strong{ font-weight: 800; }
 	.nav-list > li:last-child > a{ text-align: center; padding: 14px; }
 	.sub-menu{ padding: 0 0 12px 14px; border-left: 2px solid var(--accent-color); margin: 0 0 4px 4px; }
 	.sub-menu a{ padding: 8px 4px; font-size: 15px; color: var(--on-dark-muted); font-weight: 600; }
+
+	/* Dropdown parents: label links to the hub, chevron opens the list. The
+	   list only collapses once site.js is running (.nav-js), so with
+	   JavaScript off every link is still in the drawer. */
+	.has-sub{
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+	}
+	.has-sub > .sub-menu{ grid-column: 1 / -1; }
+	.sub-toggle{
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		padding: 0;
+		border: 0;
+		border-radius: 10px;
+		background: transparent;
+		color: var(--white-color);
+		cursor: pointer;
+	}
+	.sub-toggle::before{
+		content: "";
+		width: 10px;
+		height: 10px;
+		margin-top: -5px;
+		border-right: 2px solid currentColor;
+		border-bottom: 2px solid currentColor;
+		transform: rotate(45deg);
+		transition: transform .2s ease, margin .2s ease;
+	}
+	.sub-toggle[aria-expanded="true"]::before{ transform: rotate(-135deg); margin-top: 5px; }
+	.sub-toggle:hover,
+	.sub-toggle:focus-visible{ background-color: var(--dark-divider); color: var(--accent-on-dark); }
+	.nav-js .has-sub:not(.sub-open) > .sub-menu{ display: none; }
+}
+@media (min-width: 1100px){
+	.sub-toggle{ display: none; }
 }
 @media (max-width: 575px){
 	:root{ --header-h: 68px; }
@@ -1614,6 +1653,9 @@ strong{ font-weight: 800; }
 	.mobile-call-bar svg{ width: 20px; height: 20px; }
 	/* Keep the bar from covering the end of the page. */
 	body{ padding-bottom: calc(58px + env(safe-area-inset-bottom)); }
+	/* The bar sits above the header, so while the nav drawer is open it would
+	   cover the bottom of the menu — "Get a Quote" included. */
+	.nav-open-page .mobile-call-bar{ display: none; }
 }
 
 
