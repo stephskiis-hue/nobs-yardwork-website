@@ -72,7 +72,16 @@ PHONE_DISPLAY = "204.900.0438"
 PHONE_TEL = "+12049000438"
 PHONE_E164 = "+12049000438"
 EMAIL = "nobsyardwork@gmail.com"
-GTM_ID = "GTM-M3MHCKF5"
+# Google Tag Manager was removed on 2026-09-23. The container belongs to the
+# lawn site, and the only tags configured in it were two GA4 properties that
+# are not this one — G-VN2QZ4KXXH (yardwork) and G-084K20CFBT. So on junk
+# pages it shipped 364 KB of JavaScript whose entire effect was to report this
+# site's traffic into someone else's property and count every visit twice.
+# There was no Ads conversion tag and no Meta pixel in it to preserve.
+#
+# To bring it back, restore the two blocks in HEAD/PAGE from git history and
+# set this to the container id.
+GTM_ID = None
 # The junk site's own GA4 property. The lawn site keeps G-VN2QZ4KXXH, so the
 # two sets of numbers stay apart.
 GA4_ID = "G-FRJ9TZ9ZWE"
@@ -489,21 +498,6 @@ PAGE = """<!doctype html>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {{
-        w[l] = w[l] || [];
-        w[l].push({{ "gtm.start": new Date().getTime(), event: "gtm.js" }});
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      }})(window, document, "script", "dataLayer", "{GTM_ID}");
-    </script>
-    <!-- End Google Tag Manager -->
-
     <title>{title}</title>
     <meta name="description" content="{description}" />
     <meta name="author" content="No BS Junk Removal" />
@@ -538,13 +532,12 @@ PAGE = """<!doctype html>
     <link rel="alternate" type="application/rss+xml"
           title="No BS Junk Removal — Winnipeg" href="{BASE}feed.xml" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style"
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap"
-      onload="this.onload=null;this.rel='stylesheet';" />
-    <noscript><link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" /></noscript>
+    <!-- The font files are ours now, so the browser can fetch them straight
+         after the stylesheet instead of waiting on two handshakes to Google.
+         Only the latin face is preloaded: latin-ext and the italics are used
+         by a minority of pages and can load on demand. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+          href="{BASE}fonts/plus-jakarta-sans-latin-normal.woff2" />
 
     <link rel="stylesheet" href="{BASE}css/junk.css?v={CSS_V}" />
 
@@ -558,9 +551,6 @@ PAGE = """<!doctype html>
 
 {schema}  </head>
   <body class="{body_class}">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM_ID}"
-      height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
 
 {HEADER}
     <main id="main">
@@ -772,7 +762,7 @@ def render_take_grid():
         if photo.exists():
             inner = (
                 f'<img src="{{BASE}}images/tiles/{c["icon"]}.webp" alt="" '
-                f'width="500" height="333" loading="lazy" decoding="async" />'
+                f'width="360" height="240" loading="lazy" decoding="async" />'
             )
             cls = ' class="has-photo"'
         else:
@@ -2138,6 +2128,32 @@ def build_chrome(base, common, current=""):
     )
 
 
+_ASSET_V_CACHE = {}
+
+
+def version_local_images(page_html, page_dir):
+    """Append a content hash to every local image URL on a built page.
+
+    .htaccess tells browsers and Cloudflare to keep images for a year, keyed by
+    URL. Replace a photo without changing its name and nobody sees the new one:
+    the edge keeps serving the old bytes until the year is up. This is the same
+    fix as the ?v= on the stylesheet, applied to every <img> on the page.
+
+    `page_dir` is the directory the page is written to, because a blog post
+    refers to "../images/x.webp" while a root page says "images/x.webp".
+    """
+    def sub(m):
+        attr, url = m.group(1), m.group(2)
+        target = (page_dir / url).resolve()
+        if not target.is_file():
+            return m.group(0)
+        if target not in _ASSET_V_CACHE:
+            _ASSET_V_CACHE[target] = hashlib.sha1(target.read_bytes()).hexdigest()[:8]
+        return f'{attr}="{url}?v={_ASSET_V_CACHE[target]}"'
+
+    return re.sub(r'(src|href)="([^":?]+\.(?:webp|png|jpg|jpeg|svg|ico))"', sub, page_html)
+
+
 def asset_version(relpath):
     """A cache-busting version derived from the file's own contents.
 
@@ -2176,7 +2192,7 @@ def sync_robots():
 def main():
     common = dict(
         PHONE_TEL=PHONE_TEL, PHONE_DISPLAY=PHONE_DISPLAY, PHONE_E164=PHONE_E164,
-        EMAIL=EMAIL, SITE=SITE, GTM_ID=GTM_ID, GA4_ID=GA4_ID,
+        EMAIL=EMAIL, SITE=SITE, GA4_ID=GA4_ID,
         JOTFORM_ID=JOTFORM_ID,
         CSS_V=asset_version("css/junk.css"),
         JS_V=asset_version("js/site.js"),
@@ -2244,7 +2260,7 @@ def main():
         )
         out = ROOT / f"{slug}.html"
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(page_html, encoding="utf-8")
+        out.write_text(version_local_images(page_html, out.parent), encoding="utf-8")
         written += 1
 
     # Sitemap, generated from the same list so it can never drift out of sync.

@@ -29,8 +29,10 @@ cp ./*.html robots.txt sitemap.xml feed.xml llms.txt dist/
 if [ -f .htaccess ]; then cp .htaccess dist/; fi
 
 # Asset folders, then strip the bits that are tooling or notes rather than site.
-cp -R blog css js images dist/
-rm -f dist/images/_make-icons.py dist/images/CREDITS.md
+cp -R blog css js images fonts dist/
+# Tooling that lives beside the assets it generates, and the photo credits
+# note. .htaccess denies .py anyway, but a web root is not the place for it.
+rm -f dist/images/*.py dist/images/CREDITS.md dist/fonts/*.py
 
 files=$(find dist -type f | wc -l | tr -d ' ')
 size=$(du -sh dist | cut -f1)

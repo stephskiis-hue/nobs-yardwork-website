@@ -1,3 +1,52 @@
+/*------------------------- 00. Fonts, self-hosted ------------------------
+
+   Plus Jakarta Sans used to come from fonts.googleapis.com. On a phone on
+   a slow connection that costs two extra DNS+TLS handshakes before any
+   text can paint, and the stylesheet that names the font files is itself
+   a round trip away. Served from our own domain they start downloading as
+   soon as this file is parsed.
+
+   These are the variable font files Google serves: one per subset and
+   style, covering every weight from 200 to 900. font-display: swap means
+   text is readable in the fallback face immediately and re-renders when
+   the real one arrives, rather than sitting invisible.
+
+   Licence: SIL Open Font License 1.1, which permits self-hosting.
+   Refresh with: python3 fonts/refresh.py
+   --------------------------------------------------------------------- */
+@font-face{
+	font-family: "Plus Jakarta Sans";
+	font-style: italic;
+	font-weight: 200 900;
+	font-display: swap;
+	src: url("../fonts/plus-jakarta-sans-latin-ext-italic.woff2") format("woff2");
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+	font-family: "Plus Jakarta Sans";
+	font-style: italic;
+	font-weight: 200 900;
+	font-display: swap;
+	src: url("../fonts/plus-jakarta-sans-latin-italic.woff2") format("woff2");
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+	font-family: "Plus Jakarta Sans";
+	font-style: normal;
+	font-weight: 200 900;
+	font-display: swap;
+	src: url("../fonts/plus-jakarta-sans-latin-ext-normal.woff2") format("woff2");
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+	font-family: "Plus Jakarta Sans";
+	font-style: normal;
+	font-weight: 200 900;
+	font-display: swap;
+	src: url("../fonts/plus-jakarta-sans-latin-normal.woff2") format("woff2");
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /*==========================================================================
   junk.css — No BS Junk Removal
   ==========================================================================
@@ -122,6 +171,19 @@ a{
 	transition: color .2s ease;
 }
 a:hover{ color: var(--accent-hover); }
+
+/* Links inside running text are underlined. Colour alone is not enough to
+   mark a link: it fails WCAG 1.4.1, and it is invisible to anyone who cannot
+   separate the green from the body grey. Buttons, nav items, cards and tiles
+   all carry a class and are excluded — they are already obviously clickable
+   from their shape. */
+main p a:not([class]),
+main dd a:not([class]),
+.faq-body a:not([class]){
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 1px;
+}
 
 strong{ font-weight: 800; }
 

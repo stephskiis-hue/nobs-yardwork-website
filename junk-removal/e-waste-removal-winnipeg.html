@@ -5,21 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-M3MHCKF5");
-    </script>
-    <!-- End Google Tag Manager -->
-
     <title>E-Waste &amp; TV Removal Winnipeg | Certified Recycling</title>
     <meta name="description" content="TVs, monitors, computers, printers and satellite dishes collected in Winnipeg and taken to a certified EPRA Manitoba recycler, not the dump." />
     <meta name="author" content="No BS Junk Removal" />
@@ -50,19 +35,18 @@
     <meta name="geo.position" content="49.8951;-97.1384" />
     <meta name="ICBM" content="49.8951, -97.1384" />
 
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.webp" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.webp?v=05258b72" />
     <link rel="alternate" type="application/rss+xml"
           title="No BS Junk Removal — Winnipeg" href="feed.xml" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style"
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap"
-      onload="this.onload=null;this.rel='stylesheet';" />
-    <noscript><link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" /></noscript>
+    <!-- The font files are ours now, so the browser can fetch them straight
+         after the stylesheet instead of waiting on two handshakes to Google.
+         Only the latin face is preloaded: latin-ext and the italics are used
+         by a minority of pages and can load on demand. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+          href="fonts/plus-jakarta-sans-latin-normal.woff2" />
 
-    <link rel="stylesheet" href="css/junk.css?v=341fe51a" />
+    <link rel="stylesheet" href="css/junk.css?v=c6154134" />
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FRJ9TZ9ZWE"></script>
     <script>
@@ -172,15 +156,12 @@
     </script>
   </head>
   <body class="">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M3MHCKF5"
-      height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
 
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="container header-bar">
         <a class="brand-lockup" href="./">
-          <img src="images/logo.svg" alt="No-Bs Junk Removal" width="141" height="50"
+          <img src="images/logo.svg?v=e5482aa3" alt="No-Bs Junk Removal" width="141" height="50"
                fetchpriority="high" />
           <span class="division-tag">Junk Removal</span>
         </a>
@@ -246,7 +227,7 @@
               <p class="lead-in">Televisions, monitors, desktops, laptops, printers, stereo gear, cables and satellite dishes. Most electronics cannot legally go into Manitoba landfills because of the lead, mercury and flame retardants in them &mdash; which is exactly why the old tube TV is still sitting in your basement.</p>
 
               <figure class="page-photo">
-                <img src="images/e-waste.webp" alt="A dense pile of circuit boards, graphics cards and computer parts bound for e-waste recycling"
+                <img src="images/e-waste.webp?v=f6c88042" alt="A dense pile of circuit boards, graphics cards and computer parts bound for e-waste recycling"
                      width="1000" height="667" loading="lazy" decoding="async" />
               </figure>
               <p>Everything we collect goes to a certified EPRA Manitoba e-waste recycler, where the metals, glass and plastics get separated and the hazardous components are handled properly.</p>
@@ -381,7 +362,7 @@
       <div class="container">
         <div class="footer-grid">
           <div class="footer-about">
-            <img class="footer-logo" src="images/footer-logo.svg" alt="No BS Junk Removal Winnipeg"
+            <img class="footer-logo" src="images/footer-logo.svg?v=e5482aa3" alt="No BS Junk Removal Winnipeg"
                  loading="lazy" width="220" height="78" />
             <p>Embrace hard work, honesty and watch amazing things unfold.</p>
             <p><strong>The hauling division of
@@ -417,7 +398,7 @@
         </div>
         <div class="footer-bottom">
           <p>&copy; No BS Junk Removal &mdash; a No-BS Yardwork company.</p>
-          <img src="images/payments.webp" alt="Pay by cheque, e-transfer or credit card"
+          <img src="images/payments.webp?v=72727ec9" alt="Pay by cheque, e-transfer or credit card"
                loading="lazy" width="239" height="35" />
           <a class="btn-default btn-ghost" href="https://www.no-bs-yardwork.com">Visit No-BS Yardwork</a>
         </div>
