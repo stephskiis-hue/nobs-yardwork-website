@@ -24,6 +24,7 @@ _build.py and _pages/, and hand-edit the .html files from then on. Nothing
 else depends on this script.
 """
 
+import hashlib
 import html
 import json
 import re
@@ -57,6 +58,16 @@ PAGES_DIR = ROOT / "_pages"
 # the canonical host. Canonical tags, og:url and the sitemap must name the
 # host visitors actually land on, or every one of them is a redirect hop.
 SITE = "https://no-bsjunk.com"
+# The image every share of this site shows unless a page names its own. A
+# branded card (logo + division tag + tagline + number) rather than a photo:
+# a photo of one couch says nothing about who is sharing it, and the crop
+# social networks apply to a 4:5 hero cut the crew out of frame anyway. The
+# twelve service pages and the before/after pages still pass their own photo,
+# which is the right call for a link to one specific job.
+#
+# Regenerate it with: python3 images/make-og-card.py
+OG_CARD = "og-card.png"
+
 PHONE_DISPLAY = "204.900.0438"
 PHONE_TEL = "+12049000438"
 PHONE_E164 = "+12049000438"
@@ -137,7 +148,7 @@ LOCAL_BUSINESS = {
     "@id": f"{SITE}/#localbusiness",
     "name": "No BS Junk Removal",
     "alternateName": "No-BS Yardwork Junk Removal",
-    "image": f"{SITE}/images/logo.svg",
+    "image": f"{SITE}/images/{OG_CARD}",
     "url": SITE + "/",
     "telephone": PHONE_E164,
     "email": EMAIL,
@@ -258,7 +269,7 @@ ORGANIZATION = {
     "@id": f"{SITE}/#organization",
     "name": "No BS Junk Removal",
     "url": SITE + "/",
-    "logo": {"@type": "ImageObject", "url": f"{SITE}/images/logo.svg"},
+    "logo": {"@type": "ImageObject", "url": f"{SITE}/images/logo-badge.png"},
     "telephone": PHONE_E164,
     "email": EMAIL,
     "areaServed": {"@type": "City", "name": "Winnipeg"},
@@ -468,7 +479,7 @@ FOOTER = """    <footer class="site-footer">
     </div>
 """
 
-SCRIPTS = """    <script src="{BASE}js/site.js?v=2" defer></script>
+SCRIPTS = """    <script src="{BASE}js/site.js?v={JS_V}" defer></script>
 """
 
 PAGE = """<!doctype html>
@@ -535,7 +546,7 @@ PAGE = """<!doctype html>
     <noscript><link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" /></noscript>
 
-    <link rel="stylesheet" href="{BASE}css/junk.css?v=2" />
+    <link rel="stylesheet" href="{BASE}css/junk.css?v={CSS_V}" />
 
     <script async src="https://www.googletagmanager.com/gtag/js?id={GA4_ID}"></script>
     <script>
@@ -584,7 +595,7 @@ def clean_url(slug):
     return "/" + slug
 
 
-def P(slug, title, description, og_image="skid_steer.webp", crumbs=None,
+def P(slug, title, description, og_image=OG_CARD, crumbs=None,
       schema=None, robots=DEFAULT_ROBOTS, body_class="", base="",
       og_type="website", lastmod=None, priority=None, render=None):
     """Define one page.
@@ -1237,7 +1248,10 @@ PAGES = [
       "Winnipeg junk removal with upfront pricing and no hidden fees. Furniture, "
       "appliances, reno debris, hot tubs and concrete. Skid steer available. "
       "Free quotes.",
-      og_image="junk-hero.webp",
+      # The homepage is the link that actually gets shared. It used the hero
+      # photo, which social networks crop from 4:5 to 1.91:1 — cutting the crew
+      # out and leaving an anonymous van. OG_CARD says who this is instead.
+      og_image=OG_CARD,
       schema=[LOCAL_BUSINESS, ORGANIZATION, WEBSITE], body_class="home"),
 
     P("pricing",
@@ -1662,7 +1676,7 @@ PAGES = [
       "No-BS Yardwork — same owners, same crews, same standards, bigger trailer.",
       # Not the headshot: that file is now sized for its 140px circle, and a
       # 280px square is far below the 1200x630 a share preview needs.
-      og_image="skid_steer.webp",
+      og_image=OG_CARD,
       crumbs=[("About", "/about")]),
 
     P("where-your-junk-goes",
@@ -1728,7 +1742,7 @@ def pretty_date(iso):
 
 
 def BP(slug, title, h1, crumb, description, date, excerpt, read_min, tags,
-       og_image="skid_steer.webp", updated=None):
+       og_image=OG_CARD, updated=None):
     """Define one blog post. `slug` is the bare name; the URL is /blog/<slug>."""
     return {
         "slug": slug, "title": title, "h1": h1, "crumb": crumb,
@@ -1848,7 +1862,7 @@ def blog_posting_schema(post):
             "@type": "Organization",
             "name": "No BS Junk Removal",
             "url": SITE + "/",
-            "logo": {"@type": "ImageObject", "url": f"{SITE}/images/logo.svg"},
+            "logo": {"@type": "ImageObject", "url": f"{SITE}/images/logo-badge.png"},
         },
         "isPartOf": {"@type": "Blog", "name": "No BS Junk Removal Blog",
                      "@id": f"{SITE}/blog"},
@@ -2124,11 +2138,48 @@ def build_chrome(base, common, current=""):
     )
 
 
+def asset_version(relpath):
+    """A cache-busting version derived from the file's own contents.
+
+    .htaccess tells browsers to keep CSS and JS for a year, which is right for
+    files whose URL changes when they do. The ?v=2 that used to be typed here
+    by hand did not: the mobile-menu fix shipped new CSS and new JS under the
+    same URL, and any browser that had the old pair would have kept it. A
+    content hash cannot be forgotten — edit the file, the URL changes.
+    """
+    data = (ROOT / relpath).read_bytes()
+    return hashlib.sha1(data).hexdigest()[:8]
+
+
+def sync_robots():
+    """Keep robots.txt's host in step with SITE.
+
+    robots.txt is hand-written — the crawler list and the reasoning in it are
+    not worth generating — but its two host-bearing lines drifted the moment
+    SITE changed from www to the bare domain, and nothing caught it. This
+    rewrites those two lines on every build so they cannot disagree again.
+    """
+    p = ROOT / "robots.txt"
+    if not p.exists():
+        return
+    host = SITE.split("//", 1)[1]
+    out = []
+    for line in p.read_text(encoding="utf-8").splitlines():
+        if line.startswith("Sitemap:"):
+            line = f"Sitemap: {SITE}/sitemap.xml"
+        elif line.startswith("# ") and line[2:].strip().endswith("no-bsjunk.com"):
+            line = f"# {host}"
+        out.append(line)
+    p.write_text("\n".join(out) + "\n", encoding="utf-8")
+
+
 def main():
     common = dict(
         PHONE_TEL=PHONE_TEL, PHONE_DISPLAY=PHONE_DISPLAY, PHONE_E164=PHONE_E164,
         EMAIL=EMAIL, SITE=SITE, GTM_ID=GTM_ID, GA4_ID=GA4_ID,
         JOTFORM_ID=JOTFORM_ID,
+        CSS_V=asset_version("css/junk.css"),
+        JS_V=asset_version("js/site.js"),
     )
     chrome = {}
 
@@ -2186,7 +2237,9 @@ def main():
             og_type=page.get("og_type", "website"),
             schema=schema_html, body=body,
             HEADER=header, FOOTER=footer,
-            SCRIPTS=SCRIPTS.replace("{BASE}", base),
+            # SCRIPTS is a value passed into format(), not part of the
+            # template, so its own tokens have to be filled in here.
+            SCRIPTS=SCRIPTS.replace("{BASE}", base).replace("{JS_V}", common["JS_V"]),
             **dict(common, BASE=base),
         )
         out = ROOT / f"{slug}.html"
@@ -2341,6 +2394,7 @@ def main():
         L.append(f"- {t['name']}: {t['why']} {t['where']}")
     L.append("")
     (ROOT / "llms.txt").write_text("\n".join(L), encoding="utf-8")
+    sync_robots()
 
     print(f"built {written} pages + sitemap.xml + feed.xml + llms.txt ({len(POSTS)} posts, {len(faq_pairs)} FAQs)")
 

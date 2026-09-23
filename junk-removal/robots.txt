@@ -1,4 +1,4 @@
-# www.no-bsjunk.com
+# no-bsjunk.com
 
 User-agent: *
 Allow: /
@@ -60,4 +60,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://www.no-bsjunk.com/sitemap.xml
+Sitemap: https://no-bsjunk.com/sitemap.xml
